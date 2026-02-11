@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LGTV REHBERİ | aSiKuRT23</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --lg-red: #cf0652; --bg: #0a0a0a; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .back-btn { color: #888; text-decoration: none; display: inline-block; margin-bottom: 20px; transition: 0.3s; }
+        .back-btn:hover { color: white; }
+        .header { border-left: 5px solid var(--lg-red); padding-left: 20px; margin-bottom: 40px; }
+        .card { background: #161616; border: 1px solid #333; border-radius: 15px; padding: 25px; margin-bottom: 20px; transition: 0.3s; }
+        .card:hover { border-color: var(--lg-red); transform: translateY(-5px); }
+        .download-btn { background: var(--lg-red); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block; margin-top: 15px; font-weight: bold; }
+        .step { color: #bbb; font-size: 0.9rem; line-height: 1.6; }
+        h2 { margin-top: 0; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
+        
+        <div class="header">
+            <h1>LG WebOS TV Rehberi</h1>
+            <p>Uygulama Yükleme ve Geliştirici Modu Araçları</p>
+        </div>
 
+        <div class="card">
+            <h2><i class="fas fa-tools"></i> WebOS Dev Manager</h2>
+            <p class="step">Bilgisayardan TV'ye dışarıdan uygulama (IPK) yüklemek için en sağlam araçtır.</p>
+            <a href="https://github.com/webosbrew/dev-manager-desktop/releases" target="_blank" class="download-btn">Programı İndir</a>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-terminal"></i> Geliştirici Modu Aktif Etme</h2>
+            <div class="step">
+                1. LG Content Store'dan "Developer Mode" uygulamasını indirin.<br>
+                2. LG hesabı ile giriş yapın.<br>
+                3. "Dev Mode Status" ve "Key Server" seçeneklerini aktif edin.<br>
+                4. TV'nin IP adresini yukarıdaki programa girin.
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-play-circle"></i> IPTV Kurulumu</h2>
+            <p class="step">LG TV için en stabil çalışan ücretsiz oynatıcıları buradan takip edebilirsiniz.</p>
+            <a href="m3u.html" class="download-btn" style="background: #444;">M3U Listelerine Git</a>
+        </div>
+    </div>
+</body>
+</html>
