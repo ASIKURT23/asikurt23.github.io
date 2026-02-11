@@ -3,84 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aSiKuRT | System Engineering & Software</title>
+    <title>aSiKuRT | Professional Software Lab</title>
     <style>
-        :root { --neon-blue: #00d2ff; --dark-bg: #050505; --panel-bg: #0d0d0d; }
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
-        body { background: var(--dark-bg); color: #e0e0e0; font-family: 'Inter', 'Segoe UI', sans-serif; display: flex; overflow: hidden; }
+        :root { --accent: #00d2ff; --bg: #050505; --panel: #0d0d0d; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: #e0e0e0; font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sol Navigasyon Paneli */
-        nav { width: 300px; height: 100vh; background: var(--panel-bg); border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; padding: 40px 20px; z-index: 100; }
-        .brand { font-size: 1.8rem; font-weight: 900; color: var(--neon-blue); letter-spacing: -1px; margin-bottom: 50px; text-align: center; }
-        .menu-label { font-size: 0.7rem; color: #444; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; padding-left: 10px; }
+        /* Sol Navigasyon (A-Z Sıralı) */
+        nav { width: 320px; background: var(--panel); border-right: 1px solid #1a1a1a; padding: 40px 25px; display: flex; flex-direction: column; }
+        .brand { font-size: 2rem; font-weight: 900; color: var(--accent); letter-spacing: -1px; margin-bottom: 50px; }
+        .nav-group { margin-bottom: 30px; }
+        .nav-label { font-size: 0.7rem; color: #444; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; display: block; }
         
-        nav a { color: #888; text-decoration: none; padding: 14px 18px; margin-bottom: 6px; border-radius: 6px; font-size: 0.9rem; display: flex; align-items: center; transition: all 0.2s; border: 1px solid transparent; }
-        nav a:hover { color: var(--neon-blue); background: #111; border-color: #222; }
-        nav a.active { color: white; background: #161616; border-left: 3px solid var(--neon-blue); }
-        .status-dot { width: 6px; height: 6px; background: #39ff14; border-radius: 50%; margin-right: 12px; box-shadow: 0 0 10px #39ff14; }
+        nav a { color: #888; text-decoration: none; padding: 12px 15px; margin-bottom: 5px; border-radius: 6px; font-size: 0.9rem; display: flex; align-items: center; transition: 0.2s; }
+        nav a:hover { color: var(--accent); background: #161616; }
+        nav a.active { color: white; background: #161616; border-left: 3px solid var(--accent); }
+        .dot { width: 6px; height: 6px; background: #39ff14; border-radius: 50%; margin-right: 12px; box-shadow: 0 0 10px #39ff14; }
 
-        /* Ana İçerik */
-        main { flex: 1; padding: 60px; position: relative; overflow-y: auto; background: radial-gradient(circle at top right, #0a1118 0%, #050505 100%); }
-        .hero { max-width: 900px; margin: 0 auto; }
-        .hero h1 { font-size: 4rem; font-weight: 800; color: white; line-height: 1; margin-bottom: 20px; }
-        .hero p { color: #666; font-size: 1.1rem; line-height: 1.6; margin-bottom: 40px; }
+        /* Ana İçerik Alanı */
+        main { flex: 1; padding: 80px; overflow-y: auto; background: radial-gradient(circle at 70% 20%, #0a1118 0%, #050505 100%); }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; color: white; margin-bottom: 15px; }
+        .hero p { color: #666; font-size: 1.1rem; max-width: 700px; margin-bottom: 50px; }
 
-        /* Dosya Kartları */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: #111; border: 1px solid #1a1a1a; padding: 25px; border-radius: 12px; transition: 0.3s; position: relative; }
-        .card:hover { border-color: var(--neon-blue); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .card h3 { font-size: 1.1rem; margin-bottom: 10px; color: #fff; }
-        .card span { font-size: 0.8rem; color: #555; display: block; margin-bottom: 20px; }
-        .btn-dl { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 0.8rem; font-weight: bold; transition: 0.3s; }
-        .btn-dl:hover { background: var(--neon-blue); color: black; }
+        /* Yazılım Kartları */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .card { background: #111; border: 1px solid #1a1a1a; padding: 30px; border-radius: 15px; transition: 0.3s; }
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
+        .card h3 { font-size: 1.2rem; color: #fff; margin-bottom: 10px; }
+        .card p { font-size: 0.85rem; color: #555; margin-bottom: 25px; line-height: 1.5; }
+        .dl-link { display: inline-flex; align-items: center; color: var(--accent); text-decoration: none; font-size: 0.8rem; font-weight: bold; border: 1px solid var(--accent); padding: 8px 20px; border-radius: 5px; transition: 0.3s; }
+        .dl-link:hover { background: var(--accent); color: #000; }
 
-        /* Alt Bilgi */
-        footer { margin-top: 100px; padding-top: 20px; border-top: 1px solid #1a1a1a; font-size: 0.8rem; color: #333; display: flex; justify-content: space-between; }
+        footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #1a1a1a; color: #333; font-size: 0.8rem; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="brand">aSiKuRT</div>
-        <div class="menu-label">TERMINAL</div>
-        <a href="index.html" class="active">DASHBOARD</a>
-        <a href="https://github.com/ASIKURT23" target="_blank">REPOSITORIES</a>
         
-        <div class="menu-label" style="margin-top: 30px;">CATEGORIES</div>
-        <a href="android.html"><div class="status-dot"></div> ANDROID TOOLS</a>
-        <a href="ps4.html"><div class="status-dot"></div> PS4 REPUTATION</a>
-        <a href="PC PROGRAM.html"><div class="status-dot"></div> PC SOFTWARE</a>
-        <a href="LGTV.html"><div class="status-dot"></div> MULTIMEDIA / M3U</a>
+        <div class="nav-group">
+            <span class="nav-label">Kategoriler (A-Z)</span>
+            <a href="android.html"><div class="dot"></div> Android Araçları</a>
+            <a href="LGTV.html"><div class="dot"></div> LG TV & Multimedia</a>
+            <a href="PC PROGRAM.html"><div class="dot"></div> PC Yazılımları</a>
+            <a href="ps4.html"><div class="dot"></div> PS4 Operasyon</a>
+            <a href="yazilim.html"><div class="dot"></div> Yazılım Arşivi</a>
+        </div>
+
+        <div class="nav-group" style="margin-top: auto;">
+            <span class="nav-label">Developer</span>
+            <a href="https://github.com/ASIKURT23" target="_blank">GitHub Profile</a>
+        </div>
     </nav>
 
     <main>
         <div class="hero">
-            <h1>Advanced Systems Engineering</h1>
-            <p>Üst düzey Android optimizasyonları, PS4 sistem araçları ve kurumsal yazılım çözümleri. Tüm içerik aSiKuRT tarafından geliştirilmiş ve doğrulanmıştır.</p>
+            <h1>System Engineering</h1>
+            <p>Android optimizasyon sistemleri ve PS4 yönetim araçları. Tüm projeler aSiKuRT tarafından açık kaynak olarak sunulmaktadır.</p>
             
             <div class="grid">
                 <div class="card">
-                    <h3>Xiaomi Turbo V8 PRO</h3>
-                    <span>Full System Optimization Tool (Python)</span>
-                    <a href="EROL XİAOMİ 2026 proje.py" download class="btn-dl">SOURCE DOWNLOAD</a>
+                    <h3>Xiaomi Turbo PRO V8</h3>
+                    <p>Xiaomi cihazlar için derinlemesine sistem optimizasyonu ve debloat aracı.</p>
+                    <a href="EROL XİAOMİ 2026 proje.py" download class="dl-link">DOSYAYI İNDİR</a>
                 </div>
 
                 <div class="card">
-                    <h3>Android Bakım 10.8</h3>
-                    <span>Memory & Cache Management Suite</span>
-                    <a href="ANROID BAKIM proje dosyası.py" download class="btn-dl">SOURCE DOWNLOAD</a>
+                    <h3>Android Bakım Suite</h3>
+                    <p>Bellek yönetimi ve sistem önbelleği temizleme motoru v10.8.</p>
+                    <a href="ANROID BAKIM proje dosyası.py" download class="dl-link">DOSYAYI İNDİR</a>
                 </div>
 
                 <div class="card">
-                    <h3>ADB Core Bridge</h3>
-                    <span>v1.0.41 Essential DLL Pack</span>
-                    <a href="adb.exe" download class="btn-dl">BINARY DOWNLOAD</a>
+                    <h3>ADB Core Utility</h3>
+                    <p>Sistem bağlantısı için gerekli temel binary ve DLL paketleri.</p>
+                    <a href="adb.exe" download class="dl-link">EXE İNDİR</a>
                 </div>
             </div>
 
             <footer>
-                <span>© 2026 aSiKuRT Lab.</span>
-                <span>STATUS: OPERATIONAL</span>
+                <span>Yapım ve İçerik: aSiKuRT Lab.</span>
+                <span>2026 Project Management</span>
             </footer>
         </div>
     </main>
