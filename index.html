@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aSiKuRT | System Engineering & PS4 Guide</title>
+    <title>aSiKuRT | Web Terminal & PS4 Guide</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050505; --panel: #0d0d0d; --code-bg: #111; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg); color: #ccc; font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
         /* Sol Navigasyon */
-        nav { width: 300px; background: var(--panel); border-right: 1px solid #1a1a1a; padding: 40px 20px; display: flex; flex-direction: column; overflow-y: auto; }
-        .brand { font-size: 1.8rem; font-weight: 900; color: var(--accent); margin-bottom: 40px; text-align: center; border-bottom: 2px solid #222; padding-bottom: 10px; }
+        nav { width: 300px; background: var(--panel); border-right: 1px solid #1a1a1a; padding: 30px 20px; display: flex; flex-direction: column; overflow-y: auto; }
+        .brand { font-size: 1.8rem; font-weight: 900; color: var(--accent); margin-bottom: 30px; text-align: center; border-bottom: 2px solid #222; padding-bottom: 10px; }
         .nav-label { font-size: 0.7rem; color: #444; text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 10px; }
-        nav a { color: #888; text-decoration: none; padding: 12px 15px; margin-bottom: 5px; border-radius: 8px; font-size: 0.9rem; transition: 0.3s; display: block; }
+        nav a { color: #888; text-decoration: none; padding: 12px 15px; margin-bottom: 5px; border-radius: 8px; font-size: 0.9rem; transition: 0.3s; display: block; cursor: pointer; }
         nav a:hover, nav a.active { color: var(--accent); background: #161616; }
 
         /* İçerik Alanı */
@@ -24,19 +24,18 @@
 
         h1 { color: #fff; font-size: 2.2rem; margin-bottom: 15px; }
         h2 { color: var(--accent); font-size: 1.4rem; margin: 25px 0 10px; }
-        p { margin-bottom: 20px; line-height: 1.7; color: #aaa; }
         
-        /* Liste Tasarımı */
-        ul { margin-bottom: 20px; list-style: none; }
-        li { margin-bottom: 10px; padding-left: 20px; position: relative; }
-        li::before { content: '▹'; position: absolute; left: 0; color: var(--accent); }
+        /* M3U URL Generator Stili */
+        .m3u-box { background: #111; border: 1px solid #222; padding: 30px; border-radius: 12px; }
+        textarea { width: 100%; height: 200px; background: #000; color: #00ff00; border: 1px solid #333; padding: 15px; font-family: monospace; border-radius: 8px; resize: none; margin-bottom: 15px; }
+        .btn-main { background: var(--accent); color: #000; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-main:hover { opacity: 0.8; }
+        .result-url { margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 6px; display: none; border: 1px dashed var(--accent); word-break: break-all; color: var(--accent); }
 
-        /* Kod Kutusu */
+        /* Kod Bloğu */
         .code-container { position: relative; background: var(--code-bg); border: 1px solid #222; border-radius: 8px; padding: 20px; margin-top: 15px; }
-        pre { white-space: pre-wrap; word-wrap: break-word; font-family: 'Consolas', monospace; font-size: 0.85rem; color: #00ff00; max-height: 300px; overflow-y: auto; }
+        pre { white-space: pre-wrap; font-family: monospace; font-size: 0.85rem; color: #00ff00; max-height: 250px; overflow-y: auto; }
         .copy-btn { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #000; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
-
-        .warning-box { border-left: 4px solid #ff4500; background: #1a0a05; padding: 15px; margin: 20px 0; border-radius: 4px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -46,96 +45,66 @@
     <nav>
         <div class="brand">aSiKuRT</div>
         
-        <span class="nav-label">KONSOL REHBERLERİ</span>
-        <a href="#" onclick="showSection('ps4-guide')" class="active">PS4 Jailbreak (9.0-13.0)</a>
-        <a href="#" onclick="showSection('lgtv')">LG TV / M3U Kurulumu</a>
+        <span class="nav-label">IPTV & MULTIMEDIA</span>
+        <a onclick="showSection('m3u-gen')">M3U Listesi -> URL Al</a>
+        <a onclick="showSection('domain-hub')">Domain Yönetimi</a>
 
-        <span class="nav-label">PC & MOBİL KODLARI</span>
-        <a href="#" onclick="showSection('pc-tools')">PC Sistem Araçları (.BAT)</a>
-        <a href="#" onclick="showSection('mobile-tools')">Mobil Optimizasyon (.PY)</a>
-
-        <span class="nav-label">GEREKSİNİMLER</span>
-        <a href="#" onclick="showSection('reqs')">Cihaz Gereksinimleri</a>
+        <span class="nav-label">REHBERLER</span>
+        <a onclick="showSection('ps4-guide')" class="active">PS4 Jailbreak (9.0-13.0)</a>
+        
+        <span class="nav-label">YAZILIM KODLARI</span>
+        <a onclick="showSection('pc-tools')">PC Araçları (.BAT)</a>
+        <a onclick="showSection('mobile-tools')">Mobil Araçlar (.PY)</a>
     </nav>
 
     <main>
         <div class="content-box">
             
-            <div id="ps4-guide" class="section active">
-                <h1>PS4 Jailbreak & Sistem Modifikasyon Rehberi</h1>
-                <p>PS4 sisteminizi kırmak ve tam kontrol sağlamak için hazırlanan güncel aSiKuRT rehberine hoş geldiniz.</p>
-
-                <div class="warning-box">
-                    <strong>DİKKAT:</strong> v11.02 ile v13.00 arasındaki sürümler için şu an "Public" bir exploit yoktur. Sisteminizi ASLA güncellemeyin.
+            <div id="m3u-gen" class="section">
+                <h1>M3U URL Oluşturucu</h1>
+                <p>M3U listenizi aşağıya yapıştırın ve anında paylaşılabilir/kullanılabilir bir yerel URL oluşturun.</p>
+                <div class="m3u-box">
+                    <textarea id="m3u-input" placeholder="#EXTM3U&#10;#EXTINF:-1,Kanal Adı&#10;http://yayinklinki.com/stream.m3u8"></textarea>
+                    <button class="btn-main" onclick="generateM3U()">URL OLUŞTUR VE KOPYALA</button>
+                    <div id="m3u-result" class="result-url"></div>
                 </div>
+            </div>
 
-                <h2>1. v9.00 ve Altı Sürümler (Altın Sürüm)</h2>
-                <p>En kararlı yöntemdir. USB bellek gerektirir.</p>
-                <ul>
-                    <li><strong>Hazırlık:</strong> `exfathax.img` dosyasını Etcher ile USB'ye yazdırın.</li>
-                    <li><strong>Ayarlar:</strong> Sistem güncelleştirmelerini kapatın ve interneti kesin.</li>
-                    <li><strong>İşlem:</strong> Tarayıcıdan exploit sayfasına girin, uyarı gelince USB'yi takın. "GoldHEN Loaded" mesajını bekleyin.</li>
-                </ul>
+            <div id="domain-hub" class="section">
+                <h1>Domain & DNS Yönetimi</h1>
+                <p>aSiKuRT projeleri için aktif yönlendirmeler ve domain yapılandırması.</p>
+                <div class="code-container">
+                    <pre>
+[DOMAIN DURUMU]
+Ana Domain: asikurt23.github.io (AKTİF)
+DNS Servisi: GitHub Pages / Cloudflare
+SSL Sertifikası: Let's Encrypt (Doğrulandı)
+                    </pre>
+                </div>
+            </div>
 
-                <h2>2. v9.03 - v11.00 Sürümleri (PPPwn)</h2>
-                <p>USB gerektirmez, Ethernet üzerinden PC bağlantısı ile yapılır.</p>
+            <div id="ps4-guide" class="section active">
+                <h1>PS4 Ultimate Jailbreak Rehberi</h1>
+                <p>9.00'dan 13.00'e kadar tüm cihazlar için aSiKuRT teknik analizleri.</p>
+                <h2>Gereksinimler</h2>
                 <ul>
-                    <li>PC'de <strong>PPPwn GUI</strong> programını açın.</li>
-                    <li>PS4'ü LAN kablosu ile bilgisayara bağlayın.</li>
-                    <li>Ağ ayarlarından PPPoE kurulumunu seçin (Kullanıcı adı/şifre: aSiKuRT).</li>
-                    <li>PC'den "Run Exploit" butonuna basın.</li>
-                </ul>
-
-                <h2>3. v11.02 - v13.00 Sürümleri</h2>
-                <p>Bu sürümlerde şu an bekleme aşamasındayız.</p>
-                <ul>
-                    <li>Yeni bir "Webkit Exploit" sızıntısı bekleniyor.</li>
-                    <li>Donanım meraklıları için: <strong>Syscon Revert</strong> yöntemi ile eğer cihazın önceki sürümü 11.00 ise geri döndürme (downgrade) yapılabilir (Profesyonel lehim gerektirir).</li>
+                    <li>USB 3.0 Bellek (v9.00 için)</li>
+                    <li>LAN/Ethernet Kablosu (v11.00 PPPwn için)</li>
+                    <li>Statik IP Yapılandırması</li>
                 </ul>
             </div>
 
             <div id="pc-tools" class="section">
-                <h1>PC Sistem Mühendisliği Araçları</h1>
-                <p>Aşağıdaki kodları bir metin dosyasına (.txt) yapıştırın ve uzantısını <strong>.bat</strong> yaparak yönetici olarak çalıştırın.</p>
-
-                <h2>Gemini Master V17 (aSiKuRT Edition)</h2>
+                <h1>PC Mühendislik Kodları</h1>
+                <h2>Gemini Master V15</h2>
                 <div class="code-container">
                     <button class="copy-btn" onclick="copyCode('code-master')">KOPYALA</button>
                     <pre id="code-master">@echo off
-title aSiKuRT MASTER CONSOLE v17.0
-chcp 65001 >nul
+title aSiKuRT MASTER CONSOLE
 net session >nul 2>&1 || (powershell start-process '%~f0' -Verb RunAs & exit)
-echo [OK] Derin Sistem Onarımı Başlatılıyor...
-sfc /scannow
-dism /online /cleanup-image /restorehealth
+echo [SYSTEM] Onarim Baslatildi...
 pause</pre>
                 </div>
-            </div>
-
-            <div id="mobile-tools" class="section">
-                <h1>Mobil Optimizasyon (Python)</h1>
-                <p>ADB üzerinden çalışan aSiKuRT Xiaomi ve Android bakım kodları.</p>
-                
-                <h2>Xiaomi Turbo V8 PRO</h2>
-                <div class="code-container">
-                    <button class="copy-btn" onclick="copyCode('code-xiaomi')">KOPYALA</button>
-                    <pre id="code-xiaomi"># aSiKuRT Xiaomi Turbo v8
-import os
-def optimize():
-    os.system("adb shell settings put global animator_duration_scale 0")
-    print("Xiaomi Animasyonları Sıfırlandı.")
-optimize()</pre>
-                </div>
-            </div>
-
-            <div id="lgtv" class="section">
-                <h1>LG TV M3U Kurulum Rehberi</h1>
-                <p>LG WebOS cihazlarda IPTV/M3U listesi çalıştırma:</p>
-                <ul>
-                    <li>LG Store'dan <strong>OttPlayer</strong> uygulamasını kurun.</li>
-                    <li>aSiKuRT tarafından sağlanan veya kendi M3U linkinizi uygulamaya tanımlayın.</li>
-                    <li>DNS ayarlarını 8.8.8.8 yaparak hızı optimize edin.</li>
-                </ul>
             </div>
 
         </div>
@@ -145,16 +114,30 @@ optimize()</pre>
         function showSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-            
             document.getElementById(id).classList.add('active');
             event.currentTarget.classList.add('active');
         }
 
+        function generateM3U() {
+            const content = document.getElementById('m3u-input').value;
+            if(!content) { alert("Lütfen liste içeriğini yapıştırın!"); return; }
+            
+            // Simüle edilmiş URL oluşturma (Blob URL)
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const resultBox = document.getElementById('m3u-result');
+            resultBox.innerText = "OLUŞTURULAN URL: " + url;
+            resultBox.style.display = "block";
+            
+            navigator.clipboard.writeText(url);
+            alert("M3U URL'si oluşturuldu ve panoya kopyalandı!");
+        }
+
         function copyCode(id) {
             const code = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(code).then(() => {
-                alert("Kod Kopyalandı! Bir metin belgesine yapıştırıp .bat olarak kaydedin.");
-            });
+            navigator.clipboard.writeText(code);
+            alert("Kod panoya kopyalandı!");
         }
     </script>
 
