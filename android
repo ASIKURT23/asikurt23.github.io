@@ -1,1 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Deposu | ASIKURT23</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .back-btn { color: #888; text-decoration: none; display: inline-block; margin-bottom: 20px; }
+        .card { background: #151515; border: 1px solid #333; padding: 20px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
+        .info { display: flex; align-items: center; gap: 15px; }
+        .info i { color: #3DDC84; font-size: 1.5rem; }
+        .dl-btn { background: #3DDC84; color: black; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; }
+        .folder-btn { background: #444; color: white; padding: 15px; border-radius: 10px; text-decoration: none; display: block; margin-top: 20px; }
+    </style>
+</head>
+<body>
 
+    <div class="container">
+        <a href="yazilim.html" class="back-btn"><i class="fas fa-arrow-left"></i> Geri Dön</a>
+        <h1><i class="fab fa-android"></i> Android / Xiaomi Dünyası</h1>
+        <p>Sistem araçları, APK'lar ve özel toollar.</p>
+
+        <div class="card">
+            <div class="info">
+                <i class="fas fa-file-archive"></i>
+                <span>Xiaomi Turbo Tool v1.0</span>
+            </div>
+            <a href="https://github.com/ASIKURT23/asikurt23.github.io/raw/main/android/tool_adi.zip" class="dl-btn">İndir</a>
+        </div>
+        <a href="https://github.com/ASIKURT23/asikurt23.github.io/tree/main/android" class="folder-btn">
+            <i class="fas fa-folder-open"></i> Tüm Dosyaları GitHub'da Gör
+        </a>
+    </div>
+
+</body>
+</html>
