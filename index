@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASIKURT23 | Profil</title>
+    <title>aSiKuRT | Profil</title>
     <style>
-        body { background: #0a0a0a; color: white; font-family: sans-serif; text-align: center; padding: 50px; }
-        .btn-container { display: flex; flex-direction: column; gap: 15px; max-width: 300px; margin: auto; }
-        .btn { background: #151515; border: 2px solid #00d2ff; color: #00d2ff; padding: 15px; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        body { background: #0a0a0a; color: white; font-family: sans-serif; text-align: center; padding: 40px; }
+        .header { color: #00d2ff; font-size: 2.5rem; margin-bottom: 10px; }
+        .btn-container { display: flex; flex-direction: column; gap: 15px; max-width: 320px; margin: 30px auto; }
+        .btn { background: #151515; border: 2px solid #00d2ff; color: #00d2ff; padding: 18px; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; }
         .btn:hover { background: #00d2ff; color: black; }
     </style>
 </head>
 <body>
-    <h1>aSiKuRT23 Hoş Geldiniz</h1>
+    <div class="header">aSiKuRT</div>
+    <p>PS4, M3U, LGTV, PC PROGRAM, GAME</p>
+    
     <div class="btn-container">
-        <a href="yazilim.html" class="btn">YAZILIM / ANDROID</a>
-        <a href="ps4.html" class="btn">PS4 OYUNLARI</a>
+        <a href="yazilim.html" class="btn">YAZILIM VE ANDROID</a>
+        <a href="ps4.html" class="btn">PS4 OYUN & ARAÇLAR</a>
         <a href="https://github.com/ASIKURT23" class="btn">GITHUB PROFİLİM</a>
     </div>
 </body>
