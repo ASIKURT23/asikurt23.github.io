@@ -3,131 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aSiKuRT | Professional Systems & Software Lab</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;900&display=swap" rel="stylesheet">
+    <title>aSiKuRT | National Software & Systems Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #00ff41; --bg: #030303; --panel: #0a0a0a; --border: #1a1a1a; --text: #d0d0d0; }
+        :root { --accent: #ff0000; --neon: #00ff41; --bg: #030303; --panel: #0a0a0a; --border: #1a1a1a; }
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        body { background: var(--bg); color: #d0d0d0; font-family: 'Fira Code', monospace; display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sol Navigasyon: Cyber Panel */
-        nav { width: 320px; background: var(--panel); border-right: 1px solid var(--border); padding: 40px 20px; display: flex; flex-direction: column; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
-        .brand { font-size: 2.5rem; font-weight: 900; color: var(--accent); letter-spacing: -2px; text-shadow: 0 0 15px var(--accent); margin-bottom: 50px; text-align: center; }
-        .nav-label { font-size: 0.65rem; color: #444; text-transform: uppercase; letter-spacing: 3px; margin: 25px 0 10px 10px; font-weight: bold; }
-        
-        nav a { color: #666; text-decoration: none; padding: 15px; margin-bottom: 8px; border-radius: 4px; font-size: 0.85rem; border: 1px solid transparent; transition: 0.3s; display: flex; align-items: center; background: #0d0d0d; }
-        nav a:hover, nav a.active { color: var(--accent); border-color: var(--accent); background: rgba(0, 255, 65, 0.05); box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.1); }
-        .dot { width: 4px; height: 4px; background: var(--accent); border-radius: 50%; margin-right: 15px; box-shadow: 0 0 8px var(--accent); }
+        /* Arka Plan Türk Bayrağı Efekti */
+        .flag-bg { position: fixed; top: 10px; right: 20px; font-size: 3rem; z-index: 1000; filter: drop-shadow(0 0 10px red); }
 
-        /* Ana İçerik Alanı */
-        main { flex: 1; padding: 60px; overflow-y: auto; position: relative; }
-        main::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 100; background-size: 100% 2px, 3px 100%; pointer-events: none; }
+        /* Sol Navigasyon */
+        nav { width: 320px; background: var(--panel); border-right: 1px solid var(--border); padding: 30px 15px; display: flex; flex-direction: column; overflow-y: auto; }
+        .brand { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900; color: var(--accent); text-align: center; margin-bottom: 30px; text-shadow: 0 0 15px red; }
+        .nav-label { font-size: 0.6rem; color: #444; text-transform: uppercase; letter-spacing: 3px; margin: 15px 0 5px 10px; }
+        nav a { color: #888; text-decoration: none; padding: 12px; margin-bottom: 5px; border-radius: 4px; font-size: 0.8rem; display: flex; align-items: center; transition: 0.3s; background: #0d0d0d; border-left: 3px solid transparent; }
+        nav a:hover, nav a.active { color: var(--neon); background: #111; border-left-color: var(--accent); }
 
-        .section { display: none; animation: scanline 0.5s ease-out; }
+        /* Ana İçerik */
+        main { flex: 1; padding: 40px; overflow-y: auto; position: relative; background: radial-gradient(circle at 50% 50%, #0d0d0d 0%, #030303 100%); }
+        .section { display: none; animation: fadeIn 0.4s ease-out; }
         .section.active { display: block; }
 
-        h1 { font-size: 3rem; font-weight: 900; color: #fff; margin-bottom: 30px; letter-spacing: -1px; border-left: 8px solid var(--accent); padding-left: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: #fff; margin-bottom: 25px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
 
-        /* Bilgi ve Kod Kartları */
-        .card { background: #080808; border: 1px solid var(--border); padding: 30px; border-radius: 2px; position: relative; transition: 0.3s; overflow: hidden; }
-        .card:hover { border-color: var(--accent); background: #0c0c0c; }
-        .card::after { content: "SYSTEM_OK"; position: absolute; top: 5px; right: 10px; font-size: 0.5rem; color: #222; }
-        .card h3 { color: var(--accent); font-family: 'Fira Code', monospace; margin-bottom: 15px; font-size: 1.1rem; }
-        .card p { font-size: 0.9rem; color: #777; line-height: 1.6; margin-bottom: 20px; }
+        /* Kartlar */
+        .card { background: #080808; border: 1px solid var(--border); padding: 20px; border-radius: 4px; position: relative; }
+        .card:hover { border-color: var(--neon); }
+        .card h3 { color: var(--neon); margin-bottom: 10px; font-size: 1rem; }
+        .card p { font-size: 0.8rem; color: #888; line-height: 1.5; }
 
         /* Kod Bloğu */
-        .code-box { background: #000; border: 1px solid #111; padding: 15px; border-radius: 4px; position: relative; margin-top: 10px; }
-        pre { font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #00ff41; overflow-x: auto; max-height: 250px; }
-        .copy-btn { background: var(--accent); color: #000; border: none; padding: 6px 15px; font-size: 0.7rem; font-weight: 900; border-radius: 2px; cursor: pointer; position: absolute; top: 10px; right: 10px; }
+        .code-box { background: #000; padding: 15px; border-radius: 4px; margin-top: 10px; border: 1px solid #111; position: relative; }
+        pre { font-size: 0.75rem; color: var(--neon); overflow-x: auto; max-height: 200px; }
+        .copy-btn { position: absolute; top: 5px; right: 5px; background: var(--accent); color: #fff; border: none; padding: 3px 8px; font-size: 0.6rem; font-weight: bold; }
 
-        /* M3U Aracı */
-        .tool-ui { display: flex; flex-direction: column; gap: 15px; }
-        textarea { background: #000; border: 1px solid var(--border); color: var(--accent); padding: 15px; font-family: 'Fira Code', monospace; height: 150px; border-radius: 4px; outline: none; }
-        .btn-action { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 12px; font-weight: bold; transition: 0.3s; }
-        .btn-action:hover { background: var(--accent); color: #000; }
+        /* M3U Engine */
+        textarea { width: 100%; height: 150px; background: #000; color: var(--neon); border: 1px solid #222; padding: 10px; font-family: 'Fira Code'; margin-bottom: 10px; }
+        .btn-action { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--neon); color: var(--neon); font-weight: bold; transition: 0.3s; }
+        .btn-action:hover { background: var(--neon); color: #000; }
 
-        @keyframes scanline { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        /* Hava Durumu Widget */
+        .weather-card { background: linear-gradient(45deg, #0a0a0a, #1a1a1a); border: 1px solid #333; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
+    <div class="flag-bg">🇹🇷</div>
+
     <nav>
         <div class="brand">aSiKuRT</div>
         
-        <span class="nav-label">COMMAND CENTER</span>
-        <a onclick="showSection('ps4-core')" class="active"><div class="dot"></div>PS4 Kernel Exploit</a>
-        <a onclick="showSection('m3u-engine')"><div class="dot"></div>M3U URL Engine</a>
-        <a onclick="showSection('domain-status')"><div class="dot"></div>Domain Terminal</a>
+        <span class="nav-label">MEDYA & ARAÇLAR</span>
+        <a onclick="showSection('m3u-engine')" class="active">📺 M3U URL Engine</a>
+        <a onclick="showSection('weather-lgtv')">🌤️ Hava Durumu & LGTV</a>
 
-        <span class="nav-label">SOURCE CODE</span>
-        <a onclick="showSection('pc-source')"><div class="dot"></div>PC Script Library</a>
-        <a onclick="showSection('mobile-source')"><div class="dot"></div>Mobile Core Scripts</a>
+        <span class="nav-label">KONSOL MERKEZİ</span>
+        <a onclick="showSection('ps4-games')">🎮 PS4 Oyun Arşivi</a>
+        <a onclick="showSection('ps4-jailbreak')">🔓 PS4 Jailbreak Core</a>
 
-        <div style="margin-top: auto; padding: 10px; border: 1px dashed #222; font-size: 0.6rem; color: #444; font-family: 'Fira Code';">
-            STATUS: ENCRYPTED<br>
-            USER: ADMINISTRATOR<br>
-            VERSION: 2026.4.1
-        </div>
+        <span class="nav-label">PC .BAT KÜTÜPHANESİ</span>
+        <a onclick="showSection('bat-master')">🚀 Gemini Master V17</a>
+        <a onclick="showSection('bat-neural')">🧠 Neural Console</a>
+        <a onclick="showSection('bat-format')">💾 Safe Format 2026</a>
+        <a onclick="showSection('bat-engineer')">🛠️ Mühendislik Terminali</a>
+        <a onclick="showSection('bat-lenovo')">💻 Lenovo Z580 Özel</a>
+        <a onclick="showSection('bat-deepseek')">🔬 DeepSeek PC Bakım</a>
+
+        <span class="nav-label">MOBİL (.PY)</span>
+        <a onclick="showSection('py-xiaomi')">📱 Xiaomi Turbo V8</a>
+        <a onclick="showSection('py-android')">🤖 Android Bakım 10.8</a>
     </nav>
 
     <main>
-        <div id="ps4-core" class="section active">
-            <h1>PS4 System Modification</h1>
+        <div id="m3u-engine" class="section active">
+            <h1>M3U Secure Stream Engine</h1>
+            <div class="card" style="max-width: 800px;">
+                <p>Listenizi yapıştırın, aSiKuRT altyapısı ile anlık URL oluşturun.</p><br>
+                <textarea id="m3u-input" placeholder="#EXTM3U..."></textarea>
+                <button class="btn-action" onclick="generateM3U()">URL OLUŞTUR VE KOPYALA</button>
+                <div id="m3u-output" style="display:none; margin-top:15px; padding:10px; border:1px dashed var(--neon); color:var(--neon); font-size:0.8rem;"></div>
+            </div>
+        </div>
+
+        <div id="weather-lgtv" class="section">
+            <h1>Hava Durumu & LGTV Kontrol</h1>
             <div class="grid">
-                <div class="card">
-                    <h3>v9.00 - The Golden Era</h3>
-                    <p>En stabil sürüm. Kernel exploit tetiklendiğinde `exfathax` USB sürücüsü ile GoldHEN aktif edilir.</p>
-                    <div class="code-box">
-                        <pre>Payload: GoldHEN v2.4b16&#10;Trigger: WebKit Exploit&#10;USB: FAT32/exFAT IMG</pre>
-                    </div>
+                <div class="weather-card">
+                    <h3 id="city">İSTANBUL</h3>
+                    <div style="font-size: 3rem;">☀️</div>
+                    <p>Sıcaklık: 18°C</p>
+                    <p>Durum: Açık</p>
                 </div>
                 <div class="card">
-                    <h3>v11.00 - PPPwn Protocol</h3>
-                    <p>Ethernet üzerinden IPv6 paket manipülasyonu ile sistem çekirdeğine erişim sağlanır.</p>
-                    <div class="code-box">
-                        <pre>Method: PPPoE Pwnage&#10;Req: Ethernet Cable + PC&#10;Status: Fully Operational</pre>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>v11.02 - v13.00 Analysis</h3>
-                    <p>Güncel sürümlerde WebKit açıklarının analizi devam ediyor. Downgrade sadece donanımsal müdahale (Syscon) ile mümkündür.</p>
+                    <h3>LGTV M3U Entegrasyonu</h3>
+                    <p>1. OttPlayer üzerinden oluşturduğunuz URL'yi girin.</p>
+                    <p>2. DNS: 8.8.8.8 / 8.8.4.4 olarak ayarlayın.</p>
+                    <p>3. aSiKuRT listesini "VOD" modunda başlatın.</p>
                 </div>
             </div>
         </div>
 
-        <div id="m3u-engine" class="section">
-            <h1>M3U Stream Generator</h1>
-            <div class="card" style="max-width: 700px;">
-                <div class="tool-ui">
-                    <textarea id="m3u-input" placeholder="#EXTM3U listesini buraya girin..."></textarea>
-                    <button class="btn-action" onclick="generateM3U()">GENERATE SECURE URL</button>
-                    <div id="m3u-output" style="display:none; color: var(--accent); font-family: 'Fira Code'; font-size: 0.8rem; word-break: break-all; padding: 10px; border: 1px dashed #333;"></div>
+        <div id="ps4-games" class="section">
+            <h1>PS4 Oyun Arşivi (v9.00-v11.00)</h1>
+            <div class="grid">
+                <div class="card"><h3>Elden Ring</h3><p>CUSA28863 - v1.09 (v9.00+)</p></div>
+                <div class="card"><h3>God of War Ragnarök</h3><p>CUSA34384 - v2.00 (v9.00+)</p></div>
+                <div class="card"><h3>Red Dead Redemption 2</h3><p>CUSA03041 - v1.29</p></div>
+                <div class="card"><h3>The Last of Us Part II</h3><p>CUSA10249 - v1.09</p></div>
+                <div class="card"><h3>Spider-Man: Miles Morales</h3><p>CUSA20177</p></div>
+            </div>
+        </div>
+
+        <div id="bat-master" class="section">
+            <h1>Gemini Master V17.0</h1>
+            <div class="card">
+                <p>En kapsamlı IT Konsolu. DISM onarımı, Log temizliği ve Nihai Performans enjeksiyonu.</p>
+                <div class="code-box">
+                    <button class="copy-btn" onclick="copyCode('c-master')">COPY</button>
+                    <pre id="c-master">@echo off&#10;title aSiKuRT MASTER&#10;net session >nul 2>&1 || (powershell start-process '%~f0' -Verb RunAs & exit)&#10;sfc /scannow&#10;dism /online /cleanup-image /restorehealth&#10;pause</pre>
                 </div>
             </div>
         </div>
 
-        <div id="pc-source" class="section">
-            <h1>PC Software Library</h1>
-            <div class="grid">
-                <div class="card">
-                    <h3>Gemini Master v17.0 (.BAT)</h3>
-                    <p>Sistem loglarını temizleyen, ağ yığınını sıfırlayan ve çekirdek onarımı yapan profesyonel araç.</p>
-                    <div class="code-box">
-                        <button class="copy-btn" onclick="copyCode('code1')">COPY</button>
-                        <pre id="code1">@echo off&#10;title aSiKuRT MASTER&#10;net session >nul 2>&1 || (powershell start-process '%~f0' -Verb RunAs & exit)&#10;sfc /scannow&#10;dism /online /cleanup-image /restorehealth</pre>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>Safe Format 2026 (.BAT)</h3>
-                    <p>Diskleri güvenli bir şekilde listeleme ve düşük seviyeli format atma modülü.</p>
-                    <div class="code-box">
-                        <button class="copy-btn" onclick="copyCode('code2')">COPY</button>
-                        <pre id="code2">powershell -Command "Get-Disk | ft Number, FriendlyName, Size"&#10;set /p disk="Select Disk: "&#10;format %disk% /FS:NTFS /Q</pre>
-                    </div>
+        <div id="bat-format" class="section">
+            <h1>Safe Format 2026</h1>
+            <div class="card">
+                <p>Powershell tabanlı güvenli disk biçimlendirme aracı.</p>
+                <div class="code-box">
+                    <button class="copy-btn" onclick="copyCode('c-format')">COPY</button>
+                    <pre id="c-format">@echo off&#10;powershell -Command "Get-Disk | Select Number, FriendlyName, Size"&#10;set /p d="Disk No: "&#10;format %d% /FS:NTFS /Q</pre>
                 </div>
             </div>
         </div>
+
+        <div id="py-xiaomi" class="section">
+            <h1>Xiaomi Turbo V8 PRO (.PY)</h1>
+            <div class="card">
+                <p>ADB üzerinden animasyon sıfırlama, bloatware kaldırma ve RAM optimizasyonu.</p>
+                <div class="code-box">
+                    <button class="copy-btn" onclick="copyCode('c-xiaomi')">COPY</button>
+                    <pre id="c-xiaomi"># EROL XIAOMI TURBO PRO&#10;import os&#10;os.system("adb shell settings put global animator_duration_scale 0")&#10;os.system("adb shell pm uninstall --user 0 com.miui.player")</pre>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script>
@@ -141,7 +164,7 @@
         function copyCode(id) {
             const text = document.getElementById(id).innerText;
             navigator.clipboard.writeText(text);
-            alert("CODE COPIED TO CLIPBOARD");
+            alert("SİSTEM KODU KOPYALANDI!");
         }
 
         function generateM3U() {
@@ -150,9 +173,10 @@
             const blob = new Blob([input], {type: 'text/plain'});
             const url = URL.createObjectURL(blob);
             const out = document.getElementById('m3u-output');
-            out.style.display = 'block';
-            out.innerText = "STREAM_URL: " + url;
+            out.innerText = "KULLANILABİLİR URL: " + url;
+            out.style.display = "block";
             navigator.clipboard.writeText(url);
+            alert("M3U URL Oluşturuldu ve Kopyalandı!");
         }
     </script>
 </body>
