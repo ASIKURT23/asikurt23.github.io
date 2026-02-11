@@ -3,155 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aSiKuRT | National Software & Systems Lab</title>
+    <title>aSiKuRT | System Engineering Lab 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #ff0000; --neon: #00ff41; --bg: #030303; --panel: #0a0a0a; --border: #1a1a1a; }
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg); color: #d0d0d0; font-family: 'Fira Code', monospace; display: flex; height: 100vh; overflow: hidden; }
 
-        /* Arka Plan Türk Bayrağı Efekti */
-        .flag-bg { position: fixed; top: 10px; right: 20px; font-size: 3rem; z-index: 1000; filter: drop-shadow(0 0 10px red); }
+        /* Türk Bayrağı Sabit */
+        .flag-container { position: fixed; top: 15px; right: 25px; display: flex; align-items: center; gap: 10px; z-index: 1000; background: rgba(0,0,0,0.6); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--accent); }
+        .flag { font-size: 1.5rem; text-shadow: 0 0 10px red; }
 
-        /* Sol Navigasyon */
-        nav { width: 320px; background: var(--panel); border-right: 1px solid var(--border); padding: 30px 15px; display: flex; flex-direction: column; overflow-y: auto; }
-        .brand { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900; color: var(--accent); text-align: center; margin-bottom: 30px; text-shadow: 0 0 15px red; }
-        .nav-label { font-size: 0.6rem; color: #444; text-transform: uppercase; letter-spacing: 3px; margin: 15px 0 5px 10px; }
-        nav a { color: #888; text-decoration: none; padding: 12px; margin-bottom: 5px; border-radius: 4px; font-size: 0.8rem; display: flex; align-items: center; transition: 0.3s; background: #0d0d0d; border-left: 3px solid transparent; }
-        nav a:hover, nav a.active { color: var(--neon); background: #111; border-left-color: var(--accent); }
+        /* Sol Navigasyon (Hacker Menu) */
+        nav { width: 320px; background: var(--panel); border-right: 2px solid var(--border); padding: 30px 15px; display: flex; flex-direction: column; overflow-y: auto; box-shadow: 5px 0 20px rgba(0,0,0,0.8); }
+        .brand { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 900; color: var(--accent); text-align: center; margin-bottom: 30px; border-bottom: 2px solid #222; padding-bottom: 15px; }
+        .nav-label { font-size: 0.65rem; color: #555; text-transform: uppercase; letter-spacing: 3px; margin: 20px 0 10px 10px; font-weight: bold; }
+        nav a { color: #777; text-decoration: none; padding: 12px 15px; margin-bottom: 4px; border-radius: 4px; font-size: 0.8rem; display: flex; align-items: center; transition: 0.2s; background: #0d0d0d; border: 1px solid transparent; cursor: pointer; }
+        nav a:hover, nav a.active { color: var(--neon); border-color: var(--neon); background: rgba(0,255,65,0.03); }
 
-        /* Ana İçerik */
-        main { flex: 1; padding: 40px; overflow-y: auto; position: relative; background: radial-gradient(circle at 50% 50%, #0d0d0d 0%, #030303 100%); }
-        .section { display: none; animation: fadeIn 0.4s ease-out; }
+        /* Ana İçerik Alanı */
+        main { flex: 1; padding: 40px; overflow-y: auto; background: linear-gradient(135deg, #050505 0%, #0a0a0a 100%); position: relative; }
+        .section { display: none; animation: fadeIn 0.3s ease; }
         .section.active { display: block; }
 
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: #fff; margin-bottom: 25px; border-bottom: 1px solid #222; padding-bottom: 10px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: #fff; margin-bottom: 20px; border-left: 5px solid var(--accent); padding-left: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
 
-        /* Kartlar */
-        .card { background: #080808; border: 1px solid var(--border); padding: 20px; border-radius: 4px; position: relative; }
-        .card:hover { border-color: var(--neon); }
-        .card h3 { color: var(--neon); margin-bottom: 10px; font-size: 1rem; }
-        .card p { font-size: 0.8rem; color: #888; line-height: 1.5; }
+        /* Kart Yapısı */
+        .card { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 20px; border-radius: 4px; transition: 0.3s; }
+        .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+        .card h3 { color: var(--neon); font-size: 0.95rem; margin-bottom: 12px; border-bottom: 1px solid #222; padding-bottom: 8px; }
+        .card p { font-size: 0.8rem; color: #888; line-height: 1.6; }
 
-        /* Kod Bloğu */
-        .code-box { background: #000; padding: 15px; border-radius: 4px; margin-top: 10px; border: 1px solid #111; position: relative; }
-        pre { font-size: 0.75rem; color: var(--neon); overflow-x: auto; max-height: 200px; }
-        .copy-btn { position: absolute; top: 5px; right: 5px; background: var(--accent); color: #fff; border: none; padding: 3px 8px; font-size: 0.6rem; font-weight: bold; }
+        /* Kod Bloğu Aracı */
+        .code-container { background: #000; border: 1px solid #222; padding: 15px; border-radius: 4px; margin-top: 15px; position: relative; }
+        pre { font-size: 0.75rem; color: var(--neon); overflow-x: auto; max-height: 250px; white-space: pre-wrap; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #fff; border: none; padding: 4px 10px; font-size: 0.65rem; font-weight: bold; border-radius: 3px; cursor: pointer; }
 
-        /* M3U Engine */
-        textarea { width: 100%; height: 150px; background: #000; color: var(--neon); border: 1px solid #222; padding: 10px; font-family: 'Fira Code'; margin-bottom: 10px; }
-        .btn-action { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--neon); color: var(--neon); font-weight: bold; transition: 0.3s; }
-        .btn-action:hover { background: var(--neon); color: #000; }
+        /* M3U Engine UI */
+        .engine-box { background: #111; padding: 25px; border-radius: 8px; border: 1px solid #222; }
+        textarea { width: 100%; height: 120px; background: #050505; color: var(--neon); border: 1px solid #333; padding: 12px; font-family: 'Fira Code'; margin-bottom: 15px; resize: none; }
+        .btn-gen { width: 100%; background: transparent; border: 1px solid var(--neon); color: var(--neon); padding: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-gen:hover { background: var(--neon); color: #000; }
 
-        /* Hava Durumu Widget */
-        .weather-card { background: linear-gradient(45deg, #0a0a0a, #1a1a1a); border: 1px solid #333; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        /* Hava Durumu Mini */
+        .weather-info { background: #111; padding: 15px; border-radius: 5px; display: flex; align-items: center; gap: 15px; margin-bottom: 25px; border-left: 3px solid #00d2ff; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="flag-bg">🇹🇷</div>
+    <div class="flag-container">
+        <span style="font-size: 0.7rem; font-weight: bold; color: #fff;">aSiKuRT LAB</span>
+        <span class="flag">🇹🇷</span>
+    </div>
 
     <nav>
         <div class="brand">aSiKuRT</div>
         
-        <span class="nav-label">MEDYA & ARAÇLAR</span>
-        <a onclick="showSection('m3u-engine')" class="active">📺 M3U URL Engine</a>
-        <a onclick="showSection('weather-lgtv')">🌤️ Hava Durumu & LGTV</a>
+        <span class="nav-label">TERMINAL TOOLS</span>
+        <a onclick="showSection('m3u-sec')" class="active">📟 M3U URL Engine</a>
+        <a onclick="showSection('weather-sec')">🌤️ LGTV & Hava Durumu</a>
 
-        <span class="nav-label">KONSOL MERKEZİ</span>
-        <a onclick="showSection('ps4-games')">🎮 PS4 Oyun Arşivi</a>
-        <a onclick="showSection('ps4-jailbreak')">🔓 PS4 Jailbreak Core</a>
+        <span class="nav-label">CONSOLES</span>
+        <a onclick="showSection('ps4-games')">💿 PS4 Oyun Kütüphanesi</a>
+        <a onclick="showSection('ps4-jail')">🔓 PS4 Jailbreak Guide</a>
 
-        <span class="nav-label">PC .BAT KÜTÜPHANESİ</span>
-        <a onclick="showSection('bat-master')">🚀 Gemini Master V17</a>
+        <span class="nav-label">SYSTEM SCRIPTS (.BAT)</span>
+        <a onclick="showSection('bat-master')">⚡ Gemini Master V17</a>
         <a onclick="showSection('bat-neural')">🧠 Neural Console</a>
         <a onclick="showSection('bat-format')">💾 Safe Format 2026</a>
-        <a onclick="showSection('bat-engineer')">🛠️ Mühendislik Terminali</a>
-        <a onclick="showSection('bat-lenovo')">💻 Lenovo Z580 Özel</a>
-        <a onclick="showSection('bat-deepseek')">🔬 DeepSeek PC Bakım</a>
-
-        <span class="nav-label">MOBİL (.PY)</span>
-        <a onclick="showSection('py-xiaomi')">📱 Xiaomi Turbo V8</a>
-        <a onclick="showSection('py-android')">🤖 Android Bakım 10.8</a>
+        <a onclick="showSection('bat-eng')">🛠️ Mühendislik Terminali</a>
+        <a onclick="showSection('bat-deep')">🔬 DeepSeek PC Bakım</a>
     </nav>
 
     <main>
-        <div id="m3u-engine" class="section active">
-            <h1>M3U Secure Stream Engine</h1>
-            <div class="card" style="max-width: 800px;">
-                <p>Listenizi yapıştırın, aSiKuRT altyapısı ile anlık URL oluşturun.</p><br>
+        <div id="m3u-sec" class="section active">
+            <h1>M3U Stream Engine</h1>
+            <div class="engine-box">
+                <p style="margin-bottom: 15px; font-size: 0.8rem;">M3U listenizi yapıştırın, LGTV veya diğer oynatıcılar için sanal URL oluşturun.</p>
                 <textarea id="m3u-input" placeholder="#EXTM3U..."></textarea>
-                <button class="btn-action" onclick="generateM3U()">URL OLUŞTUR VE KOPYALA</button>
-                <div id="m3u-output" style="display:none; margin-top:15px; padding:10px; border:1px dashed var(--neon); color:var(--neon); font-size:0.8rem;"></div>
+                <button class="btn-gen" onclick="generateM3U()">GENERATE & COPY URL</button>
+                <div id="m3u-out" style="display:none; margin-top:20px; padding:10px; border:1px dashed var(--neon); font-size:0.75rem; word-break:break-all;"></div>
             </div>
         </div>
 
-        <div id="weather-lgtv" class="section">
-            <h1>Hava Durumu & LGTV Kontrol</h1>
-            <div class="grid">
-                <div class="weather-card">
-                    <h3 id="city">İSTANBUL</h3>
-                    <div style="font-size: 3rem;">☀️</div>
-                    <p>Sıcaklık: 18°C</p>
-                    <p>Durum: Açık</p>
+        <div id="weather-sec" class="section">
+            <h1>Environment & TV Hub</h1>
+            <div class="weather-info">
+                <div style="font-size: 2rem;">🌤️</div>
+                <div>
+                    <strong>İSTANBUL / TÜRKİYE</strong><br>
+                    <span style="color:var(--neon)">18°C - Parçalı Bulutlu</span>
                 </div>
+            </div>
+            <div class="grid">
                 <div class="card">
-                    <h3>LGTV M3U Entegrasyonu</h3>
-                    <p>1. OttPlayer üzerinden oluşturduğunuz URL'yi girin.</p>
-                    <p>2. DNS: 8.8.8.8 / 8.8.4.4 olarak ayarlayın.</p>
-                    <p>3. aSiKuRT listesini "VOD" modunda başlatın.</p>
+                    <h3>LG TV Bağlantı Protokolü</h3>
+                    <p>OttPlayer veya SS IPTV kullanıyorsanız, oluşturulan M3U URL'sini 'External Playlist' kısmına ekleyin. DNS ayarlarını 1.1.1.1 olarak revize etmek gecikmeyi (latency) %20 azaltır.</p>
                 </div>
             </div>
         </div>
 
         <div id="ps4-games" class="section">
-            <h1>PS4 Oyun Arşivi (v9.00-v11.00)</h1>
+            <h1>PS4 Master Game List</h1>
             <div class="grid">
-                <div class="card"><h3>Elden Ring</h3><p>CUSA28863 - v1.09 (v9.00+)</p></div>
-                <div class="card"><h3>God of War Ragnarök</h3><p>CUSA34384 - v2.00 (v9.00+)</p></div>
-                <div class="card"><h3>Red Dead Redemption 2</h3><p>CUSA03041 - v1.29</p></div>
-                <div class="card"><h3>The Last of Us Part II</h3><p>CUSA10249 - v1.09</p></div>
-                <div class="card"><h3>Spider-Man: Miles Morales</h3><p>CUSA20177</p></div>
+                <div class="card"><h3>Elden Ring</h3><p>CUSA28863 | v1.09 | 9.00+</p></div>
+                <div class="card"><h3>GoW Ragnarök</h3><p>CUSA34384 | v2.00 | 9.00-11.00</p></div>
+                <div class="card"><h3>RDR 2</h3><p>CUSA03041 | v1.29 | Stable</p></div>
+                <div class="card"><h3>Spider-Man Miles</h3><p>CUSA20177 | v1.05 | Backport</p></div>
+            </div>
+        </div>
+
+        <div id="ps4-jail" class="section">
+            <h1>PS4 Jailbreak Technical Guide</h1>
+            <div class="card">
+                <h3>9.00 - 11.00 - 13.00 Analizi</h3>
+                <p>9.00 için <strong>exfathax</strong> USB yöntemi rakipsizdir. 9.03-11.00 arası için <strong>PPPwn</strong> (Ethernet) protokolü kullanılmalıdır. 11.02 ve 13.00 sürümleri şu an "Read-Only" WebKit aşamasındadır, güncelleme yapmayın.</p>
             </div>
         </div>
 
         <div id="bat-master" class="section">
             <h1>Gemini Master V17.0</h1>
-            <div class="card">
-                <p>En kapsamlı IT Konsolu. DISM onarımı, Log temizliği ve Nihai Performans enjeksiyonu.</p>
-                <div class="code-box">
-                    <button class="copy-btn" onclick="copyCode('c-master')">COPY</button>
-                    <pre id="c-master">@echo off&#10;title aSiKuRT MASTER&#10;net session >nul 2>&1 || (powershell start-process '%~f0' -Verb RunAs & exit)&#10;sfc /scannow&#10;dism /online /cleanup-image /restorehealth&#10;pause</pre>
-                </div>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyCode('c1')">COPY SCRIPT</button>
+                <pre id="c1">@echo off
+title aSiKuRT MASTER CONSOLE v17.0
+chcp 65001 >nul
+net session >nul 2>&1 || (powershell start-process '%~f0' -Verb RunAs & exit)
+echo [SYSTEM] Onarim Baslatiliyor...
+sfc /scannow
+dism /online /cleanup-image /restorehealth
+pause</pre>
             </div>
         </div>
 
         <div id="bat-format" class="section">
             <h1>Safe Format 2026</h1>
-            <div class="card">
-                <p>Powershell tabanlı güvenli disk biçimlendirme aracı.</p>
-                <div class="code-box">
-                    <button class="copy-btn" onclick="copyCode('c-format')">COPY</button>
-                    <pre id="c-format">@echo off&#10;powershell -Command "Get-Disk | Select Number, FriendlyName, Size"&#10;set /p d="Disk No: "&#10;format %d% /FS:NTFS /Q</pre>
-                </div>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyCode('c2')">COPY SCRIPT</button>
+                <pre id="c2">@echo off
+powershell -Command "Get-Disk | ft Number, FriendlyName, Size"
+set /p disk="Disk No Secin: "
+format %disk% /FS:NTFS /Q /Y</pre>
             </div>
         </div>
-
-        <div id="py-xiaomi" class="section">
-            <h1>Xiaomi Turbo V8 PRO (.PY)</h1>
-            <div class="card">
-                <p>ADB üzerinden animasyon sıfırlama, bloatware kaldırma ve RAM optimizasyonu.</p>
-                <div class="code-box">
-                    <button class="copy-btn" onclick="copyCode('c-xiaomi')">COPY</button>
-                    <pre id="c-xiaomi"># EROL XIAOMI TURBO PRO&#10;import os&#10;os.system("adb shell settings put global animator_duration_scale 0")&#10;os.system("adb shell pm uninstall --user 0 com.miui.player")</pre>
-                </div>
-            </div>
-        </div>
-
-    </main>
+        
+        </main>
 
     <script>
         function showSection(id) {
@@ -162,21 +161,21 @@
         }
 
         function copyCode(id) {
-            const text = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(text);
-            alert("SİSTEM KODU KOPYALANDI!");
+            const code = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(code);
+            alert("KOD KOPYALANDI - .BAT OLARAK KAYDEDİN");
         }
 
         function generateM3U() {
-            const input = document.getElementById('m3u-input').value;
-            if(!input) return;
-            const blob = new Blob([input], {type: 'text/plain'});
+            const val = document.getElementById('m3u-input').value;
+            if(!val) return;
+            const blob = new Blob([val], {type: 'text/plain'});
             const url = URL.createObjectURL(blob);
-            const out = document.getElementById('m3u-output');
-            out.innerText = "KULLANILABİLİR URL: " + url;
+            const out = document.getElementById('m3u-out');
             out.style.display = "block";
+            out.innerText = "LOCAL_STREAM_URL: " + url;
             navigator.clipboard.writeText(url);
-            alert("M3U URL Oluşturuldu ve Kopyalandı!");
+            alert("M3U URL Oluşturuldu!");
         }
     </script>
 </body>
