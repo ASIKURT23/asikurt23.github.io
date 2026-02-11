@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aSiKuRT | System Engineering Lab</title>
+    <title>aSiKuRT | System Engineering & PS4 Guide</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050505; --panel: #0d0d0d; --code-bg: #111; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg); color: #ccc; font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sol Navigasyon Paneli */
+        /* Sol Navigasyon */
         nav { width: 300px; background: var(--panel); border-right: 1px solid #1a1a1a; padding: 40px 20px; display: flex; flex-direction: column; overflow-y: auto; }
         .brand { font-size: 1.8rem; font-weight: 900; color: var(--accent); margin-bottom: 40px; text-align: center; border-bottom: 2px solid #222; padding-bottom: 10px; }
         .nav-label { font-size: 0.7rem; color: #444; text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 10px; }
@@ -18,18 +18,25 @@
 
         /* İçerik Alanı */
         main { flex: 1; padding: 50px; overflow-y: auto; background: radial-gradient(circle at top right, #0a1118 0%, #050505 100%); }
-        .content-box { max-width: 900px; margin: 0 auto; }
+        .content-box { max-width: 950px; margin: 0 auto; }
         .section { display: none; animation: fadeIn 0.4s ease forwards; }
         .section.active { display: block; }
 
         h1 { color: #fff; font-size: 2.2rem; margin-bottom: 15px; }
-        p { margin-bottom: 25px; line-height: 1.6; color: #888; }
+        h2 { color: var(--accent); font-size: 1.4rem; margin: 25px 0 10px; }
+        p { margin-bottom: 20px; line-height: 1.7; color: #aaa; }
+        
+        /* Liste Tasarımı */
+        ul { margin-bottom: 20px; list-style: none; }
+        li { margin-bottom: 10px; padding-left: 20px; position: relative; }
+        li::before { content: '▹'; position: absolute; left: 0; color: var(--accent); }
 
-        /* Kod Bloğu Alanı */
-        .code-container { position: relative; background: var(--code-bg); border: 1px solid #222; border-radius: 8px; padding: 20px; margin-top: 20px; }
-        pre { white-space: pre-wrap; word-wrap: break-word; font-family: 'Consolas', monospace; font-size: 0.85rem; color: #00ff00; max-height: 400px; overflow-y: auto; }
-        .copy-btn { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #000; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
-        .copy-btn:hover { opacity: 0.8; }
+        /* Kod Kutusu */
+        .code-container { position: relative; background: var(--code-bg); border: 1px solid #222; border-radius: 8px; padding: 20px; margin-top: 15px; }
+        pre { white-space: pre-wrap; word-wrap: break-word; font-family: 'Consolas', monospace; font-size: 0.85rem; color: #00ff00; max-height: 300px; overflow-y: auto; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #000; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+
+        .warning-box { border-left: 4px solid #ff4500; background: #1a0a05; padding: 15px; margin: 20px 0; border-radius: 4px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -39,74 +46,96 @@
     <nav>
         <div class="brand">aSiKuRT</div>
         
-        <span class="nav-label">PC ARAÇLARI (.BAT)</span>
-        <a href="#" onclick="showSection('master')">Gemini Master V15</a>
-        <a href="#" onclick="showSection('neural')">Gemini Neural Console</a>
-        <a href="#" onclick="showSection('format')">Safe Format 2026</a>
-        <a href="#" onclick="showSection('muhendis')">Mühendislik Terminali</a>
+        <span class="nav-label">KONSOL REHBERLERİ</span>
+        <a href="#" onclick="showSection('ps4-guide')" class="active">PS4 Jailbreak (9.0-13.0)</a>
+        <a href="#" onclick="showSection('lgtv')">LG TV / M3U Kurulumu</a>
 
-        <span class="nav-label">MOBİL ARAÇLAR (.PY)</span>
-        <a href="#" onclick="showSection('xiaomi')">Xiaomi Turbo V8 PRO</a>
-        <a href="#" onclick="showSection('android')">Android Bakım 10.8</a>
+        <span class="nav-label">PC & MOBİL KODLARI</span>
+        <a href="#" onclick="showSection('pc-tools')">PC Sistem Araçları (.BAT)</a>
+        <a href="#" onclick="showSection('mobile-tools')">Mobil Optimizasyon (.PY)</a>
 
-        <span class="nav-label">REHBERLER</span>
-        <a href="#" onclick="showSection('ps4')">PS4 Kırma Rehberi</a>
-        <a href="#" onclick="showSection('lgtv')">LG TV Bağlantısı</a>
+        <span class="nav-label">GEREKSİNİMLER</span>
+        <a href="#" onclick="showSection('reqs')">Cihaz Gereksinimleri</a>
     </nav>
 
     <main>
         <div class="content-box">
             
-            <div id="master" class="section active">
-                <h1>Gemini Master V17.0</h1>
-                <p>Tüm IT fonksiyonları doğrulanmış, derin sistem onarımı ve ağ yığını sıfırlama aracı.</p>
+            <div id="ps4-guide" class="section active">
+                <h1>PS4 Jailbreak & Sistem Modifikasyon Rehberi</h1>
+                <p>PS4 sisteminizi kırmak ve tam kontrol sağlamak için hazırlanan güncel aSiKuRT rehberine hoş geldiniz.</p>
+
+                <div class="warning-box">
+                    <strong>DİKKAT:</strong> v11.02 ile v13.00 arasındaki sürümler için şu an "Public" bir exploit yoktur. Sisteminizi ASLA güncellemeyin.
+                </div>
+
+                <h2>1. v9.00 ve Altı Sürümler (Altın Sürüm)</h2>
+                <p>En kararlı yöntemdir. USB bellek gerektirir.</p>
+                <ul>
+                    <li><strong>Hazırlık:</strong> `exfathax.img` dosyasını Etcher ile USB'ye yazdırın.</li>
+                    <li><strong>Ayarlar:</strong> Sistem güncelleştirmelerini kapatın ve interneti kesin.</li>
+                    <li><strong>İşlem:</strong> Tarayıcıdan exploit sayfasına girin, uyarı gelince USB'yi takın. "GoldHEN Loaded" mesajını bekleyin.</li>
+                </ul>
+
+                <h2>2. v9.03 - v11.00 Sürümleri (PPPwn)</h2>
+                <p>USB gerektirmez, Ethernet üzerinden PC bağlantısı ile yapılır.</p>
+                <ul>
+                    <li>PC'de <strong>PPPwn GUI</strong> programını açın.</li>
+                    <li>PS4'ü LAN kablosu ile bilgisayara bağlayın.</li>
+                    <li>Ağ ayarlarından PPPoE kurulumunu seçin (Kullanıcı adı/şifre: aSiKuRT).</li>
+                    <li>PC'den "Run Exploit" butonuna basın.</li>
+                </ul>
+
+                <h2>3. v11.02 - v13.00 Sürümleri</h2>
+                <p>Bu sürümlerde şu an bekleme aşamasındayız.</p>
+                <ul>
+                    <li>Yeni bir "Webkit Exploit" sızıntısı bekleniyor.</li>
+                    <li>Donanım meraklıları için: <strong>Syscon Revert</strong> yöntemi ile eğer cihazın önceki sürümü 11.00 ise geri döndürme (downgrade) yapılabilir (Profesyonel lehim gerektirir).</li>
+                </ul>
+            </div>
+
+            <div id="pc-tools" class="section">
+                <h1>PC Sistem Mühendisliği Araçları</h1>
+                <p>Aşağıdaki kodları bir metin dosyasına (.txt) yapıştırın ve uzantısını <strong>.bat</strong> yaparak yönetici olarak çalıştırın.</p>
+
+                <h2>Gemini Master V17 (aSiKuRT Edition)</h2>
                 <div class="code-container">
                     <button class="copy-btn" onclick="copyCode('code-master')">KOPYALA</button>
                     <pre id="code-master">@echo off
-:: aSiKuRT MASTER IT CONSOLE
+title aSiKuRT MASTER CONSOLE v17.0
 chcp 65001 >nul
 net session >nul 2>&1 || (powershell start-process '%~f0' -Verb RunAs & exit)
-echo [OK] aSiKuRT Sistemi Baslatiliyor...
-:: Buraya GeminiMaster_V15.bat icerigi gelecek
+echo [OK] Derin Sistem Onarımı Başlatılıyor...
+sfc /scannow
+dism /online /cleanup-image /restorehealth
 pause</pre>
                 </div>
             </div>
 
-            <div id="xiaomi" class="section">
-                <h1>Xiaomi Turbo PRO V8</h1>
-                <p>Xiaomi cihazlar için ADB üzerinden derin optimizasyon ve debloat yazılımı.</p>
+            <div id="mobile-tools" class="section">
+                <h1>Mobil Optimizasyon (Python)</h1>
+                <p>ADB üzerinden çalışan aSiKuRT Xiaomi ve Android bakım kodları.</p>
+                
+                <h2>Xiaomi Turbo V8 PRO</h2>
                 <div class="code-container">
                     <button class="copy-btn" onclick="copyCode('code-xiaomi')">KOPYALA</button>
-                    <pre id="code-xiaomi"># aSiKuRT XIAOMI TURBO PRO V8
-import customtkinter as ctk
+                    <pre id="code-xiaomi"># aSiKuRT Xiaomi Turbo v8
 import os
-# ADB YOLUNU AYARLAYIN
-BASE_PATH = r"C:\ADB"
-# Kodun devami...</pre>
+def optimize():
+    os.system("adb shell settings put global animator_duration_scale 0")
+    print("Xiaomi Animasyonları Sıfırlandı.")
+optimize()</pre>
                 </div>
             </div>
 
-            <div id="format" class="section">
-                <h1>Safe Format 2026</h1>
-                <p>aSiKuRT tarafından geliştirilen güvenli disk listeleme ve profesyonel format aracı.</p>
-                <div class="code-container">
-                    <button class="copy-btn" onclick="copyCode('code-format')">KOPYALA</button>
-                    <pre id="code-format">@echo off
-:: aSiKuRT SAFE FORMAT TOOL
-chcp 65001 >nul
-powershell -Command "Get-Disk | ft Number, FriendlyName, Size"
-set /p disk_no="Disk No Secin: "</pre>
-                </div>
-            </div>
-
-            <div id="ps4" class="section">
-                <h1>PS4 Jailbreak (v9.00)</h1>
-                <p>PS4 sisteminizi kırmak ve oyunları yüklemek için izlemeniz gereken resmi aSiKuRT adımları:</p>
-                <div style="background:#111; padding:20px; border-radius:8px;">
-                    1. USB'ye exfathax imajını yazdırın.<br>
-                    2. PS4 Tarayıcıdan exploit sayfasına gidin.<br>
-                    3. USB'yi istendiğinde takın ve "GoldHEN" yazısını bekleyin.
-                </div>
+            <div id="lgtv" class="section">
+                <h1>LG TV M3U Kurulum Rehberi</h1>
+                <p>LG WebOS cihazlarda IPTV/M3U listesi çalıştırma:</p>
+                <ul>
+                    <li>LG Store'dan <strong>OttPlayer</strong> uygulamasını kurun.</li>
+                    <li>aSiKuRT tarafından sağlanan veya kendi M3U linkinizi uygulamaya tanımlayın.</li>
+                    <li>DNS ayarlarını 8.8.8.8 yaparak hızı optimize edin.</li>
+                </ul>
             </div>
 
         </div>
@@ -115,13 +144,17 @@ set /p disk_no="Disk No Secin: "</pre>
     <script>
         function showSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+            
             document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
         function copyCode(id) {
             const code = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(code);
-            alert("Kod panoya kopyalandı! Yeni bir metin dosyası açıp içine yapıştırın.");
+            navigator.clipboard.writeText(code).then(() => {
+                alert("Kod Kopyalandı! Bir metin belgesine yapıştırıp .bat olarak kaydedin.");
+            });
         }
     </script>
 
