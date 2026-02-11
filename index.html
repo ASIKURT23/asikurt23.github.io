@@ -3,95 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aSiKuRT | Professional Systems</title>
+    <title>aSiKuRT | Teknoloji & Rehber Portalı</title>
     <style>
-        :root { --accent: #00d2ff; --bg: #050505; --panel: #0d0d0d; }
+        :root { --accent: #00d2ff; --bg: #050505; --panel: #0d0d0d; --text: #e0e0e0; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: #e0e0e0; font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sol Navigasyon Paneli (A-Z) */
-        nav { width: 300px; background: var(--panel); border-right: 1px solid #1a1a1a; padding: 40px 25px; display: flex; flex-direction: column; }
-        .brand { font-size: 2rem; font-weight: 900; color: var(--accent); letter-spacing: -1.5px; margin-bottom: 40px; }
-        .nav-label { font-size: 0.7rem; color: #444; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; display: block; }
-        nav a { color: #888; text-decoration: none; padding: 12px 15px; margin-bottom: 5px; border-radius: 6px; font-size: 0.9rem; display: flex; align-items: center; transition: 0.2s; }
-        nav a:hover, nav a.active { color: var(--accent); background: #161616; }
-        .dot { width: 6px; height: 6px; background: #39ff14; border-radius: 50%; margin-right: 12px; box-shadow: 0 0 10px #39ff14; }
+        /* Yan Menü */
+        nav { width: 300px; background: var(--panel); border-right: 1px solid #1a1a1a; padding: 40px 20px; display: flex; flex-direction: column; }
+        .brand { font-size: 1.8rem; font-weight: 900; color: var(--accent); margin-bottom: 40px; text-align: center; }
+        .nav-label { font-size: 0.7rem; color: #444; text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 10px; }
+        nav a { color: #888; text-decoration: none; padding: 12px 15px; margin-bottom: 5px; border-radius: 8px; font-size: 0.9rem; transition: 0.3s; display: block; }
+        nav a:hover { color: var(--accent); background: #161616; }
 
-        /* Ana İçerik Alanı */
-        main { flex: 1; padding: 60px; overflow-y: auto; background: radial-gradient(circle at 80% 10%, #0a1118 0%, #050505 100%); }
-        .hero h1 { font-size: 3rem; font-weight: 800; color: white; margin-bottom: 10px; }
-        .section-title { color: var(--accent); font-size: 0.85rem; font-weight: bold; margin: 30px 0 20px; text-transform: uppercase; letter-spacing: 1px; }
+        /* İçerik Alanı */
+        main { flex: 1; padding: 60px; overflow-y: auto; background: radial-gradient(circle at 90% 10%, #0a1118 0%, #050505 100%); }
+        .content-box { max-width: 850px; margin: 0 auto; }
+        .section { display: none; animation: fadeIn 0.5s ease forwards; }
+        .section.active { display: block; }
 
-        /* Dosya Kartları */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: #111; border: 1px solid #1a1a1a; padding: 25px; border-radius: 12px; transition: 0.3s; }
-        .card:hover { border-color: var(--accent); transform: translateY(-3px); }
-        .card h3 { font-size: 1rem; color: #fff; margin-bottom: 8px; }
-        .card p { font-size: 0.8rem; color: #555; margin-bottom: 20px; }
+        h1 { color: #fff; font-size: 2.5rem; margin-bottom: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; display: inline-block; }
+        p { line-height: 1.8; color: #aaa; margin-bottom: 20px; }
+        
+        /* Bilgi Kartları */
+        .info-card { background: #111; border: 1px solid #222; padding: 25px; border-radius: 12px; margin-bottom: 20px; }
+        .info-card h3 { color: var(--accent); margin-bottom: 10px; }
+        .info-card ul { list-style: none; padding-left: 5px; }
+        .info-card li { margin-bottom: 10px; color: #ccc; position: relative; padding-left: 20px; }
+        .info-card li::before { content: '▹'; position: absolute; left: 0; color: var(--accent); }
 
-        /* İndirme Butonu - Zorlamalı Mod */
-        .btn-dl { display: inline-flex; align-items: center; color: var(--accent); text-decoration: none; font-size: 0.75rem; font-weight: bold; border: 1px solid var(--accent); padding: 8px 15px; border-radius: 4px; transition: 0.2s; }
-        .btn-dl:hover { background: var(--accent); color: #000; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="brand">aSiKuRT</div>
-        <div class="nav-group">
-            <span class="nav-label">KATEGORİLER</span>
-            <a href="android.html"><div class="dot"></div> Android Bakım</a>
-            <a href="LGTV.html"><div class="dot"></div> LG TV / M3U</a>
-            <a href="PC PROGRAM.html" class="active"><div class="dot"></div> PC Programları</a>
-            <a href="ps4.html"><div class="dot"></div> PS4 Operasyon</a>
-        </div>
+        
+        <span class="nav-label">REHBERLER</span>
+        <a href="#" onclick="showSection('ps4')">PS4 Kırma Rehberi</a>
+        <a href="#" onclick="showSection('lgtv')">LG TV / M3U Kurulumu</a>
+        <a href="#" onclick="showSection('android')">Android Gereksinimleri</a>
+        <a href="#" onclick="showSection('xiaomi')">Xiaomi Optimizasyon</a>
+        
+        <span class="nav-label">DİĞER</span>
+        <a href="https://github.com/ASIKURT23" target="_blank">GitHub Profili</a>
     </nav>
 
     <main>
-        <div class="hero">
-            <h1>System Engineering</h1>
-            <p>aSiKuRT tarafından geliştirilen profesyonel sistem araçları ve optimizasyon yazılımları.</p>
-
-            <div class="section-title">Yeni Nesil PC Programları</div>
-            <div class="grid">
-                <div class="card">
-                    <h3>Gemini Neural V14</h3>
-                    <p>Yapay zeka destekli sistem bakım ve ağ onarım konsolu.</p>
-                    <a href="GEMINI NEURAL CONSOLE.bat" download="GEMINI_NEURAL.bat" class="btn-dl">İNDİR (BAT)</a>
-                </div>
-
-                <div class="card">
-                    <h3>Mühendislik Terminali</h3>
-                    <p>Yetkili erişim çekirdek onarım ve imaj yönetimi.</p>
-                    <a href="MÜHENDİSLİK .bat" download="MUHENDISLIK.bat" class="btn-dl">İNDİR (BAT)</a>
-                </div>
-
-                <div class="card">
-                    <h3>Gemini Master V15</h3>
-                    <p>Tüm IT fonksiyonları doğrulanmış kararlı sürüm.</p>
-                    <a href="GeminiMaster_V15.bat" download="GeminiMaster_V15.bat" class="btn-dl">İNDİR (BAT)</a>
-                </div>
-
-                <div class="card">
-                    <h3>Sistem & Sürücü Yönetimi</h3>
-                    <p>Sürücü güncellleme ve performans modu aracı.</p>
-                    <a href="ASIKURT SİSTEM VE SÜRÜCÜ YÖNETİM MERKEZİ.bat" download="ASIKURT_SISTEM.bat" class="btn-dl">İNDİR (BAT)</a>
-                </div>
-
-                <div class="card">
-                    <h3>DeepSeek PC Analiz</h3>
-                    <p>Donanım raporlama ve akıllı bakım sistemi.</p>
-                    <a href="DEEPSEEK PROFESYONEL PC BAKIM VE ANALIZ SISTEMI.bat" download="DEEPSEEK_BAKIM.bat" class="btn-dl">İNDİR (BAT)</a>
-                </div>
-
-                <div class="card">
-                    <h3>Format Hardisk 2026</h3>
-                    <p>aSiKuRT Güvenli disk listeleme ve format aracı.</p>
-                    <a href="FORMAT HARDİSK 2026.bat" download="FORMAT_2026.bat" class="btn-dl">İNDİR (BAT)</a>
+        <div class="content-box">
+            
+            <div id="ps4" class="section active">
+                <h1>PS4 Jailbreak Rehberi</h1>
+                <p>PS4 sistemini kırmak için en kararlı sürüm 9.00 ve altıdır. İşte izlemeniz gereken adımlar:</p>
+                <div class="info-card">
+                    <h3>Gerekli Hazırlıklar</h3>
+                    <ul>
+                        <li>9.00 sürümüne uygun bir USB hazırlayın (Etcher ile).</li>
+                        <li>Sistem ayarlarından "Otomatik Güncellemeleri" kapatın.</li>
+                        <li>Tarayıcı üzerinden aSiKuRT exploit sunucusuna bağlanın.</li>
+                    </ul>
                 </div>
             </div>
+
+            <div id="lgtv" class="section">
+                <h1>LG TV M3U Bağlantısı</h1>
+                <p>WebOS işletim sistemli televizyonlarda IPTV ve M3U listelerini çalıştırmak oldukça basittir.</p>
+                <div class="info-card">
+                    <h3>Adım Adım Kurulum</h3>
+                    <ul>
+                        <li>LG Content Store'dan 'OttPlayer' veya 'SS IPTV' indirin.</li>
+                        <li>M3U listenizi USB bellek veya URL aracılığıyla uygulamaya tanıtın.</li>
+                        <li>İnternet hızınızın en az 16Mbps olduğundan emin olun.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="android" class="section">
+                <h1>Android Sistem Gereksinimleri</h1>
+                <p>aSiKuRT Android Bakım araçlarının sağlıklı çalışması için cihazınızda bulunması gereken özellikler.</p>
+                <div class="info-card">
+                    <h3>Donanım & Yazılım</h3>
+                    <ul>
+                        <li>En az Android 9.0 ve üzeri işletim sistemi.</li>
+                        <li>Geliştirici Seçeneklerinden "USB Hata Ayıklama" açık olmalı.</li>
+                        <li>Minimum 4GB RAM ve 64GB Depolama alanı.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="xiaomi" class="section">
+                <h1>Xiaomi Yazılım Gereksinimleri</h1>
+                <p>Xiaomi Turbo V8 araçlarını kullanmadan önce cihazınızı hazırlamanız gerekir.</p>
+                <div class="info-card">
+                    <h3>Önemli Uyarılar</h3>
+                    <ul>
+                        <li>Bootloader kilidinin açık olması önerilir (Derin temizlik için).</li>
+                        <li>MIUI Global veya EU rom yüklü olmalıdır.</li>
+                        <li>ADB sürücülerinin bilgisayarınızda kurulu olduğundan emin olun.</li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
     </main>
+
+    <script>
+        function showSection(id) {
+            // Tüm bölümleri gizle
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            // Seçilen bölümü göster
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
 
 </body>
 </html>
