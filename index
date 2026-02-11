@@ -1,1 +1,28 @@
-
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASIKURT23 | Veritabanı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --blue: #00d2ff; --bg: #0a0a0a; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .flag { position: fixed; top: 15px; left: 15px; width: 60px; z-index: 1000; }
+        .hero { height: 40vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(rgba(0,0,0,0.7), #0a0a0a), url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200'); background-size: cover; }
+        .container { max-width: 1000px; margin: -50px auto 50px; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: #151515; border: 1px solid #333; padding: 30px; border-radius: 15px; text-decoration: none; color: white; transition: 0.3s; text-align: center; }
+        .card:hover { transform: translateY(-10px); border-color: var(--blue); }
+        .card i { font-size: 3rem; color: var(--blue); margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b4/Flag_of_Turkey.svg" class="flag">
+    <div class="hero"><h1>ASIKURT23</h1><p>PS4 • LGTV • YAZILIM • ARŞİV</p></div>
+    <div class="container">
+        <a href="ps4.html" class="card"><i class="fab fa-playstation"></i><h3>PS4 MERKEZİ</h3><p>Oyun ve Jailbreak</p></a>
+        <a href="yazilim.html" class="card"><i class="fas fa-code"></i><h3>YAZILIMLAR</h3><p>PC & Android Toollar</p></a>
+        <a href="lgtv.html" class="card"><i class="fas fa-tv"></i><h3>LGTV REHBERİ</h3><p>WebOS Uygulamaları</p></a>
+    </div>
+</body>
+</html>
