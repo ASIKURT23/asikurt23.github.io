@@ -135,7 +135,7 @@ const dl=(name,text,type='text/plain')=>{const a=document.createElement('a');a.h
 const safeUrl=u=>{try{u=u.trim();if(!/^https?:\/\//i.test(u))u='https://'+u;const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:null}catch(e){return null}};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(b)copy(b.dataset.copy)});
 
-const LOGO='<svg viewBox="0 0 48 48"><polygon points="24,3 43,14 43,34 24,45 5,34 5,14" fill="none" stroke="#22b8cf" stroke-width="3"/><text x="24" y="31" text-anchor="middle" font-size="22" font-weight="800" fill="#22b8cf" font-family="Arial">A</text></svg>';
+const LOGO='';
 $('#brand').innerHTML=LOGO+'<span>aSiKuRT</span>';
 
 const HOME={id:'ana',t:'Ana Sayfa',i:'🏠',d:''};
