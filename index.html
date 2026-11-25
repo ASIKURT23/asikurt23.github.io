@@ -115,6 +115,22 @@ nav a span:first-child{display:none}
 nav a,nav a:hover,nav a.on{color:#cfe9ff;padding-left:16px}
 nav a.on{font-weight:700}
 </style>
+
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta property="og:title" content="aSiKuRT">
+<meta property="og:description" content="Araçlar, kaynaklar ve hızlı erişim başlangıç sayfası">
+<meta property="og:type" content="website">
+<style id="ek">
+.big{background:linear-gradient(90deg,#67e8f9,#3b82f6 55%,#22b8cf);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand span{color:#67e8f9}
+.search select{width:auto;flex:none;color:#cfe9ff;background:#112a46;padding:0 12px}
+.search input{width:auto}
+#clk{margin-top:22px;text-align:center}
+#clk b{display:block;font-family:Consolas,"Courier New",monospace;font-size:28px;color:#67e8f9;letter-spacing:3px;text-shadow:0 0 14px rgba(34,184,207,.5)}
+#clk small{color:#9fb8d6}
+</style>
 </head>
 <body>
 <div id="bg"></div><div id="scrim"></div>
@@ -419,6 +435,43 @@ addEventListener('hashchange',route);
 const savedBg=load('asi_bg','');if(savedBg)$('#bg').style.backgroundImage=`url("${savedBg}")`;
 if(innerWidth<=860)document.body.classList.add('nav-closed');
 route();
+</script>
+
+<script id="ek-js">
+(function(){
+  const q=s=>document.querySelector(s);
+  function tick(){const t=q('#ct');if(!t)return;const n=new Date();
+    t.textContent=n.toLocaleTimeString('tr-TR');
+    q('#cd').textContent=n.toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+  function extras(){
+    if(!q('#sf'))return;
+    const hero=q('.hero');
+    if(hero&&!q('#clk')){const c=document.createElement('div');c.id='clk';c.innerHTML='<b id="ct"></b><small id="cd"></small>';hero.appendChild(c)}
+    tick();
+    const pg=q('.pg');
+    if(pg&&!q('#bk')){
+      const d=document.createElement('div');d.id='bk';
+      d.innerHTML='<h2>Yedekle / Geri Yükle</h2><div class="card"><small style="color:var(--mut)">Favorilerin, anahtarların ve ayarların bu tarayıcıda saklanır. Tarayıcı verisi silinirse kaybolur; buradan yedek al.</small><div class="row" style="margin-top:12px"><button class="btn" id="bkx">Yedeği indir</button><label>Yedeği yükle<input type="file" id="bki" accept=".json"></label></div></div>';
+      pg.appendChild(d);
+      q('#bkx').onclick=()=>{const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.indexOf('asi_')===0)o[k]=localStorage.getItem(k)}
+        dl('asikurt-yedek.json',JSON.stringify(o,null,2),'application/json');toast('Yedek indirildi ✓')};
+      q('#bki').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+        r.onload=()=>{try{const o=JSON.parse(r.result);let n=0;
+          Object.keys(o).forEach(k=>{if(k.indexOf('asi_')===0&&typeof o[k]==='string'){localStorage.setItem(k,o[k]);n++}});
+          if(!n)return toast('Geçerli yedek değil');toast(n+' kayıt geri yüklendi');setTimeout(()=>location.reload(),700)}
+          catch(err){toast('Dosya okunamadı')}};r.readAsText(f)};
+    }
+  }
+  addEventListener('hashchange',extras);
+  document.addEventListener('keydown',e=>{
+    const typing=/INPUT|TEXTAREA|SELECT/.test(e.target.tagName||'');
+    if((e.key==='/'&&!typing)||((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k')){
+      e.preventDefault();
+      if(!q('#q')){location.hash='#/ana';setTimeout(()=>q('#q')&&q('#q').focus(),200)}else q('#q').focus()}});
+  setInterval(tick,1000);
+  extras();
+  if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(err=>console.error('Service worker kaydedilemedi:',err)));
+})();
 </script>
 </body>
 </html>

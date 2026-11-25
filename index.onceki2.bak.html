@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>aSiKuRT</title>
+<meta name="description" content="aSiKuRT - araçlar, kaynaklar ve hızlı erişim başlangıç sayfası">
+<meta name="theme-color" content="#060d1b">
+<style>
+:root{--bg:#060d1b;--panel:#0b1a2e;--panel2:#112a46;--line:#1d3b61;--gold:#22b8cf;--gold2:#67e8f9;--txt:#f2f2f2;--mut:#9aa0a6}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:Inter,system-ui,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);display:flex;overflow:hidden}
+#bg{position:fixed;inset:0;background-size:cover;background-position:center;opacity:.22;z-index:0;pointer-events:none}
+aside{position:relative;z-index:30;width:270px;flex:none;background:#07142a;border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;overflow-y:auto;transition:margin .25s,transform .25s}
+body.nav-closed aside{margin-left:-270px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;color:var(--gold);padding:4px 8px 18px}
+.brand svg{width:34px;height:34px}
+nav a{display:flex;gap:12px;align-items:center;padding:11px 14px;border-radius:14px;color:#c9ccd0;text-decoration:none;font-size:13.5px;font-weight:600;margin-bottom:4px;transition:.15s}
+nav a:hover{background:var(--panel2);color:#fff}
+nav a.on{background:linear-gradient(90deg,#1d4ed8,#22b8cf);color:#111}
+nav a span:first-child{font-size:17px;width:22px;text-align:center;flex:none}
+.foot{margin-top:auto;padding:14px 8px 0;color:var(--mut);font-size:12px}
+main{position:relative;z-index:2;flex:1;min-width:0;height:100%;overflow-y:auto}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:12px 24px;background:rgba(6,13,27,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);font-weight:700}
+.pg{padding:28px 24px 60px;max-width:1200px;margin:0 auto;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h1{font-size:26px;margin-bottom:6px}
+h2{font-size:18px;margin:30px 0 14px;color:var(--gold2)}
+.sub{color:var(--mut);margin-bottom:22px;line-height:1.5}
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:48vh}
+.hero .logo svg{width:92px;height:92px;margin-bottom:10px}
+.big{font-size:clamp(44px,9vw,92px);font-weight:900;letter-spacing:1px;background:linear-gradient(90deg,#fff,#67e8f9 55%,#1d4ed8);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+.search{display:flex;gap:8px;width:min(720px,100%);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px}
+.search input{flex:1;background:transparent;border:0;outline:0;color:var(--txt);font-size:16px;padding:0 12px;min-width:0}
+.search select{background:var(--panel2);color:var(--txt);border:0;border-radius:999px;padding:0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
+a.card{color:inherit;text-decoration:none;transition:.15s;display:block}
+a.card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.card .ic{font-size:26px;margin-bottom:8px}
+.card b{display:block;margin-bottom:4px}
+.card small{color:var(--mut);line-height:1.45;display:block}
+.btn{background:linear-gradient(90deg,#1d4ed8,#22b8cf);color:#111;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:14px;text-decoration:none;display:inline-block}
+.btn:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn.ghost{background:var(--panel2);color:var(--txt);border:1px solid var(--line)}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:9px}
+input,select,textarea{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;outline:0;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+textarea{font-family:Consolas,monospace;font-size:13px;min-height:150px;resize:vertical}
+label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--mut);flex:1;min-width:140px}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end}
+.list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.item{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.item code{word-break:break-all;font-size:13px;color:var(--gold2)}
+.item a{color:var(--txt)}
+pre{background:#050b17;border:1px solid var(--line);border-radius:12px;padding:12px;overflow:auto;font-size:13px;color:var(--gold2);margin:10px 0;white-space:pre-wrap;word-break:break-all}
+iframe#pv{width:100%;height:340px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.num{font-size:clamp(48px,10vw,96px);font-weight:900;color:var(--gold2);text-align:center;line-height:1}
+.bar{height:8px;background:var(--panel2);border-radius:9px;overflow:hidden;margin:14px 0}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#1d4ed8,#67e8f9);transition:width .2s}
+.stat{text-align:center}.stat b{display:block;font-size:24px;color:var(--gold2)}.stat small{color:var(--mut)}
+.wp{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--panel)}
+.wp img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
+.wp div{position:absolute;bottom:0;left:0;right:0;padding:8px;display:flex;gap:6px;background:linear-gradient(transparent,rgba(0,0,0,.8))}
+.ico{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--mut);font-size:11px;word-break:break-all;text-align:center}
+.ico:hover{border-color:var(--gold)}.ico img{width:36px;height:36px}
+.tag{font-size:11px;background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:2px 8px;color:var(--mut)}
+#scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20}
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:var(--gold);color:#111;font-weight:700;padding:10px 18px;border-radius:12px;opacity:0;transition:.25s;z-index:99;pointer-events:none}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+ul.tips{padding-left:20px;line-height:1.8;color:#d0d3d6}
+@media(max-width:860px){
+aside{position:fixed;left:0;top:0;bottom:0;margin-left:0!important}
+body.nav-closed aside{transform:translateX(-100%)}
+body:not(.nav-closed) #scrim{display:block}
+.pg{padding:20px 16px 60px}
+}
+</style>
+
+<style id="tema">
+body{background:
+radial-gradient(1200px 600px at 75% -10%,rgba(37,99,235,.30),transparent 60%),
+radial-gradient(900px 500px at 0% 100%,rgba(34,184,207,.18),transparent 60%),
+linear-gradient(rgba(56,189,248,.05) 1px,transparent 1px) 0 0/40px 40px,
+linear-gradient(90deg,rgba(56,189,248,.05) 1px,transparent 1px) 0 0/40px 40px,#060d1b}
+aside{background:linear-gradient(180deg,#07142a,#050b17);border-right:1px solid #1d3b61;box-shadow:4px 0 30px rgba(0,0,0,.5)}
+.brand{font-family:Consolas,"Courier New",monospace;letter-spacing:3px;text-shadow:0 0 14px rgba(34,184,207,.6)}
+nav a{border-radius:8px;font-family:Consolas,"Courier New",monospace;font-size:12px;letter-spacing:.8px;text-transform:uppercase;border:1px solid transparent}
+nav a:hover{border-color:#1d3b61;background:#0f2540;color:#67e8f9}
+nav a.on{color:#fff;background:linear-gradient(90deg,rgba(29,78,216,.85),rgba(34,184,207,.45));border-color:#22b8cf;box-shadow:inset 3px 0 0 #67e8f9,0 0 22px rgba(34,184,207,.22)}
+.top{font-family:Consolas,"Courier New",monospace;letter-spacing:3px;text-transform:uppercase;font-size:13px;color:#67e8f9;border-bottom:1px solid #1d3b61}
+h1{letter-spacing:.5px}
+h2{font-family:Consolas,"Courier New",monospace;text-transform:uppercase;font-size:14px;letter-spacing:2px}
+h2::before{content:"// ";color:#2563eb}
+.big{filter:drop-shadow(0 0 24px rgba(37,99,235,.55))}
+.hero .logo svg{filter:drop-shadow(0 0 16px rgba(34,184,207,.8))}
+.search{border-radius:12px;border-color:#1d4ed8;background:rgba(11,26,46,.9);box-shadow:0 0 34px rgba(37,99,235,.28)}
+.search select,.item,input,select,textarea,pre,iframe#pv{border-radius:8px}
+.card{border-radius:12px;background:linear-gradient(160deg,rgba(17,42,70,.85),rgba(7,18,35,.92));border-color:#1d3b61}
+a.card:hover{border-color:#22b8cf;box-shadow:0 0 26px rgba(34,184,207,.28)}
+.btn{color:#fff;border-radius:8px;background:linear-gradient(90deg,#1d4ed8,#22b8cf);box-shadow:0 0 18px rgba(34,184,207,.25)}
+.btn.ghost{color:#e6f6ff;background:#112a46;border:1px solid #1d3b61;box-shadow:none}
+.btn.ghost:hover{border-color:#22b8cf}
+.bar i{box-shadow:0 0 12px #22b8cf}
+.num{text-shadow:0 0 26px rgba(34,184,207,.55)}
+.tag{border-color:#1d4ed8;color:#67e8f9}
+#toast{color:#031018}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#1d4ed8;border-radius:8px}::-webkit-scrollbar-track{background:#060d1b}
+</style>
+<style id="menu-duz">
+nav a span:first-child{display:none}
+nav a,nav a:hover,nav a.on{color:#cfe9ff;padding-left:16px}
+nav a.on{font-weight:700}
+</style>
+</head>
+<body>
+<div id="bg"></div><div id="scrim"></div>
+<aside>
+  <div class="brand" id="brand"></div>
+  <nav id="nav"></nav>
+  <div class="foot">© aSiKuRT</div>
+</aside>
+<main>
+  <header class="top"><button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat">☰</button><span id="ttl">Ana Sayfa</span></header>
+  <div id="view"></div>
+</main>
+<div id="toast"></div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let tt;const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1600)};
+const copy=async t=>{try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}toast('Kopyalandı ✓')};
+const dl=(name,text,type='text/plain')=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+const safeUrl=u=>{try{u=u.trim();if(!/^https?:\/\//i.test(u))u='https://'+u;const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:null}catch(e){return null}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(b)copy(b.dataset.copy)});
+
+const LOGO='';
+$('#brand').innerHTML=LOGO+'<span>aSiKuRT</span>';
+
+const HOME={id:'ana',t:'Ana Sayfa',i:'🏠',d:''};
+const NAV=[
+{id:'ps4',t:'PS4',i:'🎮',d:'Bağlantı, DNS, güvenli mod ve Remote Play ipuçları.'},
+{id:'lg',t:'LG',i:'📺',d:'LG TV destek, webOS ve uygulama bağlantıları.'},
+{id:'html',t:'HTML',i:'🧩',d:'HTML/CSS/JS yaz, canlı önizle, indir.'},
+{id:'python',t:'PYTHON',i:'🐍',d:'Tarayıcıda Python çalıştır, hazır kod parçaları.'},
+{id:'api',t:'API ANAHTAR',i:'🔑',d:'Güvenli rastgele anahtar ve UUID üretici.'},
+{id:'m3u',t:'M3U LİST',i:'🎬',d:'M3U listesi aç, filtrele, temizle, indir.'},
+{id:'pc',t:'PC HIZLANDIRMA PERFORMANS KODLARI',i:'⚡',d:'Windows bakım ve hızlandırma komutları.'},
+{id:'apk',t:'APK OLUŞTURUCU',i:'📱',d:'Siteni PWA yap, APK için hazırla.'},
+{id:'ai',t:'YAPAY ZEKA ARAÇLARI',i:'🤖',d:'Popüler yapay zeka araçları listesi.'},
+{id:'icon',t:'İCON BUL',i:'🎯',d:'Binlerce ikon ara, SVG kopyala/indir.'},
+{id:'wallpaper',t:'WALLPAPER',i:'🖼️',d:'Duvar kağıdı bul, arka plan yap.'},
+{id:'speed',t:'SPEED HIZ TESTİ',i:'🚀',d:'İndirme, yükleme ve ping ölçümü.'}
+].sort((a,b)=>a.t.localeCompare(b.t,'tr'));
+const ALL=[HOME,...NAV];
+$('#nav').innerHTML=ALL.map(n=>`<a href="#/${n.id}" data-id="${n.id}"><span>${n.i}</span><span>${esc(n.t)}</span></a>`).join('');
+
+const view=$('#view'),P={};
+const hd=(t,s)=>`<h1>${t}</h1><p class="sub">${s}</p>`;
+const page=(h,fn)=>{view.innerHTML='<div class="pg">'+h+'</div>';fn&&fn()};
+
+/* ---------- ANA SAYFA ---------- */
+const ENG={Google:'https://www.google.com/search?q='};
+P.ana=()=>{
+page(`<section class="hero"><div class="logo">${LOGO}</div><h1 class="big">aSiKuRT</h1><p class="sub">Araçlar, kaynaklar ve hızlı erişim — hepsi tek sayfada.</p>
+<form id="sf" class="search" action="https://www.google.com/search" method="get" target="_self"><input id="q" name="q" placeholder="Google'da ara..." autocomplete="on"><button type="submit" class="btn">Ara</button></form></section>`,()=>{
+  let autoSearchTimer;
+  const searchGoogle=()=> {
+    const q=$('#q').value.trim();
+    if(!q){return;}
+    window.location.assign(ENG.Google+encodeURIComponent(q));
+  };
+  $('#sf').onsubmit=e=>{
+    e.preventDefault();
+    clearTimeout(autoSearchTimer);
+    searchGoogle();
+  };
+  $('#q').oninput=()=>{
+    clearTimeout(autoSearchTimer);
+    autoSearchTimer=setTimeout(searchGoogle,900);
+  };
+  const draw=()=>{const f=load('asi_favs',[]);$('#fl').innerHTML=f.length?f.map((x,i)=>`<div class="item"><a href="${esc(x.u)}" target="_blank" rel="noopener noreferrer">${esc(x.t)}</a><button class="btn ghost sm" data-d="${i}">Sil</button></div>`).join(''):'<small style="color:var(--mut)">Henüz favori yok.</small>';
+    $('#fl').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const f=load('asi_favs',[]);f.splice(+b.dataset.d,1);save('asi_favs',f);draw()})};
+  $('#fa').onclick=()=>{const u=safeUrl($('#fu').value);if(!u)return toast('Geçerli bir adres gir');const f=load('asi_favs',[]);f.push({t:$('#ft').value.trim()||new URL(u).hostname,u});save('asi_favs',f);$('#ft').value=$('#fu').value='';draw()};
+  draw();
+});};
+
+/* ---------- API ANAHTAR ---------- */
+const SETS={a:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',h:'0123456789abcdef',u:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'};
+const rnd=(n,ch)=>{const out=[],max=Math.floor(256/ch.length)*ch.length;while(out.length<n){for(const x of crypto.getRandomValues(new Uint8Array(n*2))){if(x<max&&out.length<n)out.push(ch[x%ch.length])}}return out.join('')};
+P.api=()=>{
+page(hd('API ANAHTAR','Tarayıcının güvenli rastgele sayı üreticisiyle anahtar, token ve UUID üret.')+`
+<div class="card"><div class="row"><label>Ön ek<input id="ap" value="ask_"></label><label>Uzunluk<input id="al" type="number" min="8" max="128" value="40"></label><label>Karakter seti<select id="ac"><option value="a">Harf + Rakam</option><option value="h">Hex</option><option value="u">URL-güvenli</option></select></label><label>Adet<input id="an" type="number" min="1" max="20" value="3"></label></div>
+<div class="row"><button class="btn" id="ag">Anahtar üret</button><button class="btn ghost" id="au">UUID üret</button></div><div class="list" id="ao"></div></div>
+<h2>Kayıtlı Anahtarlarım</h2><div class="card"><small style="color:var(--mut)">Sadece bu tarayıcıda saklanır. Gerçek/gizli anahtarlarını burada tutma.</small>
+<div class="row" style="margin-top:12px"><label>Ad<input id="kn" placeholder="Örn: Test API"></label><label>Anahtar<input id="kv"></label><button class="btn" id="ks">Kaydet</button></div><div class="list" id="kl"></div></div>`,()=>{
+  const out=a=>$('#ao').innerHTML=a.map(k=>`<div class="item"><code>${esc(k)}</code><span><button class="btn sm" data-copy="${esc(k)}">Kopyala</button> <button class="btn ghost sm" data-use="${esc(k)}">Kullan</button></span></div>`).join('');
+  $('#ag').onclick=()=>{const n=Math.min(20,Math.max(1,+$('#an').value||1)),l=Math.min(128,Math.max(8,+$('#al').value||32));out(Array.from({length:n},()=>$('#ap').value+rnd(l,SETS[$('#ac').value])))};
+  $('#au').onclick=()=>out(Array.from({length:+$('#an').value||1},()=>crypto.randomUUID()));
+  $('#ao').onclick=e=>{const b=e.target.closest('[data-use]');if(b){$('#kv').value=b.dataset.use;$('#kn').focus()}};
+  const draw=()=>{const k=load('asi_keys',[]);$('#kl').innerHTML=k.map((x,i)=>`<div class="item"><span><b>${esc(x.n)}</b><br><code>${esc(x.v)}</code></span><span><button class="btn sm" data-copy="${esc(x.v)}">Kopyala</button> <button class="btn ghost sm" data-d="${i}">Sil</button></span></div>`).join('');
+    $('#kl').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const k=load('asi_keys',[]);k.splice(+b.dataset.d,1);save('asi_keys',k);draw()})};
+  $('#ks').onclick=()=>{if(!$('#kv').value.trim())return toast('Anahtar boş');const k=load('asi_keys',[]);k.push({n:$('#kn').value.trim()||'Adsız',v:$('#kv').value.trim()});save('asi_keys',k);$('#kn').value=$('#kv').value='';draw()};
+  $('#ag').click();draw();
+});};
+
+/* ---------- APK OLUŞTURUCU ---------- */
+P.apk=()=>{
+page(hd('APK OLUŞTURUCU','Tarayıcı içinde gerçek APK derlenemez. Doğru yol: siteni PWA yap, sonra PWABuilder ile APK/AAB al. Aşağıdaki araç PWA dosyalarını hazırlar.')+`
+<div class="card"><div class="row"><label>Uygulama adı<input id="mn" value="aSiKuRT"></label><label>Kısa ad<input id="ms" value="aSiKuRT"></label></div>
+<div class="row"><label>Başlangıç yolu<input id="mu" value="./"></label><label>Tema rengi<input id="mt" type="color" value="#22b8cf"></label><label>Arka plan<input id="mb" type="color" value="#060d1b"></label></div>
+<div class="row"><label>512x512 PNG ikon yolu<input id="mi" value="icon-512.png"></label></div>
+<h2 style="margin-top:6px">manifest.json</h2><pre id="mo"></pre>
+<div class="row"><button class="btn" id="mc">Kopyala</button><button class="btn ghost" id="md">manifest.json indir</button></div></div>
+<h2>Adımlar</h2><div class="card"><ul class="tips"><li>manifest.json ve 512x512 PNG ikonu depoya ekle; index.html &lt;head&gt; içine: <code>&lt;link rel="manifest" href="manifest.json"&gt;</code></li><li>Siteyi GitHub Pages'te yayınla (HTTPS gerekir).</li><li>Aşağıdaki PWABuilder'a site adresini yapıştır → Android paketini indir.</li></ul>
+<div class="row" style="margin-top:12px"><a class="btn" target="_blank" rel="noopener" href="https://www.pwabuilder.com/">PWABuilder</a><a class="btn ghost" target="_blank" rel="noopener" href="https://github.com/GoogleChromeLabs/bubblewrap">Bubblewrap</a><a class="btn ghost" target="_blank" rel="noopener" href="https://developer.android.com/studio">Android Studio</a></div></div>`,()=>{
+  const gen=()=>JSON.stringify({name:$('#mn').value,short_name:$('#ms').value,start_url:$('#mu').value,scope:'./',display:'standalone',background_color:$('#mb').value,theme_color:$('#mt').value,icons:[{src:$('#mi').value,sizes:'512x512',type:'image/png',purpose:'any maskable'}]},null,2);
+  const up=()=>$('#mo').textContent=gen();document.querySelectorAll('.pg input').forEach(i=>i.oninput=up);up();
+  $('#mc').onclick=()=>copy(gen());$('#md').onclick=()=>dl('manifest.json',gen(),'application/json');
+});};
+
+/* ---------- HTML ---------- */
+P.html=()=>{
+const def=load('asi_html',{h:'<h1>Merhaba aSiKuRT</h1>\n<button id="b">Tıkla</button>',c:'body{font-family:sans-serif;background:#111;color:#67e8f9;text-align:center;padding:40px}\nbutton{padding:10px 20px;border-radius:10px;border:0;background:#22b8cf}',j:'document.getElementById("b").onclick=()=>alert("Çalışıyor!")'});
+page(hd('HTML','Kodunu yaz, canlı önizle. Önizleme güvenli sandbox içinde çalışır.')+`
+<div class="cols"><label>HTML<textarea id="th" spellcheck="false"></textarea></label><label>CSS<textarea id="tc" spellcheck="false"></textarea></label><label>JavaScript<textarea id="tj" spellcheck="false"></textarea></label></div>
+<div class="row" style="margin-top:12px"><button class="btn" id="hr">Çalıştır</button><button class="btn ghost" id="hc">Kodu kopyala</button><button class="btn ghost" id="hd">.html indir</button><button class="btn ghost" id="hx">Temizle</button></div>
+<iframe id="pv" sandbox="allow-scripts allow-forms allow-modals" title="Önizleme"></iframe>`,()=>{
+  $('#th').value=def.h;$('#tc').value=def.c;$('#tj').value=def.j;
+  const build=()=>'<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+$('#tc').value+'</style></head><body>'+$('#th').value+'<script>'+$('#tj').value+'<\/script></body></html>';
+  const run=()=>{$('#pv').srcdoc=build();save('asi_html',{h:$('#th').value,c:$('#tc').value,j:$('#tj').value})};
+  let t;['#th','#tc','#tj'].forEach(s=>$(s).oninput=()=>{clearTimeout(t);t=setTimeout(run,400)});
+  $('#hr').onclick=run;$('#hc').onclick=()=>copy(build());$('#hd').onclick=()=>dl('sayfa.html',build(),'text/html');
+  $('#hx').onclick=()=>{$('#th').value=$('#tc').value=$('#tj').value='';run()};run();
+});};
+
+/* ---------- İCON BUL ---------- */
+P.icon=()=>{
+page(hd('İCON BUL','Iconify veritabanında binlerce ikon ara.')+`
+<form class="search" id="if" style="width:100%;max-width:640px;margin-bottom:18px"><input id="iq" placeholder="Örn: home, user, arrow, game..."><button class="btn">Ara</button></form>
+<div id="ip" class="card" style="display:none;margin-bottom:16px"></div>
+<div class="grid" id="ig" style="grid-template-columns:repeat(auto-fill,minmax(110px,1fr))"></div>`,()=>{
+  const ok=s=>/^[a-z0-9-]+:[a-z0-9-]+$/i.test(s),url=s=>'https://api.iconify.design/'+s.replace(':','/')+'.svg';
+  const show=name=>{const p=$('#ip');p.style.display='block';p.innerHTML=`<div class="row"><img src="${url(name)}?color=%23d9a521&height=64" height="64" alt=""><div style="flex:1"><b>${esc(name)}</b></div><button class="btn sm" id="i1">İsmi kopyala</button><button class="btn sm" id="i2">SVG kodu</button><button class="btn sm" id="i3">SVG indir</button><button class="btn ghost sm" id="i4">img etiketi</button></div>`;
+    $('#i1').onclick=()=>copy(name);$('#i4').onclick=()=>copy(`<img src="${url(name)}" alt="${name}">`);
+    const get=async()=>(await fetch(url(name))).text();
+    $('#i2').onclick=async()=>{try{copy(await get())}catch(e){toast('Alınamadı')}};
+    $('#i3').onclick=async()=>{try{dl(name.replace(':','-')+'.svg',await get(),'image/svg+xml')}catch(e){toast('Alınamadı')}};};
+  const go=async q=>{const g=$('#ig');g.innerHTML='<small style="color:var(--mut)">Aranıyor…</small>';
+    try{const r=await fetch('https://api.iconify.design/search?query='+encodeURIComponent(q)+'&limit=72');const d=await r.json();const L=(d.icons||[]).filter(ok);
+      g.innerHTML=L.length?L.map(n=>`<div class="ico" data-n="${esc(n)}"><img loading="lazy" src="${url(n)}?color=%23d9a521" alt=""><span>${esc(n)}</span></div>`).join(''):'<small style="color:var(--mut)">Sonuç yok.</small>'}
+    catch(e){g.innerHTML='<small style="color:var(--mut)">Bağlantı hatası. İnternetini kontrol et.</small>'}};
+  $('#ig').onclick=e=>{const c=e.target.closest('[data-n]');if(c)show(c.dataset.n)};
+  $('#if').onsubmit=e=>{e.preventDefault();const q=$('#iq').value.trim();if(q)go(q)};
+  $('#iq').value='home';go('home');
+});};
+
+/* ---------- LG ---------- */
+const links=a=>`<div class="grid">${a.map(x=>`<a class="card" target="_blank" rel="noopener noreferrer" href="${esc(x[1])}"><b>${esc(x[0])}</b><small>${esc(x[2])}</small></a>`).join('')}</div>`;
+P.lg=()=>{
+page(hd('LG','LG TV için resmi destek ve geliştirici bağlantıları.')+links([
+['LG Destek (TR)','https://www.lg.com/tr/destek/','Kılavuz, yazılım güncelleme, servis'],
+['webOS TV Developer','https://webostv.developer.lge.com/','webOS uygulama geliştirme ve dokümanlar'],
+['webOS Dev Manager Desktop v1.99.5','https://github.com/webosbrew/dev-manager-desktop/releases/tag/v1.99.5','Windows, macOS ve Linux için masaüstü sürümü'],
+['Dev Manager Desktop Sürümleri','https://github.com/webosbrew/dev-manager-desktop/releases','Tüm Dev Manager Desktop sürümleri'],
+['webOS IPTV Player v1.15.0','https://github.com/lennylxx/webos-iptv-player/releases/tag/v1.15.0','webOS IPTV Player sürüm paketi'],
+['webOS Homebrew Uygulamaları','https://repo.webosbrew.org/apps/','Homebrew uygulama deposu'],
+['LG Content Store','https://www.lgappstv.com/','LG TV uygulama mağazası'],
+['LG ThinQ','https://www.lg.com/tr/thinq','Telefonla TV ve cihaz kontrolü'],
+['Plex','https://www.plex.tv/','Kendi medya sunucun'],
+['Kodi','https://kodi.tv/','Açık kaynak medya oynatıcı']
+])+`<h2>Pratik İpuçları</h2><div class="card"><ul class="tips"><li>Yazılım güncelleme: Ayarlar → Tüm Ayarlar → Genel → Bu TV Hakkında → Güncellemeleri Kontrol Et.</li><li>Yavaş internet: Wi-Fi yerine kablo dene veya DNS'i 1.1.1.1 / 8.8.8.8 yap (Ağ → Gelişmiş Wi-Fi Ayarları).</li><li>Uygulama donuyorsa: TV'yi kapat, fişten çek, 30 sn bekle, tekrar aç.</li></ul><small style="color:var(--mut)">Menü adları model ve webOS sürümüne göre değişebilir.</small></div>`);};
+
+/* ---------- M3U LİST ---------- */
+const nameOf=l=>{let q=false;for(let i=0;i<l.length;i++){const c=l[i];if(c=='"')q=!q;else if(c==','&&!q)return l.slice(i+1).trim()}return''};
+const parseM3U=t=>{const out=[];let cur=null;for(let l of t.split(/\r?\n/)){l=l.trim();if(!l)continue;
+  if(l.startsWith('#EXTINF')){const a=k=>{const r=l.match(new RegExp(k+'="([^"]*)"','i'));return r?r[1]:''};cur={name:nameOf(l),group:a('group-title'),logo:a('tvg-logo'),raw:l}}
+  else if(!l.startsWith('#')){out.push(Object.assign({name:l,group:'',logo:'',raw:'#EXTINF:-1,'+l},cur||{},{url:l}));cur=null}}return out};
+P.m3u=()=>{
+let items=[];
+page(hd('M3U LİST','Kendi M3U listeni yükle, kanalları ara, grupla, yinelenenleri temizle ve yeniden indir.')+`
+<div class="card"><div class="row"><label>Dosya yükle<input type="file" id="mf" accept=".m3u,.m3u8,.txt"></label><label>veya adresten al<input id="mu" placeholder="https://.../liste.m3u"></label><button class="btn ghost" id="mg">Adresten al</button></div>
+<label>veya buraya yapıştır<textarea id="mt" placeholder="#EXTM3U ..."></textarea></label><div class="row" style="margin-top:12px"><button class="btn" id="mp">Listeyi oku</button></div>
+<small style="color:var(--mut)">Adresten alma, sitenin CORS iznine bağlıdır; olmazsa dosya yükle veya yapıştır.</small></div>
+<div id="mw" style="display:none"><h2>Kanallar <span class="tag" id="mc"></span></h2>
+<div class="row"><label>Ara<input id="mq" placeholder="Kanal adı"></label><label>Grup<select id="mgr"></select></label><button class="btn ghost" id="md">Yinelenenleri sil</button><button class="btn" id="mx">Filtreliyi indir (.m3u)</button></div><div class="list" id="ml"></div></div>`,()=>{
+  const cur=()=>{const q=$('#mq').value.toLowerCase(),g=$('#mgr').value;return items.filter(i=>(!g||i.group===g)&&(!q||i.name.toLowerCase().includes(q)))};
+  const draw=()=>{const f=cur();$('#mc').textContent=f.length+' / '+items.length;
+    $('#ml').innerHTML=f.slice(0,300).map(i=>`<div class="item"><span><b>${esc(i.name||'(adsız)')}</b> ${i.group?`<span class="tag">${esc(i.group)}</span>`:''}<br><code>${esc(i.url)}</code></span><button class="btn sm" data-copy="${esc(i.url)}">Kopyala</button></div>`).join('')+(f.length>300?`<small style="color:var(--mut)">İlk 300 gösteriliyor; indirme tüm filtreli listeyi içerir.</small>`:'')};
+  const fill=()=>{const gs=[...new Set(items.map(i=>i.group).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr'));$('#mgr').innerHTML='<option value="">Tüm gruplar</option>'+gs.map(g=>`<option>${esc(g)}</option>`).join('');$('#mw').style.display='block';draw()};
+  const read=t=>{items=parseM3U(t);if(!items.length)return toast('Kanal bulunamadı');fill();toast(items.length+' kanal okundu')};
+  $('#mp').onclick=()=>read($('#mt').value);
+  $('#mf').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('#mt').value='';read(r.result)};r.readAsText(f)};
+  $('#mg').onclick=async()=>{const u=safeUrl($('#mu').value);if(!u)return toast('Geçerli adres gir');try{const r=await fetch(u);read(await r.text())}catch(e){toast('Alınamadı (CORS). Dosya yükle.')}};
+  $('#mq').oninput=draw;$('#mgr').onchange=draw;
+  $('#md').onclick=()=>{const s=new Set();const n=items.length;items=items.filter(i=>!s.has(i.url)&&s.add(i.url));fill();toast((n-items.length)+' yinelenen silindi')};
+  $('#mx').onclick=()=>{const f=cur();if(!f.length)return toast('Liste boş');dl('liste.m3u','#EXTM3U\n'+f.map(i=>i.raw+'\n'+i.url).join('\n')+'\n','audio/x-mpegurl')};
+});};
+
+/* ---------- PC HIZLANDIRMA ---------- */
+const CMDS=[
+['Geçici dosyaları temizle','PowerShell','Remove-Item -Path $env:TEMP\\* -Recurse -Force -ErrorAction SilentlyContinue'],
+['DNS önbelleğini temizle','CMD','ipconfig /flushdns'],
+['Yüksek performans güç planı','CMD','powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c'],
+['Sistem dosyalarını onar (yönetici)','CMD','sfc /scannow'],
+['Windows görüntüsünü onar (yönetici)','CMD','DISM /Online /Cleanup-Image /RestoreHealth'],
+['Disk hatalarını tara','CMD','chkdsk C: /scan'],
+['Ağı sıfırla (yönetici, yeniden başlat)','CMD','netsh winsock reset & netsh int ip reset'],
+['Disk Temizleme aracını aç','CMD','cleanmgr'],
+['Başlangıç uygulamalarını yönet','CMD','taskmgr'],
+['Bellek tanılama aracı','CMD','mdsched'],
+['Depolama özeti','PowerShell','Get-PSDrive -PSProvider FileSystem']
+];
+P.pc=()=>{
+page(hd('PC HIZLANDIRMA PERFORMANS KODLARI','Güvenli Windows bakım komutları. Kopyala, CMD/PowerShell\'e yapıştır. (Yönetici yazanlar için "Yönetici olarak çalıştır".)')+`<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">${CMDS.map(c=>`<div class="card"><b>${esc(c[0])}</b> <span class="tag">${c[1]}</span><pre>${esc(c[2])}</pre><button class="btn sm" data-copy="${esc(c[2])}">Kopyala</button></div>`).join('')}</div>
+<div class="card" style="margin-top:16px"><ul class="tips"><li>Komutları çalıştırmadan önce ne yaptıklarını oku; önemli dosyaların yedeğini al.</li><li>Kayıt defteri hileleri ve "RAM temizleyici" programları genelde fayda yerine risk getirir, bu yüzden listede yok.</li></ul></div>`);};
+
+/* ---------- PS4 ---------- */
+P.ps4=()=>{
+page(hd('PS4','Resmi destek bağlantıları ve pratik ipuçları.')+links([
+['PlayStation Destek','https://www.playstation.com/tr-tr/support/','Yardım, sorun giderme, onarım'],
+['PSN Durumu','https://status.playstation.com/','Ağ hizmetleri çalışıyor mu?'],
+['PS Remote Play','https://remoteplay.dl.playstation.net/remoteplay/lang/tr/index.html','PS4\'ü PC veya telefondan oyna'],
+['PlayStation Store','https://store.playstation.com/tr-tr/','Oyun ve indirimler'],
+['GoldHEN Sunucu Arayüzü','https://gamerhack.github.io/g2all/','GamerHack PS4 5.05 - 14.02 GoldHEN sunucusu']
+])+`<h2>İpuçları</h2><div class="card"><ul class="tips"><li>Daha iyi bağlantı: Ayarlar → Ağ → İnternet Bağlantısı Kur → Özel; DNS: 1.1.1.1 ve 8.8.8.8. Mümkünse LAN kablosu kullan.</li><li>Güvenli Mod: Konsolu tamamen kapat, güç düğmesine basılı tut, ikinci bip sesinde bırak.</li><li>Güvenli Modda "Veritabanını Yeniden Oluştur" yavaşlayan sistemi toparlayabilir (veri silmez, uzun sürebilir).</li><li>Yer aç: Ayarlar → Depolama → Sistem Depolaması → kullanılmayan oyun ve kayıtları sil.</li><li>Aşırı ısınma: Havalandırmaları tozdan temizle, açık ve havadar yere koy.</li></ul></div>`);};
+
+/* ---------- PYTHON ---------- */
+const PYS=[
+['Sanal ortam oluştur','python -m venv .venv && .venv\\Scripts\\activate'],
+['Paket kur','pip install requests'],
+['Yerel web sunucusu','python -m http.server 8000'],
+['Dosya oku','with open("dosya.txt", encoding="utf-8") as f:\n    for satir in f:\n        print(satir.strip())'],
+['HTTP isteği','import requests\nr = requests.get("https://api.github.com")\nprint(r.status_code, r.json())'],
+['Klasördeki dosyalar','from pathlib import Path\nfor p in Path(".").iterdir():\n    print(p.name)']
+];
+let pyo=null;
+P.python=()=>{
+page(hd('PYTHON','Kodu tarayıcıda çalıştır (Pyodide) ve hazır parçaları kopyala.')+`<div class="card"><label>Python kodu<textarea id="pcode" spellcheck="false">print("Merhaba aSiKuRT")\nfor i in range(1, 4):\n    print(i, "x", i, "=", i*i)</textarea></label>
+<div class="row" style="margin-top:12px"><button class="btn" id="pr">▶ Çalıştır</button><button class="btn ghost" id="pcp">Kopyala</button></div><pre id="po" style="color:#e8e8e8">Çıktı burada görünecek. İlk çalıştırmada motor indirilir (~10 MB).</pre></div>
+<h2>Hazır Parçalar</h2><div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">${PYS.map(s=>`<div class="card"><b>${esc(s[0])}</b><pre>${esc(s[1])}</pre><button class="btn sm" data-copy="${esc(s[1])}">Kopyala</button></div>`).join('')}</div>
+<h2>Kaynaklar</h2>${links([['python.org','https://www.python.org/downloads/','İndir'],['Dokümantasyon','https://docs.python.org/3/','Resmi belgeler'],['PyPI','https://pypi.org/','Paket dizini']])}`,()=>{
+  $('#pcp').onclick=()=>copy($('#pcode').value);
+  $('#pr').onclick=async()=>{const o=$('#po');const b=$('#pr');b.disabled=true;
+    try{if(!pyo){o.textContent='Python motoru yükleniyor…';await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';s.onload=res;s.onerror=()=>rej(new Error('Motor yüklenemedi (internet?)'));document.head.appendChild(s)});pyo=await loadPyodide()}
+      let out='';pyo.setStdout({batched:s=>out+=s+'\n'});pyo.setStderr({batched:s=>out+=s+'\n'});
+      const r=await pyo.runPythonAsync($('#pcode').value);if(r!==undefined&&r!==null)out+=String(r);o.textContent=out||'(çıktı yok)'}
+    catch(e){o.textContent='Hata: '+e.message}b.disabled=false};
+});};
+
+/* ---------- SPEED ---------- */
+P.speed=()=>{
+page(hd('SPEED HIZ TESTİ','Cloudflare sunucularına karşı gerçek indirme, yükleme ve ping ölçümü.')+`<div class="card"><div class="num"><span id="sv">0</span><small style="font-size:18px;color:var(--mut)"> Mbps</small></div><div class="bar"><i id="sb"></i></div><p class="sub" id="sl" style="text-align:center">Hazır</p>
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr))"><div class="stat"><b id="rp">—</b><small>Ping (ms)</small></div><div class="stat"><b id="rj">—</b><small>Jitter (ms)</small></div><div class="stat"><b id="rd">—</b><small>İndirme (Mbps)</small></div><div class="stat"><b id="ru">—</b><small>Yükleme (Mbps)</small></div></div>
+<div class="row" style="justify-content:center;margin:18px 0 0"><button class="btn" id="go">Testi başlat</button></div></div>`,()=>{
+  const live=(v,p)=>{$('#sv').textContent=v.toFixed(1);if(p!=null)$('#sb').style.width=p+'%'};
+  const lab=t=>$('#sl').textContent=t;
+  const ping=async()=>{const t=[];for(let i=0;i<7;i++){const s=performance.now();await fetch('https://speed.cloudflare.com/__down?bytes=0&r='+Math.random(),{cache:'no-store'});if(i)t.push(performance.now()-s)}
+    const m=[...t].sort((a,b)=>a-b)[Math.floor(t.length/2)];let j=0;for(let i=1;i<t.length;i++)j+=Math.abs(t[i]-t[i-1]);return[m,j/(t.length-1)]};
+  const down=async()=>{const t0=performance.now();let got=0;const r=await fetch('https://speed.cloudflare.com/__down?bytes=60000000&r='+Math.random(),{cache:'no-store'});const rd=r.body.getReader();
+    while(true){const{done,value}=await rd.read();if(done)break;got+=value.length;const s=(performance.now()-t0)/1000;if(s>.4)live(got*8/s/1e6,Math.min(100,s/8*100));if(s>8){rd.cancel();break}}
+    return got*8/((performance.now()-t0)/1000)/1e6};
+  const up=()=>new Promise((res,rej)=>{const size=8e6,t0=performance.now(),x=new XMLHttpRequest();x.open('POST','https://speed.cloudflare.com/__up?r='+Math.random());
+    x.upload.onprogress=e=>{const s=(performance.now()-t0)/1000;if(s>.4)live(e.loaded*8/s/1e6,Math.min(100,e.loaded/size*100))};
+    x.onload=()=>res(size*8/((performance.now()-t0)/1000)/1e6);x.onerror=()=>rej(new Error('up'));x.send(new Blob([new Uint8Array(size)]))});
+  $('#go').onclick=async()=>{const b=$('#go');b.disabled=true;['rp','rj','rd','ru'].forEach(i=>$('#'+i).textContent='—');live(0,0);
+    try{lab('Ping ölçülüyor…');const[p,j]=await ping();$('#rp').textContent=p.toFixed(0);$('#rj').textContent=j.toFixed(1);
+      lab('İndirme ölçülüyor…');const d=await down();$('#rd').textContent=d.toFixed(1);live(d,100);
+      lab('Yükleme ölçülüyor…');live(0,0);try{const u=await up();$('#ru').textContent=u.toFixed(1);live(u,100)}catch(e){$('#ru').textContent='hata'}
+      lab('Tamamlandı ✓')}catch(e){lab('Test yapılamadı. İnternet bağlantını kontrol et.')}b.disabled=false};
+});};
+
+/* ---------- WALLPAPER ---------- */
+P.wallpaper=()=>{
+page(hd('WALLPAPER','Rastgele yüksek çözünürlüklü duvar kağıtları. Beğendiğini bu sitenin arka planı yap.')+`
+<form class="search" id="wf" style="width:100%;max-width:640px;margin-bottom:12px"><input id="wq" placeholder="Anahtar kelime (aynı kelime = aynı set)"><button class="btn">Getir</button><button type="button" class="btn ghost" id="wr">Rastgele</button></form>
+<div class="row"><button class="btn ghost sm" id="wx">Arka planı kaldır</button></div><div class="grid" id="wg" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))"></div>
+<h2>Daha Fazlası</h2>${links([['Wallhaven','https://wallhaven.cc/','Geniş duvar kağıdı arşivi'],['Unsplash','https://unsplash.com/s/photos/wallpaper','Ücretsiz fotoğraflar'],['Pexels','https://www.pexels.com/search/wallpaper/','Ücretsiz fotoğraf ve video']])}`,()=>{
+  const bg=u=>{$('#bg').style.backgroundImage=u?`url("${u}")`:'';save('asi_bg',u||'')};
+  const draw=seed=>{$('#wg').innerHTML=Array.from({length:12},(_,i)=>{const s=encodeURIComponent(seed+'-'+i);return `<div class="wp"><img loading="lazy" src="https://picsum.photos/seed/${s}/480/270" alt=""><div><a class="btn sm" target="_blank" rel="noopener" href="https://picsum.photos/seed/${s}/1920/1080">Tam boy</a><button class="btn ghost sm" data-bg="https://picsum.photos/seed/${s}/1920/1080">Arka plan yap</button></div></div>`}).join('')};
+  $('#wg').onclick=e=>{const b=e.target.closest('[data-bg]');if(b){bg(b.dataset.bg);toast('Arka plan ayarlandı ✓')}};
+  $('#wf').onsubmit=e=>{e.preventDefault();draw($('#wq').value.trim()||'asikurt')};
+  $('#wr').onclick=()=>draw(Math.random().toString(36).slice(2,8));$('#wx').onclick=()=>{bg('');toast('Kaldırıldı')};
+  draw('asikurt');
+});};
+
+/* ---------- YAPAY ZEKA ---------- */
+const AI=[
+['ChatGPT','https://chatgpt.com/','Sohbet'],['Claude','https://claude.ai/','Sohbet'],['Gemini','https://gemini.google.com/','Sohbet'],['Microsoft Copilot','https://copilot.microsoft.com/','Sohbet'],
+['Perplexity','https://www.perplexity.ai/','Arama'],['DeepSeek','https://chat.deepseek.com/','Sohbet'],['Grok','https://grok.com/','Sohbet'],['Mistral Le Chat','https://chat.mistral.ai/','Sohbet'],
+['NotebookLM','https://notebooklm.google/','Not / Araştırma'],['GitHub Copilot','https://github.com/features/copilot','Kodlama'],['Cursor','https://cursor.com/','Kodlama'],['Hugging Face','https://huggingface.co/','Model / Topluluk'],
+['Midjourney','https://www.midjourney.com/','Görsel'],['Leonardo AI','https://leonardo.ai/','Görsel'],['Ideogram','https://ideogram.ai/','Görsel'],['Adobe Firefly','https://firefly.adobe.com/','Görsel'],
+['Runway','https://runwayml.com/','Video'],['ElevenLabs','https://elevenlabs.io/','Ses'],['Suno','https://suno.com/','Müzik'],['Canva','https://www.canva.com/','Tasarım']
+];
+P.ai=()=>{
+page(hd('YAPAY ZEKA ARAÇLARI','Sık kullanılan yapay zeka araçları.')+`<div class="row"><label>Filtrele<input id="aq" placeholder="Ad veya tür: görsel, kodlama..."></label></div><div class="grid" id="ag2"></div>`,()=>{
+  const d=()=>{const q=$('#aq').value.toLowerCase();$('#ag2').innerHTML=AI.filter(a=>(a[0]+' '+a[2]).toLowerCase().includes(q)).map(a=>`<a class="card" target="_blank" rel="noopener noreferrer" href="${a[1]}"><b>${esc(a[0])}</b><span class="tag">${esc(a[2])}</span></a>`).join('')};
+  $('#aq').oninput=d;d();
+});};
+
+/* ---------- ROUTER ---------- */
+function route(){
+  const id=location.hash.replace(/^#\/?/,'')||'ana';
+  const n=ALL.find(x=>x.id===id)||HOME;
+  $('#ttl').textContent=n.t;document.title=(n.id==='ana'?'':n.t+' • ')+'aSiKuRT';
+  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.id===n.id));
+  (P[n.id]||P.ana)();$('main').scrollTop=0;
+  if(innerWidth<=860)document.body.classList.add('nav-closed');
+}
+$('#tog').onclick=()=>document.body.classList.toggle('nav-closed');
+$('#scrim').onclick=()=>document.body.classList.add('nav-closed');
+addEventListener('hashchange',route);
+const savedBg=load('asi_bg','');if(savedBg)$('#bg').style.backgroundImage=`url("${savedBg}")`;
+if(innerWidth<=860)document.body.classList.add('nav-closed');
+route();
+</script>
+</body>
+</html>
