@@ -1,2 +1,3 @@
-# asikurt23.github.io
-PS4, M3U, LGTV, PC PROGRAM, GAME
+# aSiKuRT
+
+Ana sayfa, arama ve araçlar. Tek dosya: index.html
