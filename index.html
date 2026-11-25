@@ -167,10 +167,7 @@ const NAV=[
 {id:'python',t:'PYTHON',i:'🐍',d:'Tarayıcıda Python çalıştır, hazır kod parçaları.'},
 {id:'api',t:'API ANAHTAR',i:'🔑',d:'Güvenli rastgele anahtar ve UUID üretici.'},
 {id:'m3u',t:'M3U LİST',i:'🎬',d:'M3U listesi aç, filtrele, temizle, indir.'},
-{id:'pc',t:'PC HIZLANDIRMA PERFORMANS KODLARI',i:'⚡',d:'Windows bakım ve hızlandırma komutları.'},
-{id:'apk',t:'APK OLUŞTURUCU',i:'📱',d:'Siteni PWA yap, APK için hazırla.'},
 {id:'ai',t:'YAPAY ZEKA ARAÇLARI',i:'🤖',d:'Popüler yapay zeka araçları listesi.'},
-{id:'icon',t:'İCON BUL',i:'🎯',d:'Binlerce ikon ara, SVG kopyala/indir.'},
 {id:'wallpaper',t:'WALLPAPER',i:'🖼️',d:'Duvar kağıdı bul, arka plan yap.'},
 {id:'speed',t:'SPEED HIZ TESTİ',i:'🚀',d:'İndirme, yükleme ve ping ölçümü.'}
 ].sort((a,b)=>a.t.localeCompare(b.t,'tr'));
@@ -226,21 +223,6 @@ page(hd('API ANAHTAR','Tarayıcının güvenli rastgele sayı üreticisiyle anah
   $('#ag').click();draw();
 });};
 
-/* ---------- APK OLUŞTURUCU ---------- */
-P.apk=()=>{
-page(hd('APK OLUŞTURUCU','Tarayıcı içinde gerçek APK derlenemez. Doğru yol: siteni PWA yap, sonra PWABuilder ile APK/AAB al. Aşağıdaki araç PWA dosyalarını hazırlar.')+`
-<div class="card"><div class="row"><label>Uygulama adı<input id="mn" value="aSiKuRT"></label><label>Kısa ad<input id="ms" value="aSiKuRT"></label></div>
-<div class="row"><label>Başlangıç yolu<input id="mu" value="./"></label><label>Tema rengi<input id="mt" type="color" value="#22b8cf"></label><label>Arka plan<input id="mb" type="color" value="#060d1b"></label></div>
-<div class="row"><label>512x512 PNG ikon yolu<input id="mi" value="icon-512.png"></label></div>
-<h2 style="margin-top:6px">manifest.json</h2><pre id="mo"></pre>
-<div class="row"><button class="btn" id="mc">Kopyala</button><button class="btn ghost" id="md">manifest.json indir</button></div></div>
-<h2>Adımlar</h2><div class="card"><ul class="tips"><li>manifest.json ve 512x512 PNG ikonu depoya ekle; index.html &lt;head&gt; içine: <code>&lt;link rel="manifest" href="manifest.json"&gt;</code></li><li>Siteyi GitHub Pages'te yayınla (HTTPS gerekir).</li><li>Aşağıdaki PWABuilder'a site adresini yapıştır → Android paketini indir.</li></ul>
-<div class="row" style="margin-top:12px"><a class="btn" target="_blank" rel="noopener" href="https://www.pwabuilder.com/">PWABuilder</a><a class="btn ghost" target="_blank" rel="noopener" href="https://github.com/GoogleChromeLabs/bubblewrap">Bubblewrap</a><a class="btn ghost" target="_blank" rel="noopener" href="https://developer.android.com/studio">Android Studio</a></div></div>`,()=>{
-  const gen=()=>JSON.stringify({name:$('#mn').value,short_name:$('#ms').value,start_url:$('#mu').value,scope:'./',display:'standalone',background_color:$('#mb').value,theme_color:$('#mt').value,icons:[{src:$('#mi').value,sizes:'512x512',type:'image/png',purpose:'any maskable'}]},null,2);
-  const up=()=>$('#mo').textContent=gen();document.querySelectorAll('.pg input').forEach(i=>i.oninput=up);up();
-  $('#mc').onclick=()=>copy(gen());$('#md').onclick=()=>dl('manifest.json',gen(),'application/json');
-});};
-
 /* ---------- HTML ---------- */
 P.html=()=>{
 const def=load('asi_html',{h:'<h1>Merhaba aSiKuRT</h1>\n<button id="b">Tıkla</button>',c:'body{font-family:sans-serif;background:#111;color:#67e8f9;text-align:center;padding:40px}\nbutton{padding:10px 20px;border-radius:10px;border:0;background:#22b8cf}',j:'document.getElementById("b").onclick=()=>alert("Çalışıyor!")'});
@@ -254,27 +236,6 @@ page(hd('HTML','Kodunu yaz, canlı önizle. Önizleme güvenli sandbox içinde �
   let t;['#th','#tc','#tj'].forEach(s=>$(s).oninput=()=>{clearTimeout(t);t=setTimeout(run,400)});
   $('#hr').onclick=run;$('#hc').onclick=()=>copy(build());$('#hd').onclick=()=>dl('sayfa.html',build(),'text/html');
   $('#hx').onclick=()=>{$('#th').value=$('#tc').value=$('#tj').value='';run()};run();
-});};
-
-/* ---------- İCON BUL ---------- */
-P.icon=()=>{
-page(hd('İCON BUL','Iconify veritabanında binlerce ikon ara.')+`
-<form class="search" id="if" style="width:100%;max-width:640px;margin-bottom:18px"><input id="iq" placeholder="Örn: home, user, arrow, game..."><button class="btn">Ara</button></form>
-<div id="ip" class="card" style="display:none;margin-bottom:16px"></div>
-<div class="grid" id="ig" style="grid-template-columns:repeat(auto-fill,minmax(110px,1fr))"></div>`,()=>{
-  const ok=s=>/^[a-z0-9-]+:[a-z0-9-]+$/i.test(s),url=s=>'https://api.iconify.design/'+s.replace(':','/')+'.svg';
-  const show=name=>{const p=$('#ip');p.style.display='block';p.innerHTML=`<div class="row"><img src="${url(name)}?color=%23d9a521&height=64" height="64" alt=""><div style="flex:1"><b>${esc(name)}</b></div><button class="btn sm" id="i1">İsmi kopyala</button><button class="btn sm" id="i2">SVG kodu</button><button class="btn sm" id="i3">SVG indir</button><button class="btn ghost sm" id="i4">img etiketi</button></div>`;
-    $('#i1').onclick=()=>copy(name);$('#i4').onclick=()=>copy(`<img src="${url(name)}" alt="${name}">`);
-    const get=async()=>(await fetch(url(name))).text();
-    $('#i2').onclick=async()=>{try{copy(await get())}catch(e){toast('Alınamadı')}};
-    $('#i3').onclick=async()=>{try{dl(name.replace(':','-')+'.svg',await get(),'image/svg+xml')}catch(e){toast('Alınamadı')}};};
-  const go=async q=>{const g=$('#ig');g.innerHTML='<small style="color:var(--mut)">Aranıyor…</small>';
-    try{const r=await fetch('https://api.iconify.design/search?query='+encodeURIComponent(q)+'&limit=72');const d=await r.json();const L=(d.icons||[]).filter(ok);
-      g.innerHTML=L.length?L.map(n=>`<div class="ico" data-n="${esc(n)}"><img loading="lazy" src="${url(n)}?color=%23d9a521" alt=""><span>${esc(n)}</span></div>`).join(''):'<small style="color:var(--mut)">Sonuç yok.</small>'}
-    catch(e){g.innerHTML='<small style="color:var(--mut)">Bağlantı hatası. İnternetini kontrol et.</small>'}};
-  $('#ig').onclick=e=>{const c=e.target.closest('[data-n]');if(c)show(c.dataset.n)};
-  $('#if').onsubmit=e=>{e.preventDefault();const q=$('#iq').value.trim();if(q)go(q)};
-  $('#iq').value='home';go('home');
 });};
 
 /* ---------- LG ---------- */
@@ -318,24 +279,6 @@ page(hd('M3U LİST','Kendi M3U listeni yükle, kanalları ara, grupla, yinelenen
   $('#md').onclick=()=>{const s=new Set();const n=items.length;items=items.filter(i=>!s.has(i.url)&&s.add(i.url));fill();toast((n-items.length)+' yinelenen silindi')};
   $('#mx').onclick=()=>{const f=cur();if(!f.length)return toast('Liste boş');dl('liste.m3u','#EXTM3U\n'+f.map(i=>i.raw+'\n'+i.url).join('\n')+'\n','audio/x-mpegurl')};
 });};
-
-/* ---------- PC HIZLANDIRMA ---------- */
-const CMDS=[
-['Geçici dosyaları temizle','PowerShell','Remove-Item -Path $env:TEMP\\* -Recurse -Force -ErrorAction SilentlyContinue'],
-['DNS önbelleğini temizle','CMD','ipconfig /flushdns'],
-['Yüksek performans güç planı','CMD','powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c'],
-['Sistem dosyalarını onar (yönetici)','CMD','sfc /scannow'],
-['Windows görüntüsünü onar (yönetici)','CMD','DISM /Online /Cleanup-Image /RestoreHealth'],
-['Disk hatalarını tara','CMD','chkdsk C: /scan'],
-['Ağı sıfırla (yönetici, yeniden başlat)','CMD','netsh winsock reset & netsh int ip reset'],
-['Disk Temizleme aracını aç','CMD','cleanmgr'],
-['Başlangıç uygulamalarını yönet','CMD','taskmgr'],
-['Bellek tanılama aracı','CMD','mdsched'],
-['Depolama özeti','PowerShell','Get-PSDrive -PSProvider FileSystem']
-];
-P.pc=()=>{
-page(hd('PC HIZLANDIRMA PERFORMANS KODLARI','Güvenli Windows bakım komutları. Kopyala, CMD/PowerShell\'e yapıştır. (Yönetici yazanlar için "Yönetici olarak çalıştır".)')+`<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">${CMDS.map(c=>`<div class="card"><b>${esc(c[0])}</b> <span class="tag">${c[1]}</span><pre>${esc(c[2])}</pre><button class="btn sm" data-copy="${esc(c[2])}">Kopyala</button></div>`).join('')}</div>
-<div class="card" style="margin-top:16px"><ul class="tips"><li>Komutları çalıştırmadan önce ne yaptıklarını oku; önemli dosyaların yedeğini al.</li><li>Kayıt defteri hileleri ve "RAM temizleyici" programları genelde fayda yerine risk getirir, bu yüzden listede yok.</li></ul></div>`);};
 
 /* ---------- PS4 ---------- */
 P.ps4=()=>{
@@ -457,49 +400,9 @@ route();
       if(!q('#q')){location.hash='#/ana';setTimeout(()=>q('#q')&&q('#q').focus(),200)}else q('#q').focus()}});
   setInterval(tick,1000);
   extras();
-  if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=2').catch(err=>console.error('Service worker kaydedilemedi:',err)));
+  if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=3').catch(err=>console.error('Service worker kaydedilemedi:',err)));
 })();
 </script>
 
-<script id="pc-js">
-(function(){
-  const old=P.pc;
-  P.pc=function(){
-    old();
-    const pg=document.querySelector('.pg');
-    if(!pg||document.querySelector('#pcapp'))return;
-    const d=document.createElement('div');d.id='pcapp';
-    d.innerHTML=`
-<h2>aSiKuRT PRO IT Control Center</h2>
-<div class="card">
-  <b>Windows 10/11 için IT bakım, teşhis ve yönetim paneli</b>
-  <p class="sub" style="margin:8px 0 14px">Canlı CPU / RAM / disk göstergeleri, tek tuşla sağlık kontrolü ve 100'den fazla hazır işlem: güvenlik, onarım, disk, performans, ağ, sistem araçları ve resmi program sayfaları. Sadece Python ve Windows'un kendi araçlarını kullanır; hiçbir şey sessizce kurulmaz. Sistemi değiştiren işlemler onay ister.</p>
-  <div class="row">
-    <a class="btn" href="aSiKuRT.exe" download="aSiKuRT.exe">⬇ aSiKuRT.exe indir</a>
-    <a class="btn ghost" href="aSiKuRT.pyw" download="aSiKuRT.pyw">aSiKuRT.pyw kaynak dosyası</a>
-    <button class="btn ghost" id="pcCopy">Kodu kopyala</button>
-  </div>
-  <h2 style="margin-top:18px">Nasıl çalıştırılır</h2>
-  <ul class="tips">
-    <li>Hazır Windows uygulaması için <code>aSiKuRT.exe</code> dosyasını indirip çalıştır; Python kurulumu gerekmez. Windows güvenlik uyarılarını dikkate al.</li>
-    <li>Kaynak kod sürümünü çalıştırmak için Python 3 kurulu olmalı: <a href="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer" style="color:#67e8f9">python.org</a> (kurulumda "Add python.exe to PATH" kutusunu işaretle); ardından <code>aSiKuRT.pyw</code> dosyasına çift tıkla.</li>
-    <li>Program yönetici izni ister. Vermezsen sınırlı kullanıcı modunda açılır, bazı işlemler çalışmaz.</li>
-  </ul>
-  <small style="color:var(--mut)">Bu program kendi bilgisayarında çalışır, bu sayfanın içinde çalışmaz. Sistem dosyalarını değiştiren işlemleri (SFC, DISM, CHKDSK, ağ sıfırlama vb.) ne yaptığını okuyarak kullan.</small>
-  <details id="pcDet" style="margin-top:14px"><summary style="cursor:pointer;color:#67e8f9;font-weight:700">Kaynak kodu göster</summary>
-    <pre id="pcCode" style="max-height:420px;overflow:auto;white-space:pre;word-break:normal">Yükleniyor…</pre>
-  </details>
-</div>`;
-    pg.insertBefore(d,pg.querySelector('.grid'));
-    const get=()=>fetch('aSiKuRT.pyw',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()});
-    document.querySelector('#pcCopy').onclick=()=>get().then(copy).catch(()=>toast('Dosya okunamadı'));
-    document.querySelector('#pcDet').addEventListener('toggle',function(){
-      const pre=document.querySelector('#pcCode');
-      if(this.open&&!pre.dataset.ok)get().then(t=>{pre.textContent=t;pre.dataset.ok=1}).catch(()=>{pre.textContent='Dosya okunamadı.'});
-    });
-  };
-  if(location.hash==='#/pc')route();
-})();
-</script>
 </body>
 </html>
