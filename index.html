@@ -546,9 +546,18 @@ const nameOf=l=>{let q=false;for(let i=0;i<l.length;i++){const c=l[i];if(c=='"')
 const parseM3U=t=>{const out=[];let cur=null;for(let l of t.split(/\r?\n/)){l=l.trim();if(!l)continue;
   if(l.startsWith('#EXTINF')){const a=k=>{const r=l.match(new RegExp(k+'="([^"]*)"','i'));return r?r[1]:''};cur={name:nameOf(l),group:a('group-title'),logo:a('tvg-logo'),raw:l}}
   else if(!l.startsWith('#')){out.push(Object.assign({name:l,group:'',logo:'',raw:'#EXTINF:-1,'+l},cur||{},{url:l}));cur=null}}return out};
+const GITHUB_M3U=[
+  {name:'Türkiye',path:'countries/tr.m3u',file:'turkiye.m3u'},
+  {name:'Haber',path:'categories/news.m3u',file:'haber.m3u'},
+  {name:'Spor',path:'categories/sports.m3u',file:'spor.m3u'},
+  {name:'Belgesel',path:'categories/documentary.m3u',file:'belgesel.m3u'},
+  {name:'Müzik',path:'categories/music.m3u',file:'muzik.m3u'}
+].map(list=>({...list,url:'https://iptv-org.github.io/iptv/'+list.path}));
 P.m3u=()=>{
 let items=[];
-page(hd('M3U LİST','Kendi M3U listeni yükle, kanalları ara, grupla, yinelenenleri temizle ve yeniden indir.')+`
+page(hd('M3U LİST','GitHub’dan hazır M3U listelerini aç veya indir; kendi listeni de yükle, filtrele ve yeniden indir.')+`
+<h2>GitHub’dan Hazır Listeler</h2><div class="grid">${GITHUB_M3U.map((list,index)=>`<article class="card"><b>${esc(list.name)}</b><small style="margin:6px 0 10px">Liste adresi · GitHub’da aç veya kopyala</small><a class="item" href="${esc(list.url)}" target="_blank" rel="noopener noreferrer"><code>${esc(list.url)}</code></a><div class="row" style="margin:10px 0 0"><button class="btn sm" data-github-load="${index}">Listeyi aç</button><button class="btn ghost sm" data-github-download="${index}">M3U indir</button><button class="btn ghost sm" data-copy="${esc(list.url)}">Adresi kopyala</button></div></article>`).join('')}</div>
+<p class="sub" style="margin-top:10px">Listeler iptv-org GitHub projesinden gelir. Kanal adreslerinin çalışması yayın kaynağına göre değişebilir. <a href="https://github.com/iptv-org/iptv" target="_blank" rel="noopener noreferrer">Kaynak proje ↗</a></p>
 <div class="card"><div class="row"><label>Dosya yükle<input type="file" id="mf" accept=".m3u,.m3u8,.txt"></label><label>veya adresten al<input id="mu" placeholder="https://.../liste.m3u"></label><button class="btn ghost" id="mg">Adresten al</button></div>
 <label>veya buraya yapıştır<textarea id="mt" placeholder="#EXTM3U ..."></textarea></label><div class="row" style="margin-top:12px"><button class="btn" id="mp">Listeyi oku</button></div>
 <small style="color:var(--mut)">Adresten alma, sitenin CORS iznine bağlıdır; olmazsa dosya yükle veya yapıştır.</small></div>
@@ -559,6 +568,31 @@ page(hd('M3U LİST','Kendi M3U listeni yükle, kanalları ara, grupla, yinelenen
     $('#ml').innerHTML=f.slice(0,300).map(i=>`<div class="item"><span><b>${esc(i.name||'(adsız)')}</b> ${i.group?`<span class="tag">${esc(i.group)}</span>`:''}<br><code>${esc(i.url)}</code></span><button class="btn sm" data-copy="${esc(i.url)}">Kopyala</button></div>`).join('')+(f.length>300?`<small style="color:var(--mut)">İlk 300 gösteriliyor; indirme tüm filtreli listeyi içerir.</small>`:'')};
   const fill=()=>{const gs=[...new Set(items.map(i=>i.group).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr'));$('#mgr').innerHTML='<option value="">Tüm gruplar</option>'+gs.map(g=>`<option>${esc(g)}</option>`).join('');$('#mw').style.display='block';draw()};
   const read=t=>{items=parseM3U(t);if(!items.length)return toast('Kanal bulunamadı');fill();toast(items.length+' kanal okundu')};
+  const fetchPlaylist=async list=>{
+    const response=await fetch(list.url,{cache:'no-store'});
+    if(!response.ok)throw new Error('GitHub listesi alınamadı (HTTP '+response.status+').');
+    const text=await response.text();
+    if(!text.trimStart().startsWith('#EXTM3U'))throw new Error('GitHub adresinden geçerli M3U listesi gelmedi.');
+    return text;
+  };
+  const downloadPlaylist=async(list,button)=>{
+    button.disabled=true;
+    try{const text=await fetchPlaylist(list);dl(list.file,text,'audio/x-mpegurl')}
+    catch(error){console.error('GitHub M3U indirilemedi:',error);toast(error.message||'GitHub listesi indirilemedi.')}
+    finally{button.disabled=false}
+  };
+  $('#view').querySelectorAll('[data-github-load]').forEach(button=>button.onclick=async()=>{
+    const list=GITHUB_M3U[Number(button.dataset.githubLoad)];
+    if(!list)return;
+    button.disabled=true;$('#mu').value=list.url;
+    try{$('#mt').value=await fetchPlaylist(list);read($('#mt').value)}
+    catch(error){console.error('GitHub M3U listesi açılamadı:',error);toast(error.message||'GitHub listesi açılamadı.')}
+    finally{button.disabled=false}
+  });
+  $('#view').querySelectorAll('[data-github-download]').forEach(button=>button.onclick=()=>{
+    const list=GITHUB_M3U[Number(button.dataset.githubDownload)];
+    if(list)downloadPlaylist(list,button);
+  });
   $('#mp').onclick=()=>read($('#mt').value);
   $('#mf').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('#mt').value='';read(r.result)};r.readAsText(f)};
   $('#mg').onclick=async()=>{const u=safeUrl($('#mu').value);if(!u)return toast('Geçerli adres gir');try{const r=await fetch(u);read(await r.text())}catch(e){toast('Alınamadı (CORS). Dosya yükle.')}};
@@ -689,7 +723,7 @@ route();
       if(!q('#q')){location.hash='#/ana';setTimeout(()=>q('#q')&&q('#q').focus(),200)}else q('#q').focus()}});
   if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
-    addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=10',{updateViaCache:'none'}).then(registration=>registration.update()).catch(err=>console.error('Service worker kaydedilemedi:',err)));
+    addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=11',{updateViaCache:'none'}).then(registration=>registration.update()).catch(err=>console.error('Service worker kaydedilemedi:',err)));
   }
 })();
 </script>
