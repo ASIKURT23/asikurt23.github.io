@@ -1,9 +1,0 @@
-{
-  "manifest_version": 3,
-  "name": "aSiKuRT Yeni Sekme",
-  "version": "1.0.0",
-  "description": "Chrome'da her yeni sekmede aSiKuRT ana sayfasını açar.",
-  "chrome_url_overrides": {
-    "newtab": "newtab.html"
-  }
-}

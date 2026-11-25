@@ -260,24 +260,6 @@ body.nav-closed .foot::after{content:"©";font-size:11px}
   body.nav-closed .foot{padding:12px 10px 2px;text-align:left;font-size:12px}
   body.nav-closed .foot::after{content:none}
 }
-dialog.setup-dialog{width:min(560px,calc(100% - 28px));max-height:min(85vh,720px);overflow:auto;padding:22px;border:1px solid #347286;border-radius:16px;background:#101820;color:var(--txt);box-shadow:0 24px 80px rgba(0,0,0,.65)}
-dialog.setup-dialog::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(3px)}
-.setup-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
-.setup-head h2{margin:0 0 6px}
-.setup-intro{margin:8px 0 18px;color:var(--mut);font-size:13px;line-height:1.55}
-.setup-address{display:flex;align-items:stretch;gap:8px;margin-bottom:18px}
-.setup-address input{min-width:0;flex:1;width:auto}
-.setup-steps{display:grid;gap:9px}
-.setup-steps details{padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:#141d26}
-.setup-steps summary{color:#dbeaf2;font-size:13px;font-weight:650;cursor:pointer}
-.setup-steps p{margin:9px 0 0;color:var(--mut);font-size:12px;line-height:1.6}
-.setup-note{margin-top:14px;color:var(--mut);font-size:11px;line-height:1.5}
-#start-page-open[hidden]{display:none}
-@media(max-width:520px){
-  dialog.setup-dialog{padding:17px}
-  .setup-address{flex-direction:column}
-  .setup-address .btn{align-self:flex-end}
-}
 </style>
 </head>
 <body class="nav-closed">
@@ -288,24 +270,10 @@ dialog.setup-dialog::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(3p
   <div class="foot">© aSiKuRT</div>
 </aside>
 <main>
-  <header class="top"><button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat" aria-expanded="true">☰</button><span class="top-title" id="top-title">aSiKuRT</span><button id="start-page-open" class="btn ghost sm" type="button" style="margin-left:auto">Chrome'da kullan</button></header>
+  <header class="top"><button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat" aria-expanded="true">☰</button><span class="top-title" id="top-title">aSiKuRT</span></header>
   <div id="view"></div>
 </main>
 <div id="toast"></div>
-<dialog id="start-page-dialog" class="setup-dialog" aria-labelledby="start-page-title">
-  <div class="setup-head"><h2 id="start-page-title">Chrome'da aSiKuRT</h2><button id="start-page-close" class="btn ghost sm" type="button" aria-label="Pencereyi kapat">✕</button></div>
-  <p class="setup-intro">Yeni sekmelerin aSiKuRT olarak açılması için uzantıyı indirip Chrome'a ekle. Kurulumdan sonra yeni sekme açıldığında bu seçenek gizlenir.</p>
-  <p style="margin-bottom:12px"><a class="btn" href="chrome-extension.zip" download>Chrome uzantısını indir (.zip)</a></p>
-  <div class="setup-steps" style="margin-bottom:16px">
-    <details open><summary>Uzantıyı Chrome'a ekle</summary><p>1. ZIP dosyasını çıkar. 2. Chrome'da <b>chrome://extensions</b> adresini açıp Geliştirici modu'nu etkinleştir. 3. <b>Paketlenmemiş öğe yükle</b>'yi seçip çıkardığın <b>chrome-extension</b> klasörünü göster.</p></details>
-  </div>
-  <p class="setup-intro">Chrome başlangıçta da aSiKuRT'yi açsın istersen, bu adresi başlangıç sayfalarına ayrıca ekle:</p>
-  <div class="setup-address"><input id="start-page-url" type="url" readonly aria-label="aSiKuRT adresi"><button id="start-page-copy" class="btn" type="button">Adresi kopyala</button></div>
-  <div class="setup-steps">
-    <details open><summary>Chrome başlangıç sayfası</summary><p>Ayarlar → Başlangıçta → Belirli bir sayfa veya sayfalar'ı aç → Yeni sayfa ekle. Kopyaladığın adresi yapıştır.</p></details>
-  </div>
-  <p class="setup-note">Uzantı yalnızca yeni sekme sayfasını değiştirir. Chrome'un diğer ayarlarına erişim izni istemez.</p>
-</dialog>
 
 <script>
 const $=(s,r=document)=>r.querySelector(s);
@@ -317,16 +285,6 @@ const copy=async t=>{try{await navigator.clipboard.writeText(t)}catch(e){const a
 const dl=(name,text,type='text/plain')=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
 const safeUrl=u=>{try{u=u.trim();if(!/^https?:\/\//i.test(u))u='https://'+u;const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:null}catch(e){return null}};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(b)copy(b.dataset.copy)});
-const startPageDialog=$('#start-page-dialog');
-$('#start-page-url').value=location.origin+location.pathname;
-if(new URLSearchParams(location.search).has('asikurt-newtab')){
-  $('#start-page-open').hidden=true;
-  history.replaceState(null,'',location.pathname+location.hash);
-}
-$('#start-page-open').onclick=()=>startPageDialog.showModal();
-$('#start-page-close').onclick=()=>startPageDialog.close();
-$('#start-page-copy').onclick=()=>copy($('#start-page-url').value);
-startPageDialog.addEventListener('click',e=>{if(e.target===startPageDialog)startPageDialog.close()});
 
 const LOGO='';
 $('#brand').innerHTML=LOGO+'<span class="brand-name">aSiKuRT</span><span class="brand-vertical" aria-hidden="true">aSiKuRT</span>';
