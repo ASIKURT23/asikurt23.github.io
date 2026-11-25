@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>aSiKuRT</title>
 <meta name="description" content="aSiKuRT - araçlar, kaynaklar ve hızlı erişim başlangıç sayfası">
-<meta name="theme-color" content="#060d1b">
+<meta name="theme-color" content="#090d12">
 <style>
 :root{--bg:#060d1b;--panel:#0b1a2e;--panel2:#112a46;--line:#1d3b61;--gold:#22b8cf;--gold2:#67e8f9;--txt:#f2f2f2;--mut:#9aa0a6}
 *{box-sizing:border-box;margin:0}
@@ -131,54 +131,87 @@ nav a.on{font-weight:700}
 #clk b{display:block;font-family:Consolas,"Courier New",monospace;font-size:28px;color:#67e8f9;letter-spacing:3px;text-shadow:0 0 14px rgba(34,184,207,.5)}
 #clk small{color:#9fb8d6}
 </style>
-<style id="premium-theme">
-:root{--bg:#0b0f14;--panel:#121820;--panel2:#1a232d;--line:#2a3541;--gold:#d4aa68;--gold2:#e8c891;--txt:#edf1f5;--mut:#9ba7b3}
-body{background:radial-gradient(900px 560px at 50% -18%,rgba(212,170,104,.09),transparent 68%),linear-gradient(180deg,#0d1218,#0b0f14 72%)}
-#bg{opacity:.07}
-aside{background:#10161e;border-right-color:#26313d;box-shadow:8px 0 28px rgba(0,0,0,.2)}
-.brand{font-family:inherit;letter-spacing:1.6px;text-shadow:none;color:var(--gold2)}
-.brand span{color:var(--gold2)}
-nav a{font-family:inherit;font-size:13px;letter-spacing:.2px;text-transform:none;border:1px solid transparent;border-radius:10px;color:#c5ced7}
-nav a span:first-child{display:inline-flex;width:22px;justify-content:center}
-nav a:hover{background:#19232d;border-color:#273441;color:#fff}
-nav a.on{color:#f4dfbb;background:#282319;border-color:#4c3e29;box-shadow:inset 3px 0 0 var(--gold)}
-.top{font-family:inherit;letter-spacing:.2px;text-transform:none;color:var(--txt);background:rgba(11,15,20,.9);border-bottom-color:#222d38}
-h1{font-size:clamp(24px,3vw,30px);font-weight:750;letter-spacing:-.4px}
-h2{font-family:inherit;text-transform:none;font-size:17px;letter-spacing:0;color:var(--gold2)}
+<style id="dark-compact-theme">
+:root{--bg:#090d12;--panel:#111820;--panel2:#18222c;--line:#283541;--gold:#55b8d5;--gold2:#86d3e8;--txt:#e8eef3;--mut:#91a0ad}
+body{background:radial-gradient(ellipse at 50% -25%,rgba(45,99,125,.2),transparent 58%),#090d12}
+#bg{opacity:.035}
+aside{width:248px;padding:14px 10px;background:#0d131a;border-right:1px solid #202b35;box-shadow:8px 0 24px rgba(0,0,0,.18)}
+body.nav-closed aside{margin-left:-248px}
+.brand{gap:9px;padding:5px 10px 15px;color:#dce7ee;font-family:inherit;font-size:19px;letter-spacing:.4px;text-shadow:none}
+.brand span{color:#dce7ee}
+nav{display:flex;flex-direction:column;gap:3px}
+nav a{gap:10px;margin:0;padding:8px 10px;border:1px solid transparent;border-radius:8px;color:#aab7c2;font-family:inherit;font-size:13px;font-weight:550;letter-spacing:0;text-transform:none;transition:background .15s,border-color .15s,color .15s}
+nav a span:first-child{display:inline-flex;width:20px;justify-content:center;font-size:15px}
+nav a:hover{background:#151e27;border-color:#263440;color:#eef5f9}
+nav a.on{color:#bdeafa;background:#142530;border-color:#213d4a;box-shadow:inset 2px 0 #55b8d5}
+.foot{padding:12px 10px 2px;color:#72818e}
+main{background:transparent}
+.top{min-height:60px;gap:14px;padding:10px 24px;background:rgba(9,13,18,.92);border-bottom:1px solid #202b35;backdrop-filter:blur(12px);font-family:inherit;letter-spacing:0;text-transform:none}
+.top-title{color:#dce6ed;font-size:13px;font-weight:650;letter-spacing:.15px}
+.pg{max-width:1120px;padding:30px 28px 56px}
+h1{margin-bottom:7px;color:#edf3f7;font-size:clamp(23px,2.7vw,29px);font-weight:700;letter-spacing:-.45px}
+h2{margin:28px 0 12px;color:#c4d2dc;font-family:inherit;font-size:16px;font-weight:650;letter-spacing:0;text-transform:none}
 h2::before{content:none}
-.sub{color:#aab5c0}
-.big{background:linear-gradient(110deg,#f3f5f7,#d8c29e 75%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:none;letter-spacing:-1px}
+.sub{max-width:760px;margin-bottom:20px;color:#91a0ad;font-size:14px;line-height:1.6}
+.hero{min-height:43vh}
+.big{margin-bottom:8px;color:#e6eef3;background:none;-webkit-text-fill-color:currentColor;font-size:clamp(44px,8vw,76px);font-weight:780;letter-spacing:-2px;filter:none}
 .hero .logo svg{filter:none}
-.search{border-radius:14px;border-color:#303c48;background:rgba(18,24,32,.92);box-shadow:0 12px 32px rgba(0,0,0,.16)}
-.search select{border-radius:9px;color:var(--txt);background:var(--panel2)}
-.card{border-radius:14px;background:linear-gradient(145deg,#151d26,#11171f);border-color:#293540}
-a.card:hover{border-color:#776344;box-shadow:0 8px 24px rgba(0,0,0,.2);transform:translateY(-1px)}
-.btn{color:#17140f;background:var(--gold);border-radius:9px;box-shadow:none}
-.btn:hover{filter:brightness(1.08)}
-.btn.ghost{color:#dce3e9;background:#1a232d;border-color:#34414e;box-shadow:none}
-.btn.ghost:hover{background:#222e39;border-color:#596777}
-input,select,textarea{background:#151d26;border-color:#303c48;border-radius:9px}
-input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,170,104,.12)}
-.item{background:#171f28;border-color:#2b3743;border-radius:10px}
-.item code{color:var(--gold2)}
-pre{background:#0d1218;border-color:#2a3541;color:#d9bd8f;border-radius:10px}
-iframe#pv{border-color:#34414e;border-radius:10px}
-.num,.stat b{color:var(--gold2);text-shadow:none}
-.bar{background:#202a34}
-.bar i{background:var(--gold);box-shadow:none}
-.tag{background:#211e18;border-color:#4a3e2d;color:#e2c99e}
-#clk b{font-family:inherit;color:var(--gold2);letter-spacing:1px;text-shadow:none}
-#clk small{color:var(--mut)}
-.wp{border-color:#303c48;border-radius:12px}
-.ico{background:#171f28;border-color:#303c48;color:#c0cad3}
-.ico:hover{border-color:#806b49}
-#scrim{background:rgba(3,6,9,.68)}
-#toast{background:#e5c28a;color:#17140f}
-ul.tips{color:#c3ccd4}
-button:focus-visible,a:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
-::-webkit-scrollbar-thumb{background:#394653}
-::-webkit-scrollbar-track{background:#0b0f14}
-@media(max-width:860px){aside{background:#10161e;box-shadow:12px 0 32px rgba(0,0,0,.4)}}
+#clk{margin-top:18px}
+#clk b{color:#a5c4d1;font-family:inherit;font-size:22px;letter-spacing:1px;text-shadow:none}
+#clk small{color:#788a98}
+.search{width:min(680px,100%);gap:8px;padding:6px;border:1px solid #2a3945;border-radius:11px;background:#111820;box-shadow:0 10px 34px rgba(0,0,0,.2)}
+.search input{padding:0 12px;color:#edf3f7;font-size:15px}
+.search select{width:auto;flex:none;padding:0 10px;border:1px solid #2a3945;border-radius:8px;background:#18222c;color:#c5d1da}
+.grid{gap:10px}
+.card{padding:16px;border:1px solid #26333e;border-radius:11px;background:#111820}
+a.card{transition:border-color .15s,background .15s,transform .15s}
+a.card:hover{transform:translateY(-1px);border-color:#3e6878;background:#141e27;box-shadow:none}
+.card b{color:#e0e9ef;font-size:14px;font-weight:650}
+.card small{color:#91a0ad;font-size:12px;line-height:1.55}
+.btn{padding:9px 14px;border:1px solid #58bad7;border-radius:8px;background:#55b8d5;color:#07141a;font-size:13px;font-weight:650;box-shadow:none}
+.btn:hover{filter:brightness(1.06)}
+.btn:disabled{opacity:.5}
+.btn.ghost{border-color:#2b3a46;background:#17212a;color:#c6d3dc;box-shadow:none}
+.btn.ghost:hover{border-color:#3a5968;background:#1b2933}
+.btn.sm{padding:6px 9px;border-radius:7px;font-size:11px}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid #2b3945;border-radius:8px;background:#141d26;color:#e8eef3;font:inherit}
+input::placeholder,textarea::placeholder{color:#687985}
+input:focus,select:focus,textarea:focus{border-color:#55b8d5;box-shadow:0 0 0 2px rgba(85,184,213,.13)}
+textarea{min-height:140px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px}
+label{gap:6px;color:#9baab6;font-size:12px}
+.row{gap:9px;margin-bottom:10px}
+.list{gap:6px;margin-top:10px}
+.item{gap:10px;padding:9px 10px;border:1px solid #26333e;border-radius:8px;background:#141d26}
+.item code{color:#a6d9e8;font-size:12px}
+.item a{color:#d5e0e8}
+pre{margin:10px 0;padding:12px;border:1px solid #283541;border-radius:8px;background:#0c1117;color:#a6d9e8}
+iframe#pv{border:1px solid #2b3945;border-radius:8px}
+.cols{gap:10px}
+.num,.stat b{color:#a6d9e8;text-shadow:none}
+.num{font-size:clamp(44px,8vw,78px)}
+.stat b{font-size:22px}
+.bar{height:6px;margin:12px 0;background:#1b2731}
+.bar i{background:#55b8d5;box-shadow:none}
+.tag{border:1px solid #2d4855;border-radius:6px;background:#14232c;color:#a6d9e8}
+.wp{border:1px solid #293844;border-radius:10px}
+.ico{padding:10px;border:1px solid #293844;border-radius:9px;background:#141d26;color:#aab7c2}
+.ico:hover{border-color:#55b8d5}
+#scrim{background:rgba(0,0,0,.62)}
+#toast{border:1px solid #347286;border-radius:9px;background:#17323d;color:#d8f4fc;font-size:13px}
+ul.tips{color:#b5c1ca;font-size:13px;line-height:1.75}
+button:focus-visible,a:focus-visible{outline:2px solid #86d3e8;outline-offset:2px}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{border-radius:8px;background:#34434e}
+::-webkit-scrollbar-track{background:#0b1016}
+@media(max-width:860px){
+  aside{width:248px;background:#0d131a;box-shadow:12px 0 32px rgba(0,0,0,.42)}
+  body.nav-closed aside{transform:translateX(-100%)}
+  .pg{padding:22px 16px 48px}
+  .top{padding:9px 16px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
 </style>
 </head>
 <body class="nav-closed">
@@ -189,7 +222,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold2);outline-offs
   <div class="foot">© aSiKuRT</div>
 </aside>
 <main>
-  <header class="top"><button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat">☰</button></header>
+  <header class="top"><button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat">☰</button><span class="top-title" id="top-title">aSiKuRT</span></header>
   <div id="view"></div>
 </main>
 <div id="toast"></div>
@@ -410,6 +443,7 @@ function route(closeMobileMenu=false){
   const id=location.hash.replace(/^#\/?/,'')||'ana';
   const n=ALL.find(x=>x.id===id)||HOME;
   document.title=(n.id==='ana'?'':n.t+' • ')+'aSiKuRT';
+  $('#top-title').textContent=n.id==='ana'?'Ana Sayfa':n.t;
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.id===n.id));
   (P[n.id]||P.ana)();$('main').scrollTop=0;
   if(closeMobileMenu&&innerWidth<=860)document.body.classList.add('nav-closed');
