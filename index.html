@@ -130,28 +130,28 @@ const hd=(t,s)=>`<h1>${t}</h1><p class="sub">${s}</p>`;
 const page=(h,fn)=>{view.innerHTML='<div class="pg">'+h+'</div>';fn&&fn()};
 
 /* ---------- ANA SAYFA ---------- */
-const ENG={Google:'https://www.google.com/search?q=',YouTube:'https://www.youtube.com/results?search_query=',Bing:'https://www.bing.com/search?q=',DuckDuckGo:'https://duckduckgo.com/?q='};
+const ENG={Google:'https://www.google.com/search?q='};
 P.ana=()=>{
 page(`<section class="hero"><div class="logo">${LOGO}</div><h1 class="big">aSiKuRT</h1><p class="sub">Araçlar, kaynaklar ve hızlı erişim — hepsi tek sayfada.</p>
-<form id="sf" class="search" action="https://www.google.com/search" method="get" target="_self"><select id="eng" aria-label="Arama motoru">${Object.keys(ENG).map(k=>`<option>${k}</option>`).join('')}</select><input id="q" name="q" placeholder="Google'da ara..." autocomplete="on"><button type="submit" class="btn">Ara</button></form></section>
+<form id="sf" class="search" action="https://www.google.com/search" method="get" target="_self"><input id="q" name="q" placeholder="Google'da ara..." autocomplete="on"><button type="submit" class="btn">Ara</button></form></section>
 <h2>Hızlı Erişim</h2><div class="grid">${NAV.map(n=>`<a class="card" href="#/${n.id}"><div class="ic">${n.i}</div><b>${esc(n.t)}</b><small>${esc(n.d)}</small></a>`).join('')}</div>
 <h2>Favori Bağlantılarım</h2>
 <div class="card"><div class="row"><label>Başlık<input id="ft" placeholder="Örn: Gmail"></label><label>Adres<input id="fu" placeholder="https://mail.google.com"></label><button class="btn" id="fa">Ekle</button></div><div class="list" id="fl"></div></div>`,()=>{
-  $('#eng').value=load('asi_eng','Google');
+  let autoSearchTimer;
+  const searchGoogle=()=> {
+    const q=$('#q').value.trim();
+    if(!q){return;}
+    window.location.assign(ENG.Google+encodeURIComponent(q));
+  };
   $('#sf').onsubmit=e=>{
     e.preventDefault();
-    const q=$('#q').value.trim();
-    if(!q){$('#q').focus();return;}
-    const engine=$('#eng').value;
-    save('asi_eng',engine);
-    window.location.assign(ENG[engine]+encodeURIComponent(q));
+    clearTimeout(autoSearchTimer);
+    searchGoogle();
   };
-  $('#eng').onchange=()=>{
-    const engine=$('#eng').value;
-    $('#q').placeholder=engine+'da ara...';
-    $('#q').focus();
+  $('#q').oninput=()=>{
+    clearTimeout(autoSearchTimer);
+    autoSearchTimer=setTimeout(searchGoogle,900);
   };
-  $('#eng').onchange();
   const draw=()=>{const f=load('asi_favs',[]);$('#fl').innerHTML=f.length?f.map((x,i)=>`<div class="item"><a href="${esc(x.u)}" target="_blank" rel="noopener noreferrer">${esc(x.t)}</a><button class="btn ghost sm" data-d="${i}">Sil</button></div>`).join(''):'<small style="color:var(--mut)">Henüz favori yok.</small>';
     $('#fl').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const f=load('asi_favs',[]);f.splice(+b.dataset.d,1);save('asi_favs',f);draw()})};
   $('#fa').onclick=()=>{const u=safeUrl($('#fu').value);if(!u)return toast('Geçerli bir adres gir');const f=load('asi_favs',[]);f.push({t:$('#ft').value.trim()||new URL(u).hostname,u});save('asi_favs',f);$('#ft').value=$('#fu').value='';draw()};
