@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aSiKuRT | Systems Engineering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #ff0000; --bg: #050505; --panel: #0a0a0a; --border: #151515; --text: #d0d0d0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'Fira Code', monospace; display: flex; height: 100vh; overflow: hidden; }
+
+        /* Navigasyon */
+        nav { width: 280px; background: var(--panel); border-right: 1px solid var(--border); padding: 30px 15px; overflow-y: auto; }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; color: #fff; text-align: center; margin-bottom: 40px; border-bottom: 1px solid var(--accent); padding-bottom: 15px; }
+        .cat { font-size: 0.65rem; color: #444; text-transform: uppercase; letter-spacing: 3px; margin: 25px 0 10px 10px; font-weight: bold; }
+        nav a { color: #888; text-decoration: none; padding: 12px 15px; margin-bottom: 2px; display: block; border-radius: 4px; font-size: 0.8rem; transition: 0.2s; cursor: pointer; border-left: 3px solid transparent; }
+        nav a:hover, nav a.active { color: #fff; background: #111; border-left-color: var(--accent); }
+
+        /* Ana İçerik */
+        main { flex: 1; padding: 50px; overflow-y: auto; background: #030303; }
+        
+        /* Bayrak (Altın Oran) */
+        .header-area { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 60px; }
+        .turkish-flag { width: 120px; height: 80px; background-color: #ff0000; position: relative; border-radius: 2px; }
+        .moon { width: 40px; height: 40px; background: white; border-radius: 50%; position: absolute; top: 20px; left: 20px; }
+        .moon-cut { width: 32px; height: 32px; background: #ff0000; border-radius: 50%; position: absolute; top: 24px; left: 32px; }
+        .star { position: absolute; top: 28px; left: 65px; color: white; font-size: 26px; transform: rotate(35deg); line-height: 1; }
+
+        /* İçerik Yönetimi */
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s ease; }
+        h2 { font-family: 'Orbitron', sans-serif; font-size: 1.4rem; color: #fff; margin-bottom: 30px; border-bottom: 1px solid #111; padding-bottom: 10px; }
+
+        /* Kod ve Araç Kutuları */
+        .code-container { background: #000; border: 1px solid #111; padding: 25px; border-radius: 4px; position: relative; margin-bottom: 20px; }
+        pre { font-size: 0.85rem; color: #00ff41; overflow-x: auto; white-space: pre-wrap; }
+        .copy-btn { position: absolute; top: 15px; right: 15px; background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; font-size: 0.7rem; cursor: pointer; }
+        
+        textarea { width: 100%; height: 250px; background: #000; color: #00ff41; border: 1px solid #111; padding: 20px; font-family: 'Fira Code'; margin-bottom: 15px; }
+        .action-btn { background: #fff; color: #000; border: none; padding: 18px; font-family: 'Orbitron'; font-weight: 900; width: 100%; cursor: pointer; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <nav id="sidebar">
+        <div class="logo">aSiKuRT</div>
+        
+        <p class="cat">SYSTEM</p>
+        <a onclick="showSection('m3u', this)" class="active">M3U ENGINE</a>
+        <a onclick="showSection('tv', this)">LGTV / WEBOS</a>
+
+        <p class="cat">SOFTWARE (BAT/PY)</p>
+        <a onclick="showSection('bat-master', this)">GEMINI MASTER</a>
+        <a onclick="showSection('bat-neural', this)">NEURAL CONSOLE</a>
+        <a onclick="showSection('bat-format', this)">FORMAT TOOL</a>
+
+        <p class="cat">CONSOLES</p>
+        <a onclick="showSection('ps4-jail', this)">JAILBREAK CORE</a>
+    </nav>
+
+    <main>
+        <div class="header-area">
+            <h1 style="font-family: Orbitron; font-size: 1rem; letter-spacing: 3px; color:#444;">SYSTEMS ADMINISTRATION</h1>
+            <div class="turkish-flag">
+                <div class="moon"></div><div class="moon-cut"></div><div class="star">★</div>
+            </div>
+        </div>
+
+        <div id="m3u" class="section active">
+            <h2>M3U STREAM ENGINE</h2>
+            <textarea id="m3u-in" placeholder="#EXTM3U listesini buraya yapıştır..."></textarea>
+            <button class="action-btn" onclick="genM3U()">URL OLUŞTUR VE KOPYALA</button>
+            <div id="m3u-out" style="display:none; margin-top:20px; color:#00ff41; font-size:0.8rem; border:1px dashed #222; padding:10px;"></div>
+        </div>
+
+        <div id="tv" class="section">
+            <h2>LGTV / WEBOS HUB</h2>
+            <div class="code-container">
+                <p>• <b>OTTPlayer:</b> m3u linkini dashboard üzerinden yükleyin.<br>
+                • <b>SS IPTV:</b> Ayarlar -> Get Code kısmından cihazı eşleyin.<br>
+                • <b>Developer Mode:</b> Dev Mode uygulamasını kurun ve terminalden bağlanın.</p>
+            </div>
+        </div>
+
+        <div id="bat-master" class="section">
+            <h2>GEMINI MASTER v17.0</h2>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyText('c1')">KOPYALA</button>
+                <pre id="c1">@echo off
+net session >nul 2>&1 || (powershell start-process '%~f0' -Verb RunAs & exit)
+sfc /scannow
+dism /online /cleanup-image /restorehealth
+pause</pre>
+            </div>
+        </div>
+
+        <div id="bat-neural" class="section">
+            <h2>NEURAL CONSOLE</h2>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyText('c2')">KOPYALA</button>
+                <pre id="c2">@echo off
+:: WiFi Şifre Analizi
+for /f "skip=9 tokens=1,2 delims=:" %%i in ('netsh wlan show profiles') do (
+    set "ssid=%%j" & set "ssid=!ssid:~1!"
+    netsh wlan show profile name="!ssid!" key=clear | findstr "Key Content"
+)
+pause</pre>
+            </div>
+        </div>
+
+        <div id="bat-format" class="section">
+            <h2>FORMAT TOOL 2026</h2>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyText('c3')">KOPYALA</button>
+                <pre id="c3">@echo off
+powershell "Get-Disk | Select Number, FriendlyName, Size"
+set /p d="Disk No: "
+format %d% /FS:NTFS /Q /Y</pre>
+            </div>
+        </div>
+
+        <div id="ps4-jail" class="section">
+            <h2>PS4 JAILBREAK CORE</h2>
+            <div class="code-container">
+                <p><b>Protocol 9.00:</b> Exfathax USB Payload - Stabil<br>
+                <b>Protocol 11.00:</b> PPPwn Ethernet Injection<br>
+                <b>GoldHEN:</b> v2.4b17 yüklü olmalıdır.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Sekme Değiştirme Sistemi (Fix)
+        function showSection(id, element) {
+            // Tüm bölümleri gizle
+            var sections = document.getElementsByClassName('section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].classList.remove('active');
+            }
+            // Tüm linklerden active sınıfını kaldır
+            var links = document.getElementById('sidebar').getElementsByTagName('a');
+            for (var i = 0; i < links.length; i++) {
+                links[i].classList.remove('active');
+            }
+            // Hedef bölümü göster ve linki aktif yap
+            document.getElementById(id).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function copyText(id) {
+            var text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text);
+            alert("KOD KOPYALANDI");
+        }
+
+        function genM3U() {
+            var val = document.getElementById('m3u-in').value;
+            if(!val) return;
+            var blob = new Blob([val], {type: 'text/plain'});
+            var url = URL.createObjectURL(blob);
+            var out = document.getElementById('m3u-out');
+            out.innerText = "LOCAL_STREAM_URL: " + url;
+            out.style.display = "block";
+            navigator.clipboard.writeText(url);
+            alert("M3U BAĞLANTISI HAZIR");
+        }
+    </script>
+</body>
+</html>
