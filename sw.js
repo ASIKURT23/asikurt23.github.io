@@ -1,5 +1,18 @@
-const C='asikurt-v6',F=['./','index.html','manifest.json','icon-192.png','icon-512.png'];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F)).then(()=>self.skipWaiting()))});
+const C='asikurt-v7',F=['./','index.html','manifest.json','icon-192.png','icon-512.png'];
+self.addEventListener('install',e=>{e.waitUntil((async()=>{
+  const c=await caches.open(C);
+  await Promise.all(F.map(async path=>{
+    const request=new Request(new URL(path,self.registration.scope),{cache:'reload'});
+    const response=await fetch(request);
+    if(!response.ok)throw new Error(`Önbellek dosyası alınamadı: ${path}`);
+    await c.put(request,response);
+  }));
+  await self.skipWaiting();
+})())});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith('asikurt-')&&x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{const r=e.request,u=new URL(r.url);if(r.method!=='GET'||u.origin!==location.origin||!F.some(x=>new URL(x,self.registration.scope).pathname===u.pathname))return;
-e.respondWith(fetch(r).then(res=>{const cp=res.clone();caches.open(C).then(c=>c.put(r,cp));return res}).catch(()=>caches.match(r).then(m=>m||caches.match('index.html'))))});
+e.respondWith(fetch(new Request(r,{cache:'no-store'})).then(async res=>{if(res.ok)await caches.open(C).then(c=>c.put(r,res.clone()));return res}).catch(async error=>{
+  const cached=await caches.match(r)||await caches.match(new URL('index.html',self.registration.scope).href);
+  if(cached)return cached;
+  throw error;
+}))});

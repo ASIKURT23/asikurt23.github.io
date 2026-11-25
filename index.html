@@ -765,7 +765,10 @@ route();
     if((e.key==='/'&&!typing)||((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k')){
       e.preventDefault();
       if(!q('#q')){location.hash='#/ana';setTimeout(()=>q('#q')&&q('#q').focus(),200)}else q('#q').focus()}});
-  if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=6').catch(err=>console.error('Service worker kaydedilemedi:',err)));
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
+    addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=7',{updateViaCache:'none'}).then(registration=>registration.update()).catch(err=>console.error('Service worker kaydedilemedi:',err)));
+  }
 })();
 </script>
 
