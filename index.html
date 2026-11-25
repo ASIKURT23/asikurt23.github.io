@@ -146,6 +146,15 @@ nav a.on{color:#bdeafa;background:#142530;border-color:#213d4a;box-shadow:inset 
 main{background:transparent}
 .top{min-height:60px;gap:14px;padding:10px 24px;background:rgba(9,13,18,.92);border-bottom:1px solid #202b35;backdrop-filter:blur(12px);font-family:inherit;letter-spacing:0;text-transform:none}
 .top-title{color:#dce6ed;font-size:13px;font-weight:650;letter-spacing:.15px}
+.google-links{width:auto;display:flex;flex-direction:row;align-items:center;gap:18px;margin:0 0 0 auto}
+.google-links>a{display:inline-flex;align-items:center;justify-content:center;margin:0;padding:0;border:0;border-radius:4px;background:none;color:#dce6ed;font-size:13px;font-weight:450;line-height:1;text-decoration:none}
+.google-links>a:hover{background:none;color:#fff;text-decoration:underline}
+.google-links .google-apps{width:38px;height:38px;border:1px solid transparent;border-radius:50%;color:#c6d3dc}
+.google-links .google-apps:hover{border-color:#34434e;background:#17212a;text-decoration:none}
+.google-apps svg{width:20px;height:20px;fill:currentColor}
+.google-links .google-avatar{width:34px;height:34px;overflow:hidden;border:2px solid transparent;border-radius:50%}
+.google-links .google-avatar:hover{border-color:#55b8d5}
+.google-avatar img{width:30px;height:30px;border-radius:50%;object-fit:cover}
 .pg{max-width:1120px;padding:30px 28px 56px}
 h1{margin-bottom:7px;color:#edf3f7;font-size:clamp(23px,2.7vw,29px);font-weight:700;letter-spacing:-.45px}
 h2{margin:28px 0 12px;color:#c4d2dc;font-family:inherit;font-size:16px;font-weight:650;letter-spacing:0;text-transform:none}
@@ -204,6 +213,15 @@ button:focus-visible,a:focus-visible{outline:2px solid #86d3e8;outline-offset:2p
   body.nav-closed aside{transform:translateX(-100%)}
   .pg{padding:22px 16px 48px}
   .top{padding:9px 16px}
+}
+@media(max-width:520px){
+  .top{gap:9px;padding:9px 10px}
+  .top-title{display:none}
+  .google-links{gap:11px}
+  .google-links>a{font-size:12px}
+  .google-links .google-apps{width:34px;height:34px}
+  .google-links .google-avatar{width:32px;height:32px}
+  .google-avatar img{width:28px;height:28px}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
@@ -270,7 +288,20 @@ body.nav-closed .foot::after{content:"©";font-size:11px}
   <div class="foot">© aSiKuRT</div>
 </aside>
 <main>
-  <header class="top"><button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat" aria-expanded="true">☰</button><span class="top-title" id="top-title">aSiKuRT</span></header>
+  <header class="top">
+    <button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat" aria-expanded="true">☰</button>
+    <span class="top-title" id="top-title">aSiKuRT</span>
+    <nav class="google-links" aria-label="Google bağlantıları">
+      <a href="https://mail.google.com/mail/u/0/" target="_blank" rel="noopener noreferrer">Gmail</a>
+      <a href="https://www.google.com/imghp?hl=tr" target="_blank" rel="noopener noreferrer">Görseller</a>
+      <a class="google-apps" href="https://www.google.com.tr/intl/tr/about/products" target="_blank" rel="noopener noreferrer" aria-label="Google uygulamaları" title="Google uygulamaları">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="5" r="1.5"/><circle cx="12" cy="5" r="1.5"/><circle cx="19" cy="5" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="19" r="1.5"/><circle cx="12" cy="19" r="1.5"/><circle cx="19" cy="19" r="1.5"/></svg>
+      </a>
+      <a class="google-avatar" href="https://myaccount.google.com/" target="_blank" rel="noopener noreferrer" aria-label="Google hesabını aç" title="Google hesabı">
+        <img src="https://lh3.googleusercontent.com/ogw/AF2bZyjj1cfyoXmCT2S7Go2hqBaBCwXdKnbUWcgrA7NSg4Ux1cyQ=s32-c-mo" alt="">
+      </a>
+    </nav>
+  </header>
   <div id="view"></div>
 </main>
 <div id="toast"></div>
