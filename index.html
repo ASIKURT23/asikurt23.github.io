@@ -132,7 +132,7 @@ nav a.on{font-weight:700}
 #clk small{color:#9fb8d6}
 </style>
 </head>
-<body>
+<body class="nav-closed">
 <div id="bg"></div><div id="scrim"></div>
 <aside>
   <div class="brand" id="brand"></div>
@@ -140,7 +140,7 @@ nav a.on{font-weight:700}
   <div class="foot">© aSiKuRT</div>
 </aside>
 <main>
-  <header class="top"><button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat">☰</button><span id="ttl">Ana Sayfa</span></header>
+  <header class="top"><button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat">☰</button></header>
   <div id="view"></div>
 </main>
 <div id="toast"></div>
@@ -198,10 +198,6 @@ page(`<section class="hero"><div class="logo">${LOGO}</div><h1 class="big">aSiKu
     clearTimeout(autoSearchTimer);
     autoSearchTimer=setTimeout(searchGoogle,900);
   };
-  const draw=()=>{const f=load('asi_favs',[]);$('#fl').innerHTML=f.length?f.map((x,i)=>`<div class="item"><a href="${esc(x.u)}" target="_blank" rel="noopener noreferrer">${esc(x.t)}</a><button class="btn ghost sm" data-d="${i}">Sil</button></div>`).join(''):'<small style="color:var(--mut)">Henüz favori yok.</small>';
-    $('#fl').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const f=load('asi_favs',[]);f.splice(+b.dataset.d,1);save('asi_favs',f);draw()})};
-  $('#fa').onclick=()=>{const u=safeUrl($('#fu').value);if(!u)return toast('Geçerli bir adres gir');const f=load('asi_favs',[]);f.push({t:$('#ft').value.trim()||new URL(u).hostname,u});save('asi_favs',f);$('#ft').value=$('#fu').value='';draw()};
-  draw();
 });};
 
 /* ---------- API ANAHTAR ---------- */
@@ -360,19 +356,26 @@ page(hd('YAPAY ZEKA ARAÇLARI','Sık kullanılan yapay zeka araçları.')+`<div 
 });};
 
 /* ---------- ROUTER ---------- */
-function route(){
+function route(closeMobileMenu=false){
   const id=location.hash.replace(/^#\/?/,'')||'ana';
   const n=ALL.find(x=>x.id===id)||HOME;
-  $('#ttl').textContent=n.t;document.title=(n.id==='ana'?'':n.t+' • ')+'aSiKuRT';
+  document.title=(n.id==='ana'?'':n.t+' • ')+'aSiKuRT';
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.id===n.id));
   (P[n.id]||P.ana)();$('main').scrollTop=0;
-  if(innerWidth<=860)document.body.classList.add('nav-closed');
+  if(closeMobileMenu&&innerWidth<=860)document.body.classList.add('nav-closed');
 }
-$('#tog').onclick=()=>document.body.classList.toggle('nav-closed');
-$('#scrim').onclick=()=>document.body.classList.add('nav-closed');
-addEventListener('hashchange',route);
+$('#tog').onclick=()=>{
+  document.body.classList.toggle('nav-closed');
+  save('asi_nav_open',!document.body.classList.contains('nav-closed'));
+};
+$('#scrim').onclick=()=>{
+  document.body.classList.add('nav-closed');
+  save('asi_nav_open',false);
+};
+addEventListener('hashchange',()=>route(true));
 const savedBg=load('asi_bg','');if(savedBg)$('#bg').style.backgroundImage=`url("${savedBg}")`;
-if(innerWidth<=860)document.body.classList.add('nav-closed');
+const navOpen=load('asi_nav_open',false);
+document.body.classList.toggle('nav-closed',!navOpen);
 route();
 </script>
 
