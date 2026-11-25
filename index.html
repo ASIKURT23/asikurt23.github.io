@@ -457,7 +457,7 @@ route();
       if(!q('#q')){location.hash='#/ana';setTimeout(()=>q('#q')&&q('#q').focus(),200)}else q('#q').focus()}});
   setInterval(tick,1000);
   extras();
-  if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(err=>console.error('Service worker kaydedilemedi:',err)));
+  if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=2').catch(err=>console.error('Service worker kaydedilemedi:',err)));
 })();
 </script>
 </body>
