@@ -460,5 +460,45 @@ route();
   if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=2').catch(err=>console.error('Service worker kaydedilemedi:',err)));
 })();
 </script>
+
+<script id="pc-js">
+(function(){
+  const old=P.pc;
+  P.pc=function(){
+    old();
+    const pg=document.querySelector('.pg');
+    if(!pg||document.querySelector('#pcapp'))return;
+    const d=document.createElement('div');d.id='pcapp';
+    d.innerHTML=`
+<h2>aSiKuRT PRO IT Control Center</h2>
+<div class="card">
+  <b>Windows 10/11 için IT bakım, teşhis ve yönetim paneli</b>
+  <p class="sub" style="margin:8px 0 14px">Canlı CPU / RAM / disk göstergeleri, tek tuşla sağlık kontrolü ve 100'den fazla hazır işlem: güvenlik, onarım, disk, performans, ağ, sistem araçları ve resmi program sayfaları. Sadece Python ve Windows'un kendi araçlarını kullanır; hiçbir şey sessizce kurulmaz. Sistemi değiştiren işlemler onay ister.</p>
+  <div class="row">
+    <a class="btn" href="aSiKuRT.pyw" download="aSiKuRT.pyw">⬇ aSiKuRT.pyw indir</a>
+    <button class="btn ghost" id="pcCopy">Kodu kopyala</button>
+  </div>
+  <h2 style="margin-top:18px">Nasıl çalıştırılır</h2>
+  <ul class="tips">
+    <li>Bilgisayarında Python 3 kurulu olmalı: <a href="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer" style="color:#67e8f9">python.org</a> (kurulumda "Add python.exe to PATH" kutusunu işaretle).</li>
+    <li>İndirdiğin <code>aSiKuRT.pyw</code> dosyasına çift tıkla; konsol penceresi açılmadan program başlar.</li>
+    <li>Program yönetici izni ister. Vermezsen sınırlı kullanıcı modunda açılır, bazı işlemler çalışmaz.</li>
+  </ul>
+  <small style="color:var(--mut)">Bu program kendi bilgisayarında çalışır, bu sayfanın içinde çalışmaz. Sistem dosyalarını değiştiren işlemleri (SFC, DISM, CHKDSK, ağ sıfırlama vb.) ne yaptığını okuyarak kullan.</small>
+  <details id="pcDet" style="margin-top:14px"><summary style="cursor:pointer;color:#67e8f9;font-weight:700">Kaynak kodu göster</summary>
+    <pre id="pcCode" style="max-height:420px;overflow:auto;white-space:pre;word-break:normal">Yükleniyor…</pre>
+  </details>
+</div>`;
+    pg.insertBefore(d,pg.querySelector('.grid'));
+    const get=()=>fetch('aSiKuRT.pyw',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()});
+    document.querySelector('#pcCopy').onclick=()=>get().then(copy).catch(()=>toast('Dosya okunamadı'));
+    document.querySelector('#pcDet').addEventListener('toggle',function(){
+      const pre=document.querySelector('#pcCode');
+      if(this.open&&!pre.dataset.ok)get().then(t=>{pre.textContent=t;pre.dataset.ok=1}).catch(()=>{pre.textContent='Dosya okunamadı.'});
+    });
+  };
+  if(location.hash==='#/pc')route();
+})();
+</script>
 </body>
 </html>
