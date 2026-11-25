@@ -272,6 +272,7 @@ dialog.setup-dialog::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(3p
 .setup-steps summary{color:#dbeaf2;font-size:13px;font-weight:650;cursor:pointer}
 .setup-steps p{margin:9px 0 0;color:var(--mut);font-size:12px;line-height:1.6}
 .setup-note{margin-top:14px;color:var(--mut);font-size:11px;line-height:1.5}
+#start-page-open[hidden]{display:none}
 @media(max-width:520px){
   dialog.setup-dialog{padding:17px}
   .setup-address{flex-direction:column}
@@ -287,21 +288,23 @@ dialog.setup-dialog::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(3p
   <div class="foot">© aSiKuRT</div>
 </aside>
 <main>
-  <header class="top"><button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat" aria-expanded="true">☰</button><span class="top-title" id="top-title">aSiKuRT</span><button id="start-page-open" class="btn ghost sm" type="button" style="margin-left:auto">Başlangıç sayfası yap</button></header>
+  <header class="top"><button id="tog" class="btn ghost sm" aria-label="Menüyü aç/kapat" aria-expanded="true">☰</button><span class="top-title" id="top-title">aSiKuRT</span><button id="start-page-open" class="btn ghost sm" type="button" style="margin-left:auto">Chrome'da kullan</button></header>
   <div id="view"></div>
 </main>
 <div id="toast"></div>
 <dialog id="start-page-dialog" class="setup-dialog" aria-labelledby="start-page-title">
-  <div class="setup-head"><h2 id="start-page-title">Başlangıç ve yeni sekme</h2><button id="start-page-close" class="btn ghost sm" type="button" aria-label="Pencereyi kapat">✕</button></div>
-  <p class="setup-intro">Tarayıcı güvenliği bu sayfanın ayarları kendiliğinden değiştirmesine izin vermez. Adresi kopyalayıp tarayıcı ayarlarına ekleyebilirsin.</p>
+  <div class="setup-head"><h2 id="start-page-title">Chrome'da aSiKuRT</h2><button id="start-page-close" class="btn ghost sm" type="button" aria-label="Pencereyi kapat">✕</button></div>
+  <p class="setup-intro">Yeni sekmelerin aSiKuRT olarak açılması için uzantıyı indirip Chrome'a ekle. Kurulumdan sonra yeni sekme açıldığında bu seçenek gizlenir.</p>
+  <p style="margin-bottom:12px"><a class="btn" href="chrome-extension.zip" download>Chrome uzantısını indir (.zip)</a></p>
+  <div class="setup-steps" style="margin-bottom:16px">
+    <details open><summary>Uzantıyı Chrome'a ekle</summary><p>1. ZIP dosyasını çıkar. 2. Chrome'da <b>chrome://extensions</b> adresini açıp Geliştirici modu'nu etkinleştir. 3. <b>Paketlenmemiş öğe yükle</b>'yi seçip çıkardığın <b>chrome-extension</b> klasörünü göster.</p></details>
+  </div>
+  <p class="setup-intro">Chrome başlangıçta da aSiKuRT'yi açsın istersen, bu adresi başlangıç sayfalarına ayrıca ekle:</p>
   <div class="setup-address"><input id="start-page-url" type="url" readonly aria-label="aSiKuRT adresi"><button id="start-page-copy" class="btn" type="button">Adresi kopyala</button></div>
   <div class="setup-steps">
-    <details open><summary>Chrome veya Edge — başlangıç sayfası</summary><p>Ayarlar → Başlangıçta → Belirli bir sayfa veya sayfalar'ı aç → Yeni sayfa ekle. Kopyaladığın adresi yapıştır.</p></details>
-    <details><summary>Firefox — ana sayfa</summary><p>Ayarlar → Ana Sayfa → Ana sayfa ve yeni pencereler → Özel adresler. Kopyaladığın adresi buraya ekle.</p></details>
-    <details><summary>Safari — başlangıç ve yeni sekme</summary><p>Safari → Ayarlar → Genel bölümünde Ana Sayfa adresini gir; Yeni pencereler açılır ve Yeni sekmeler açılır seçeneklerini Ana Sayfa olarak belirle.</p></details>
-    <details><summary>Bu adresi yeni sekmede kullan</summary><p>Chrome ve Edge, yeni sekme sayfasının web siteleri tarafından değiştirilmesine izin vermez. Bunun için tarayıcının resmi mağazasından güvenilir bir yeni sekme uzantısı seçip bu adresi kendin ayarlamalısın.</p></details>
+    <details open><summary>Chrome başlangıç sayfası</summary><p>Ayarlar → Başlangıçta → Belirli bir sayfa veya sayfalar'ı aç → Yeni sayfa ekle. Kopyaladığın adresi yapıştır.</p></details>
   </div>
-  <p class="setup-note">aSiKuRT bu tercihi yalnızca anlatır; tarayıcı ayarlarını veya uzantıları iznin olmadan değiştirmez.</p>
+  <p class="setup-note">Uzantı yalnızca yeni sekme sayfasını değiştirir. Chrome'un diğer ayarlarına erişim izni istemez.</p>
 </dialog>
 
 <script>
@@ -316,6 +319,10 @@ const safeUrl=u=>{try{u=u.trim();if(!/^https?:\/\//i.test(u))u='https://'+u;cons
 document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(b)copy(b.dataset.copy)});
 const startPageDialog=$('#start-page-dialog');
 $('#start-page-url').value=location.origin+location.pathname;
+if(new URLSearchParams(location.search).has('asikurt-newtab')){
+  $('#start-page-open').hidden=true;
+  history.replaceState(null,'',location.pathname+location.hash);
+}
 $('#start-page-open').onclick=()=>startPageDialog.showModal();
 $('#start-page-close').onclick=()=>startPageDialog.close();
 $('#start-page-copy').onclick=()=>copy($('#start-page-url').value);
