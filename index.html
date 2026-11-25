@@ -5,24 +5,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>aSiKuRT</title>
 <meta name="description" content="aSiKuRT - araçlar, kaynaklar ve hızlı erişim başlangıç sayfası">
-<meta name="theme-color" content="#0e0f11">
+<meta name="theme-color" content="#060d1b">
 <style>
-:root{--bg:#0e0f11;--panel:#16181b;--panel2:#1d2024;--line:#2a2d32;--gold:#d9a521;--gold2:#f0c050;--txt:#f2f2f2;--mut:#9aa0a6}
+:root{--bg:#060d1b;--panel:#0b1a2e;--panel2:#112a46;--line:#1d3b61;--gold:#22b8cf;--gold2:#67e8f9;--txt:#f2f2f2;--mut:#9aa0a6}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%}
 body{font-family:Inter,system-ui,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);display:flex;overflow:hidden}
 #bg{position:fixed;inset:0;background-size:cover;background-position:center;opacity:.22;z-index:0;pointer-events:none}
-aside{position:relative;z-index:30;width:270px;flex:none;background:#121315;border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;overflow-y:auto;transition:margin .25s,transform .25s}
+aside{position:relative;z-index:30;width:270px;flex:none;background:#07142a;border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;overflow-y:auto;transition:margin .25s,transform .25s}
 body.nav-closed aside{margin-left:-270px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;color:var(--gold);padding:4px 8px 18px}
 .brand svg{width:34px;height:34px}
 nav a{display:flex;gap:12px;align-items:center;padding:11px 14px;border-radius:14px;color:#c9ccd0;text-decoration:none;font-size:13.5px;font-weight:600;margin-bottom:4px;transition:.15s}
 nav a:hover{background:var(--panel2);color:#fff}
-nav a.on{background:linear-gradient(90deg,#b8860b,#d9a521);color:#111}
+nav a.on{background:linear-gradient(90deg,#1d4ed8,#22b8cf);color:#111}
 nav a span:first-child{font-size:17px;width:22px;text-align:center;flex:none}
 .foot{margin-top:auto;padding:14px 8px 0;color:var(--mut);font-size:12px}
 main{position:relative;z-index:2;flex:1;min-width:0;height:100%;overflow-y:auto}
-.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:12px 24px;background:rgba(14,15,17,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);font-weight:700}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:12px 24px;background:rgba(6,13,27,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);font-weight:700}
 .pg{padding:28px 24px 60px;max-width:1200px;margin:0 auto;animation:in .25s ease}
 @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 h1{font-size:26px;margin-bottom:6px}
@@ -30,7 +30,7 @@ h2{font-size:18px;margin:30px 0 14px;color:var(--gold2)}
 .sub{color:var(--mut);margin-bottom:22px;line-height:1.5}
 .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:48vh}
 .hero .logo svg{width:92px;height:92px;margin-bottom:10px}
-.big{font-size:clamp(44px,9vw,92px);font-weight:900;letter-spacing:1px;background:linear-gradient(90deg,#fff,#f0c050 55%,#b8860b);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+.big{font-size:clamp(44px,9vw,92px);font-weight:900;letter-spacing:1px;background:linear-gradient(90deg,#fff,#67e8f9 55%,#1d4ed8);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
 .search{display:flex;gap:8px;width:min(720px,100%);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px}
 .search input{flex:1;background:transparent;border:0;outline:0;color:var(--txt);font-size:16px;padding:0 12px;min-width:0}
 .search select{background:var(--panel2);color:var(--txt);border:0;border-radius:999px;padding:0 12px}
@@ -41,7 +41,7 @@ a.card:hover{border-color:var(--gold);transform:translateY(-2px)}
 .card .ic{font-size:26px;margin-bottom:8px}
 .card b{display:block;margin-bottom:4px}
 .card small{color:var(--mut);line-height:1.45;display:block}
-.btn{background:linear-gradient(90deg,#b8860b,#d9a521);color:#111;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:14px;text-decoration:none;display:inline-block}
+.btn{background:linear-gradient(90deg,#1d4ed8,#22b8cf);color:#111;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:14px;text-decoration:none;display:inline-block}
 .btn:hover{filter:brightness(1.1)}
 .btn:disabled{opacity:.5;cursor:wait}
 .btn.ghost{background:var(--panel2);color:var(--txt);border:1px solid var(--line)}
@@ -55,12 +55,12 @@ label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--mut)
 .item{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 .item code{word-break:break-all;font-size:13px;color:var(--gold2)}
 .item a{color:var(--txt)}
-pre{background:#0a0b0c;border:1px solid var(--line);border-radius:12px;padding:12px;overflow:auto;font-size:13px;color:var(--gold2);margin:10px 0;white-space:pre-wrap;word-break:break-all}
+pre{background:#050b17;border:1px solid var(--line);border-radius:12px;padding:12px;overflow:auto;font-size:13px;color:var(--gold2);margin:10px 0;white-space:pre-wrap;word-break:break-all}
 iframe#pv{width:100%;height:340px;border:1px solid var(--line);border-radius:12px;background:#fff}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
 .num{font-size:clamp(48px,10vw,96px);font-weight:900;color:var(--gold2);text-align:center;line-height:1}
 .bar{height:8px;background:var(--panel2);border-radius:9px;overflow:hidden;margin:14px 0}
-.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#b8860b,#f0c050);transition:width .2s}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#1d4ed8,#67e8f9);transition:width .2s}
 .stat{text-align:center}.stat b{display:block;font-size:24px;color:var(--gold2)}.stat small{color:var(--mut)}
 .wp{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--panel)}
 .wp img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
@@ -78,6 +78,37 @@ body.nav-closed aside{transform:translateX(-100%)}
 body:not(.nav-closed) #scrim{display:block}
 .pg{padding:20px 16px 60px}
 }
+</style>
+
+<style id="tema">
+body{background:
+radial-gradient(1200px 600px at 75% -10%,rgba(37,99,235,.30),transparent 60%),
+radial-gradient(900px 500px at 0% 100%,rgba(34,184,207,.18),transparent 60%),
+linear-gradient(rgba(56,189,248,.05) 1px,transparent 1px) 0 0/40px 40px,
+linear-gradient(90deg,rgba(56,189,248,.05) 1px,transparent 1px) 0 0/40px 40px,#060d1b}
+aside{background:linear-gradient(180deg,#07142a,#050b17);border-right:1px solid #1d3b61;box-shadow:4px 0 30px rgba(0,0,0,.5)}
+.brand{font-family:Consolas,"Courier New",monospace;letter-spacing:3px;text-shadow:0 0 14px rgba(34,184,207,.6)}
+nav a{border-radius:8px;font-family:Consolas,"Courier New",monospace;font-size:12px;letter-spacing:.8px;text-transform:uppercase;border:1px solid transparent}
+nav a:hover{border-color:#1d3b61;background:#0f2540;color:#67e8f9}
+nav a.on{color:#fff;background:linear-gradient(90deg,rgba(29,78,216,.85),rgba(34,184,207,.45));border-color:#22b8cf;box-shadow:inset 3px 0 0 #67e8f9,0 0 22px rgba(34,184,207,.22)}
+.top{font-family:Consolas,"Courier New",monospace;letter-spacing:3px;text-transform:uppercase;font-size:13px;color:#67e8f9;border-bottom:1px solid #1d3b61}
+h1{letter-spacing:.5px}
+h2{font-family:Consolas,"Courier New",monospace;text-transform:uppercase;font-size:14px;letter-spacing:2px}
+h2::before{content:"// ";color:#2563eb}
+.big{filter:drop-shadow(0 0 24px rgba(37,99,235,.55))}
+.hero .logo svg{filter:drop-shadow(0 0 16px rgba(34,184,207,.8))}
+.search{border-radius:12px;border-color:#1d4ed8;background:rgba(11,26,46,.9);box-shadow:0 0 34px rgba(37,99,235,.28)}
+.search select,.item,input,select,textarea,pre,iframe#pv{border-radius:8px}
+.card{border-radius:12px;background:linear-gradient(160deg,rgba(17,42,70,.85),rgba(7,18,35,.92));border-color:#1d3b61}
+a.card:hover{border-color:#22b8cf;box-shadow:0 0 26px rgba(34,184,207,.28)}
+.btn{color:#fff;border-radius:8px;background:linear-gradient(90deg,#1d4ed8,#22b8cf);box-shadow:0 0 18px rgba(34,184,207,.25)}
+.btn.ghost{color:#e6f6ff;background:#112a46;border:1px solid #1d3b61;box-shadow:none}
+.btn.ghost:hover{border-color:#22b8cf}
+.bar i{box-shadow:0 0 12px #22b8cf}
+.num{text-shadow:0 0 26px rgba(34,184,207,.55)}
+.tag{border-color:#1d4ed8;color:#67e8f9}
+#toast{color:#031018}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#1d4ed8;border-radius:8px}::-webkit-scrollbar-track{background:#060d1b}
 </style>
 </head>
 <body>
@@ -104,7 +135,7 @@ const dl=(name,text,type='text/plain')=>{const a=document.createElement('a');a.h
 const safeUrl=u=>{try{u=u.trim();if(!/^https?:\/\//i.test(u))u='https://'+u;const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:null}catch(e){return null}};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(b)copy(b.dataset.copy)});
 
-const LOGO='<svg viewBox="0 0 48 48"><polygon points="24,3 43,14 43,34 24,45 5,34 5,14" fill="none" stroke="#d9a521" stroke-width="3"/><text x="24" y="31" text-anchor="middle" font-size="22" font-weight="800" fill="#d9a521" font-family="Arial">A</text></svg>';
+const LOGO='<svg viewBox="0 0 48 48"><polygon points="24,3 43,14 43,34 24,45 5,34 5,14" fill="none" stroke="#22b8cf" stroke-width="3"/><text x="24" y="31" text-anchor="middle" font-size="22" font-weight="800" fill="#22b8cf" font-family="Arial">A</text></svg>';
 $('#brand').innerHTML=LOGO+'<span>aSiKuRT</span>';
 
 const HOME={id:'ana',t:'Ana Sayfa',i:'🏠',d:''};
@@ -178,7 +209,7 @@ page(hd('API ANAHTAR','Tarayıcının güvenli rastgele sayı üreticisiyle anah
 P.apk=()=>{
 page(hd('APK OLUŞTURUCU','Tarayıcı içinde gerçek APK derlenemez. Doğru yol: siteni PWA yap, sonra PWABuilder ile APK/AAB al. Aşağıdaki araç PWA dosyalarını hazırlar.')+`
 <div class="card"><div class="row"><label>Uygulama adı<input id="mn" value="aSiKuRT"></label><label>Kısa ad<input id="ms" value="aSiKuRT"></label></div>
-<div class="row"><label>Başlangıç yolu<input id="mu" value="./"></label><label>Tema rengi<input id="mt" type="color" value="#d9a521"></label><label>Arka plan<input id="mb" type="color" value="#0e0f11"></label></div>
+<div class="row"><label>Başlangıç yolu<input id="mu" value="./"></label><label>Tema rengi<input id="mt" type="color" value="#22b8cf"></label><label>Arka plan<input id="mb" type="color" value="#060d1b"></label></div>
 <div class="row"><label>512x512 PNG ikon yolu<input id="mi" value="icon-512.png"></label></div>
 <h2 style="margin-top:6px">manifest.json</h2><pre id="mo"></pre>
 <div class="row"><button class="btn" id="mc">Kopyala</button><button class="btn ghost" id="md">manifest.json indir</button></div></div>
@@ -191,7 +222,7 @@ page(hd('APK OLUŞTURUCU','Tarayıcı içinde gerçek APK derlenemez. Doğru yol
 
 /* ---------- HTML ---------- */
 P.html=()=>{
-const def=load('asi_html',{h:'<h1>Merhaba aSiKuRT</h1>\n<button id="b">Tıkla</button>',c:'body{font-family:sans-serif;background:#111;color:#f0c050;text-align:center;padding:40px}\nbutton{padding:10px 20px;border-radius:10px;border:0;background:#d9a521}',j:'document.getElementById("b").onclick=()=>alert("Çalışıyor!")'});
+const def=load('asi_html',{h:'<h1>Merhaba aSiKuRT</h1>\n<button id="b">Tıkla</button>',c:'body{font-family:sans-serif;background:#111;color:#67e8f9;text-align:center;padding:40px}\nbutton{padding:10px 20px;border-radius:10px;border:0;background:#22b8cf}',j:'document.getElementById("b").onclick=()=>alert("Çalışıyor!")'});
 page(hd('HTML','Kodunu yaz, canlı önizle. Önizleme güvenli sandbox içinde çalışır.')+`
 <div class="cols"><label>HTML<textarea id="th" spellcheck="false"></textarea></label><label>CSS<textarea id="tc" spellcheck="false"></textarea></label><label>JavaScript<textarea id="tj" spellcheck="false"></textarea></label></div>
 <div class="row" style="margin-top:12px"><button class="btn" id="hr">Çalıştır</button><button class="btn ghost" id="hc">Kodu kopyala</button><button class="btn ghost" id="hd">.html indir</button><button class="btn ghost" id="hx">Temizle</button></div>
