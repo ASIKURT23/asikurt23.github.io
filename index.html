@@ -131,7 +131,7 @@ nav a.on{font-weight:700}
 <style id="dark-compact-theme">
 :root{--bg:#090d12;--panel:#111820;--panel2:#18222c;--line:#283541;--gold:#55b8d5;--gold2:#86d3e8;--txt:#e8eef3;--mut:#91a0ad}
 body{background:radial-gradient(ellipse at 50% -25%,rgba(45,99,125,.2),transparent 58%),#090d12}
-#bg{opacity:.035}
+#bg{opacity:.22}
 aside{width:248px;padding:14px 10px;background:#0d131a;border-right:1px solid #202b35;box-shadow:8px 0 24px rgba(0,0,0,.18)}
 body.nav-closed aside{margin-left:-248px}
 .brand{gap:9px;padding:5px 10px 15px;color:#dce7ee;font-family:inherit;font-size:19px;letter-spacing:.4px;text-shadow:none}
@@ -723,7 +723,7 @@ route();
       if(!q('#q')){location.hash='#/ana';setTimeout(()=>q('#q')&&q('#q').focus(),200)}else q('#q').focus()}});
   if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
-    addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=11',{updateViaCache:'none'}).then(registration=>registration.update()).catch(err=>console.error('Service worker kaydedilemedi:',err)));
+    addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=12',{updateViaCache:'none'}).then(registration=>registration.update()).catch(err=>console.error('Service worker kaydedilemedi:',err)));
   }
 })();
 </script>
