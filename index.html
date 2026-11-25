@@ -356,7 +356,7 @@ speed:'<path d="M4.5 19a9 9 0 1 1 15 0"/><path d="m12 14 4-5M7 19h10"/>'
 const HOME={id:'ana',t:'Ana Sayfa',i:'home',d:''};
 const NAV=[
 {id:'api',t:'API Anahtarları',i:'key',d:'Güvenli rastgele anahtar ve UUID üretici.'},
-{id:'apk',t:'APK',i:'apk',d:'PWA manifesti oluştur ve Android paketleme adımlarını görüntüle.'},
+{id:'apk',t:'APK',i:'apk',d:'APK oluşturma sitesini aç.',url:'https://freewebtoapk.com/generator/website-url'},
 {id:'html',t:'HTML',i:'code',d:'HTML/CSS/JS yaz, canlı önizle, indir.'},
 {id:'lg',t:'LG',i:'tv',d:'LG TV destek, webOS ve uygulama bağlantıları.'},
 {id:'m3u',t:'M3U LİST',i:'list',d:'M3U listesi aç, filtrele, temizle, indir.'},
@@ -723,7 +723,7 @@ route();
       if(!q('#q')){location.hash='#/ana';setTimeout(()=>q('#q')&&q('#q').focus(),200)}else q('#q').focus()}});
   if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
-    addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=12',{updateViaCache:'none'}).then(registration=>registration.update()).catch(err=>console.error('Service worker kaydedilemedi:',err)));
+    addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=13',{updateViaCache:'none'}).then(registration=>registration.update()).catch(err=>console.error('Service worker kaydedilemedi:',err)));
   }
 })();
 </script>
