@@ -163,7 +163,7 @@ const HOME={id:'ana',t:'Ana Sayfa',i:'🏠',d:''};
 const NAV=[
 {id:'ps4',t:'PS4',i:'🎮',d:'Bağlantı, DNS, güvenli mod ve Remote Play ipuçları.'},
 {id:'lg',t:'LG',i:'📺',d:'LG TV destek, webOS ve uygulama bağlantıları.'},
-{id:'whatsapp',t:'WHATSAPP WEB',i:'💬',d:'WhatsApp Web’i aç.'},
+{id:'whatsapp',t:'WHATSAPP WEB',i:'💬',d:'',url:'https://web.whatsapp.com/'},
 {id:'html',t:'HTML',i:'🧩',d:'HTML/CSS/JS yaz, canlı önizle, indir.'},
 {id:'python',t:'PYTHON',i:'🐍',d:'Tarayıcıda Python çalıştır, hazır kod parçaları.'},
 {id:'api',t:'API ANAHTAR',i:'🔑',d:'Güvenli rastgele anahtar ve UUID üretici.'},
@@ -173,7 +173,7 @@ const NAV=[
 {id:'speed',t:'SPEED HIZ TESTİ',i:'🚀',d:'İndirme, yükleme ve ping ölçümü.'}
 ].sort((a,b)=>a.t.localeCompare(b.t,'tr'));
 const ALL=[HOME,...NAV];
-$('#nav').innerHTML=ALL.map(n=>`<a href="#/${n.id}" data-id="${n.id}"><span>${n.i}</span><span>${esc(n.t)}</span></a>`).join('');
+$('#nav').innerHTML=ALL.map(n=>`<a href="${n.url||`#/${n.id}`}" data-id="${n.id}"><span>${n.i}</span><span>${esc(n.t)}</span></a>`).join('');
 
 const view=$('#view'),P={};
 const hd=(t,s)=>`<h1>${t}</h1><p class="sub">${s}</p>`;
@@ -250,12 +250,6 @@ page(hd('LG','LG TV için resmi destek ve geliştirici bağlantıları.')+links(
 ['Plex','https://www.plex.tv/','Kendi medya sunucun'],
 ['Kodi','https://kodi.tv/','Açık kaynak medya oynatıcı']
 ])+`<h2>Pratik İpuçları</h2><div class="card"><ul class="tips"><li>Yazılım güncelleme: Ayarlar → Tüm Ayarlar → Genel → Bu TV Hakkında → Güncellemeleri Kontrol Et.</li><li>Yavaş internet: Wi-Fi yerine kablo dene veya DNS'i 1.1.1.1 / 8.8.8.8 yap (Ağ → Gelişmiş Wi-Fi Ayarları).</li><li>Uygulama donuyorsa: TV'yi kapat, fişten çek, 30 sn bekle, tekrar aç.</li></ul><small style="color:var(--mut)">Menü adları model ve webOS sürümüne göre değişebilir.</small></div>`);};
-
-/* ---------- WHATSAPP WEB ---------- */
-P.whatsapp=()=>{
-page(hd('WHATSAPP WEB','WhatsApp mesajlarına tarayıcından eriş.')+links([
-['WhatsApp Web','https://web.whatsapp.com/','WhatsApp Web’i yeni sekmede aç']
-]));};
 
 /* ---------- M3U LİST ---------- */
 const nameOf=l=>{let q=false;for(let i=0;i<l.length;i++){const c=l[i];if(c=='"')q=!q;else if(c==','&&!q)return l.slice(i+1).trim()}return''};
