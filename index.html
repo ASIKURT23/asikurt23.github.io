@@ -335,6 +335,34 @@ const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const GA4_MEASUREMENT_ID='';
+const GA4_EXCLUSION_KEY='asi_ga4_exclude';
+let ga4Initialized=false;
+const trackPageView=pageTitle=>{
+  if(!GA4_MEASUREMENT_ID)return;
+  try{
+    if(localStorage.getItem(GA4_EXCLUSION_KEY)==='true')return;
+  }catch(error){
+    console.error('GA4 hariç tutma ayarı okunamadı:',error);
+    return;
+  }
+  if(!ga4Initialized){
+    window.dataLayer=window.dataLayer||[];
+    window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
+    const script=document.createElement('script');
+    script.async=true;
+    script.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(GA4_MEASUREMENT_ID);
+    document.head.appendChild(script);
+    window.gtag('js',new Date());
+    window.gtag('config',GA4_MEASUREMENT_ID,{send_page_view:false});
+    ga4Initialized=true;
+  }
+  window.gtag('event','page_view',{
+    page_title:pageTitle,
+    page_path:location.pathname+location.hash,
+    page_location:location.href
+  });
+};
 let tt;const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1600)};
 const copy=async t=>{try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}toast('Kopyalandı ✓')};
 const dl=(name,text,type='text/plain')=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
@@ -853,9 +881,36 @@ const AI=[
 ['Runway','https://runwayml.com/','Video'],['ElevenLabs','https://elevenlabs.io/','Ses'],['Suno','https://suno.com/','Müzik'],['Canva','https://www.canva.com/','Tasarım']
 ];
 P.ai=()=>{
-page(hd('YAPAY ZEKA ARAÇLARI','Sık kullanılan yapay zeka araçları.')+`<div class="row"><label>Filtrele<input id="aq" placeholder="Ad veya tür: görsel, kodlama..."></label></div><div class="grid" id="ag2"></div>`,()=>{
+page(hd('YAPAY ZEKA ARAÇLARI','Sık kullanılan yapay zeka araçları.')+`<div class="row"><label>Filtrele<input id="aq" placeholder="Ad veya tür: görsel, kodlama..."></label></div><div class="grid" id="ag2"></div>
+<h2>Bilgilendirme</h2><section class="card" aria-labelledby="visitor-stats-title">
+<b id="visitor-stats-title">Site ziyaret istatistikleri</b>
+<p id="visitor-stats-status" class="widget-note" role="status" aria-live="polite"></p>
+<p class="widget-note">Google Analytics 4 yalnızca toplu ziyaret ve sayfa görüntülenme istatistikleri sağlar; ziyaretçilerin isimlerini göstermez. Ölçüm kimliği siteye eklenince sayılar Google Analytics raporlarında görünür, bu sayfada sayaç olarak gösterilmez.</p>
+<div class="row" style="margin-top:12px"><button class="btn ghost" id="ga4-exclude" type="button" aria-pressed="false"></button><a class="btn" href="https://analytics.google.com/analytics/web/" target="_blank" rel="noopener noreferrer">Google Analytics raporları</a><a class="btn ghost" href="https://support.google.com/analytics/answer/9539598" target="_blank" rel="noopener noreferrer">GA4 kurulum bilgisi</a></div>
+<small style="color:var(--mut)">Hariç tutma seçeneği yalnızca bu tarayıcıda geçerlidir. Tüm cihazlarınız için GA4'te dahili trafik filtresi ayarlayın.</small>
+</section>`,()=>{
   const d=()=>{const q=$('#aq').value.toLowerCase();$('#ag2').innerHTML=AI.filter(a=>(a[0]+' '+a[2]).toLowerCase().includes(q)).map(a=>`<a class="card" target="_blank" rel="noopener noreferrer" href="${a[1]}"><b>${esc(a[0])}</b><span class="tag">${esc(a[2])}</span></a>`).join('')};
   $('#aq').oninput=d;d();
+  const status=$('#visitor-stats-status');
+  const excludeButton=$('#ga4-exclude');
+  const updateExclusion=()=>{
+    const excluded=load(GA4_EXCLUSION_KEY,false)===true;
+    excludeButton.setAttribute('aria-pressed',String(excluded));
+    excludeButton.textContent=excluded?'Bu tarayıcı hariç tutuluyor':'Bu tarayıcıyı sayım dışında tut';
+    status.textContent=GA4_MEASUREMENT_ID
+      ?'GA4 etkin. Toplam ziyaretleri Google Analytics raporlarında görebilirsiniz.'
+      :'GA4 henüz yapılandırılmadı; şu anda ziyaret ölçümü yapılmıyor. Etkinleştirmek için siteye GA4 Measurement ID eklenmelidir.';
+  };
+  excludeButton.onclick=()=>{
+    const excluded=load(GA4_EXCLUSION_KEY,false)===true;
+    try{
+      localStorage.setItem(GA4_EXCLUSION_KEY,JSON.stringify(!excluded));
+      updateExclusion();
+    }catch(error){
+      status.textContent='Hariç tutma tercihi kaydedilemedi: '+error.message;
+    }
+  };
+  updateExclusion();
 });};
 
 /* ---------- ROUTER ---------- */
@@ -869,7 +924,7 @@ function route(closeMobileMenu=false){
     a.classList.toggle('on',active);
     if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
   });
-  (P[n.id]||P.ana)();$('main').scrollTop=0;
+  (P[n.id]||P.ana)();trackPageView(n.t);$('main').scrollTop=0;
   if(closeMobileMenu&&innerWidth<=860)document.body.classList.add('nav-closed');
   $('#tog').setAttribute('aria-expanded',String(!document.body.classList.contains('nav-closed')));
 }
