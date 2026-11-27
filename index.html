@@ -728,5 +728,78 @@ route();
 })();
 </script>
 
+<!-- ASIKURT_LIVE_API_PATCH -->
+<section id="live-api-runner" style="margin:20px;padding:16px;border:1px solid #334155;border-radius:12px;background:#0f172a;color:#e2e8f0;font-family:sans-serif;">
+  <h3 style="margin:0 0 10px;font-size:16px;">Canlı API İstek Testi</h3>
+  <p style="margin:0 0 10px;color:#cbd5e1;font-size:13px;">API anahtarınız tarayıcıda saklanmaz; istekle birlikte girdiğiniz endpoint'e gönderilir. Yalnızca güvendiğiniz HTTPS adreslerinde kullanın.</p>
+  <div style="display:grid;gap:8px;">
+    <input id="api-patch-url" type="url" placeholder="Endpoint URL (ör: https://httpbin.org/get)" aria-label="Endpoint URL" style="padding:8px;border-radius:8px;border:1px solid #475569;background:#1e293b;color:#fff;" />
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <select id="api-patch-method" aria-label="HTTP metodu" style="padding:8px;border-radius:8px;border:1px solid #475569;background:#1e293b;color:#fff;">
+        <option value="GET">GET</option>
+        <option value="POST">POST</option>
+      </select>
+      <input id="api-patch-key" type="password" autocomplete="off" placeholder="İsteğe bağlı API anahtarı" aria-label="API anahtarı" style="flex:1;min-width:220px;padding:8px;border-radius:8px;border:1px solid #475569;background:#1e293b;color:#fff;" />
+      <button id="api-patch-send" type="button" style="padding:8px 14px;border-radius:8px;border:0;background:#2563eb;color:#fff;cursor:pointer;">İstek Gönder</button>
+    </div>
+    <textarea id="api-patch-body" rows="3" placeholder='POST için JSON gövdesi (ör: {"prompt":"merhaba"})' aria-label="POST JSON gövdesi" style="padding:8px;border-radius:8px;border:1px solid #475569;background:#1e293b;color:#fff;"></textarea>
+    <pre id="api-patch-out" aria-live="polite" style="margin:0;padding:10px;border-radius:8px;background:#020617;color:#93c5fd;overflow:auto;max-height:240px;">Yanıt burada görünecek...</pre>
+  </div>
+</section>
+<script>
+(() => {
+  const btn = document.getElementById("api-patch-send");
+  if (!btn) return;
+  btn.addEventListener("click", async () => {
+    const urlField = document.getElementById("api-patch-url");
+    const method = document.getElementById("api-patch-method").value;
+    const keyField = document.getElementById("api-patch-key");
+    const rawBody = document.getElementById("api-patch-body").value.trim();
+    const out = document.getElementById("api-patch-out");
+    let url;
+    try {
+      url = new URL(urlField.value.trim());
+    } catch {
+      out.textContent = "Hata: Geçerli bir HTTPS URL girin.";
+      return;
+    }
+    if (url.protocol !== "https:" || url.username || url.password) {
+      out.textContent = "Hata: Yalnızca kimlik bilgisi içermeyen HTTPS URL'leri kullanılabilir.";
+      return;
+    }
+    let body;
+    if (method === "POST" && rawBody) {
+      try {
+        body = JSON.stringify(JSON.parse(rawBody));
+      } catch {
+        out.textContent = "Hata: POST gövdesi geçerli JSON olmalıdır.";
+        return;
+      }
+    }
+    out.textContent = "İstek gönderiliyor...";
+    btn.disabled = true;
+    const headers = { "Accept": "application/json" };
+    if (keyField.value.trim()) {
+      headers["Authorization"] = "Bearer " + keyField.value.trim();
+      headers["X-API-Key"] = keyField.value.trim();
+    }
+    const opts = { method, headers };
+    if (body !== undefined) {
+      headers["Content-Type"] = "application/json";
+      opts.body = body;
+    }
+    try {
+      const res = await fetch(url.href, opts);
+      const text = await res.text();
+      out.textContent = `HTTP ${res.status} ${res.statusText}\n\n` + text.slice(0, 4000);
+    } catch (err) {
+      out.textContent = "İstek hatası (CORS veya ağ): " + err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
