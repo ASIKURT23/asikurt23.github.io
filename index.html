@@ -384,6 +384,7 @@ terminal:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3
 key:'<circle cx="8" cy="15" r="4"/><path d="m11 12 8-8 2 2-2 2 2 2-3 3-2-2-2 2"/>',
 apk:'<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>',
 list:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',
+cover:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/><path d="M8 21h8"/>',
 spark:'<path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 14 .9 2.1L22 17l-2.1.9L19 20l-.9-2.1L16 17l2.1-.9L19 14Z"/>',
 image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/>',
 speed:'<path d="M4.5 19a9 9 0 1 1 15 0"/><path d="m12 14 4-5M7 19h10"/>'
@@ -395,6 +396,7 @@ const NAV=[
 {id:'html',t:'HTML',i:'code',d:'HTML/CSS/JS yaz, canlı önizle, indir.'},
 {id:'lg',t:'LG',i:'tv',d:'LG TV destek, webOS ve uygulama bağlantıları.'},
 {id:'m3u',t:'M3U LİST',i:'list',d:'M3U listesi aç, filtrele, temizle, indir.'},
+{id:'mp3cover',t:'MP3 KAPAKLARINI SİL',i:'cover',d:'MP3 dosyalarındaki gömülü kapak görsellerini yerel olarak kaldır.'},
 {id:'ps4',t:'PS4',i:'console',d:'Bağlantı, DNS, güvenli mod ve Remote Play ipuçları.'},
 {id:'python',t:'PYTHON',i:'terminal',d:'Tarayıcıda Python çalıştır, hazır kod parçaları.'},
 {id:'speed',t:'SPEED HIZ TESTİ',i:'speed',d:'İndirme, yükleme ve ping ölçümü.'},
@@ -888,6 +890,121 @@ page(hd('M3U LİST','Liste yükle, birleştir, filtrele, seç ve LG TV / SS IPTV
       return raw+'\n'+i.url;
     }).join('\n')+'\n';
     dl('liste.m3u',text,'audio/x-mpegurl');
+  };
+});};
+
+/* ---------- MP3 KAPAK ---------- */
+P.mp3cover=()=>{
+let processed=[];
+const synchsafe=n=>new Uint8Array([(n>>21)&127,(n>>14)&127,(n>>7)&127,n&127]);
+const readSynchsafe=(bytes,offset)=>{
+  return ((bytes[offset]&127)<<21)|((bytes[offset+1]&127)<<14)|((bytes[offset+2]&127)<<7)|(bytes[offset+3]&127);
+};
+const removeId3Cover=bytes=>{
+  if(bytes.length<10)return{bytes,removed:false};
+  const view=new Uint8Array(bytes);
+  if(String.fromCharCode(view[0],view[1],view[2])!=='ID3')return{bytes,removed:false};
+  const major=view[3],flags=view[4];
+  const tagSize=readSynchsafe(view,6);
+  const tagEnd=Math.min(view.length,10+tagSize+(flags&16?10:0));
+  if(tagSize<1||tagEnd>view.length)return{bytes,removed:false};
+  let offset=10;
+  if(major>=3&&(flags&64)){
+    const extSize=major===4?readSynchsafe(view,offset):view[offset]<<24|view[offset+1]<<16|view[offset+2]<<8|view[offset+3];
+    offset+=major===4?4+(extSize||0):10+(extSize||0);
+  }
+  const kept=new Uint8Array(tagEnd-offset);
+  let keptOffset=0,removed=false;
+  while(offset<tagEnd){
+    let frameId='',headerSize,frameSize;
+    if(view[offset]===0)break;
+    if(major===2){
+      if(offset+6>tagEnd)break;
+      frameId=String.fromCharCode(view[offset],view[offset+1],view[offset+2]);
+      frameSize=(view[offset+3]<<16)|(view[offset+4]<<8)|view[offset+5];
+      headerSize=6;
+    }else{
+      if(offset+10>tagEnd)break;
+      frameId=String.fromCharCode(view[offset],view[offset+1],view[offset+2],view[offset+3]);
+      frameSize=major===4?readSynchsafe(view,offset+4):((view[offset+4]<<24)|(view[offset+5]<<16)|(view[offset+6]<<8)|view[offset+7])>>>0;
+      headerSize=10;
+    }
+    if(frameSize<0||offset+headerSize+frameSize>tagEnd)break;
+    const frameEnd=offset+headerSize+frameSize;
+    if(!((major===2&&frameId==='PIC')||(major>=3&&frameId==='APIC'))){
+      kept.set(view.slice(offset,frameEnd),keptOffset);keptOffset+=frameEnd-offset;
+    }else{
+      removed=true;
+    }
+    offset=frameEnd;
+  }
+  if(offset<tagEnd){{const padding=view.slice(offset,tagEnd);kept.set(padding,keptOffset);keptOffset+=padding.length}}
+  if(!removed)return{bytes,removed:false};
+  const padding=Math.max(0,tagSize-keptOffset);
+  const finalTagSize=keptOffset+padding;
+  const header=new Uint8Array(10);
+  header.set(view.slice(0,10));
+  header.set(synchsafe(finalTagSize),6);
+  const rest=view.slice(tagEnd);
+  const out=new Uint8Array(header.length+keptOffset+padding+rest.length);
+  out.set(header,0);out.set(kept.slice(0,keptOffset),10);
+  if(padding)out.fill(0,10+keptOffset,10+finalTagSize);
+  out.set(rest,10+finalTagSize);
+  return{bytes:out.buffer,removed:true};
+};
+page(hd('MP3 KAPAKLARINI SİL','MP3 dosyalarındaki gömülü ID3 albüm kapağı karelerini kaldır. Dosyalar sunucuya gönderilmez; işlem yalnızca bu tarayıcıda yapılır.')+`
+<div class="card"><div class="row"><label>MP3 dosyalarını seç<input id="mp3files" type="file" accept=".mp3,audio/mpeg" multiple></label></div>
+<div class="row"><button class="btn" id="mp3run" type="button" disabled>Kapakları kaldır</button><button class="btn ghost" id="mp3all" type="button" disabled>Tümünü indir</button></div>
+<small style="color:var(--mut)">Orijinal dosyalar değiştirilmez. İşlem sonucu dosyalar indirilen yeni MP3 dosyalarıdır. Dosya adlarına <code>-kapaksiz</code> eklenir.</small></div>
+<h2>Dosyalar <span class="tag" id="mp3count">0</span></h2><div class="list" id="mp3list"></div>`,()=>{
+  const formatSize=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(1)+' MB';
+  $('#mp3files').onchange=()=>{
+    processed=[];
+    const files=[...$('#mp3files').files].filter(file=>file.name.toLowerCase().endsWith('.mp3')||file.type==='audio/mpeg');
+    $('#mp3count').textContent=files.length+' seçili';
+    $('#mp3run').disabled=!files.length;
+    $('#mp3all').disabled=true;
+    $('#mp3list').innerHTML=files.map(file=>'<div class="item"><span><b>'+esc(file.name)+'</b><br><code>'+formatSize(file.size)+'</code></span><span class="tag">Bekliyor</span></div>').join('');
+  };
+  $('#mp3run').onclick=async()=>{
+    const files=[...$('#mp3files').files].filter(file=>file.name.toLowerCase().endsWith('.mp3')||file.type==='audio/mpeg');
+    if(!files.length)return toast('MP3 dosyası seç');
+    const button=$('#mp3run');button.disabled=true;
+    processed=[];
+    $('#mp3list').replaceChildren();
+    let removedCount=0;
+    for(const file of files){
+      const row=document.createElement('div');row.className='item';
+      row.innerHTML='<span><b>'+esc(file.name)+'</b><br><code>İşleniyor...</code></span>';
+      $('#mp3list').append(row);
+      try{
+        const source=await file.arrayBuffer();
+        const result=removeId3Cover(source);
+        if(result.removed)removedCount++;
+        const outputName=file.name.replace(/\.mp3$/i,'')+'-kapaksiz.mp3';
+        const blob=new Blob([result.bytes],{type:'audio/mpeg'});
+        const url=URL.createObjectURL(blob);
+        processed.push({name:outputName,blob,url});
+        row.innerHTML='<span><b>'+esc(file.name)+'</b><br><code>'+esc(outputName)+' · '+(result.removed?'Kapak kaldırıldı':'Kapak bulunmadı')+'</code></span><button class="btn sm" data-mp3-download="'+(processed.length-1)+'">İndir</button>';
+      }catch(error){
+        row.innerHTML='<span><b>'+esc(file.name)+'</b><br><code>Hata: '+esc(error.message)+'</code></span>';
+      }
+    }
+    $('#mp3all').disabled=!processed.length;
+    toast(removedCount+' dosyadan kapak kaldırıldı');
+    button.disabled=false;
+  };
+  $('#mp3list').onclick=e=>{
+    const button=e.target.closest('[data-mp3-download]');
+    if(!button)return;
+    const item=processed[Number(button.dataset.mp3Download)];
+    if(!item)return;
+    const link=document.createElement('a');link.href=item.url;link.download=item.name;link.click();
+  };
+  $('#mp3all').onclick=()=>{
+    processed.forEach((item,index)=>{
+      setTimeout(()=>{const link=document.createElement('a');link.href=item.url;link.download=item.name;link.click()},index*150);
+    });
   };
 });};
 
