@@ -495,6 +495,37 @@ body.nav-closed .foot::after{content:"©";font-size:11px}
   .google-avatar img{width:28px!important;height:28px!important}
 }
 </style>
+<style id="news-ticker-final">
+#news-ticker{
+  position:fixed!important;
+  left:auto!important;
+  top:auto!important;
+  right:18px!important;
+  bottom:18px!important;
+  z-index:2147483000!important;
+  width:340px!important;
+  min-width:0!important;
+  max-width:calc(100vw - 36px)!important;
+  max-height:270px!important;
+  margin:0!important;
+  padding:0!important;
+  border:1px solid #34434e!important;
+  border-radius:12px!important;
+  background:rgba(17,24,32,.97)!important;
+  box-shadow:0 16px 42px rgba(0,0,0,.45)!important;
+  overflow:hidden!important;
+  transform:none!important;
+  transition:none!important;
+}
+#news-ticker.news-minimized{
+  width:210px!important;
+  max-height:42px!important;
+}
+@media(max-width:520px){
+  #news-ticker{right:8px!important;bottom:8px!important;width:min(330px,calc(100vw - 16px))!important}
+  #news-ticker.news-minimized{width:210px!important}
+}
+</style>
 </head>
 <body class="nav-closed">
 <div id="bg"></div><div id="scrim"></div>
@@ -536,13 +567,13 @@ body.nav-closed .foot::after{content:"©";font-size:11px}
   <div id="view"></div>
 </main>
 <div id="toast"></div>
-<aside id="news-ticker" aria-label="Google'da en çok okunan haberler">
+<div id="news-ticker" role="region" aria-label="Google'da en çok okunan haberler">
   <div id="news-ticker-head">
     <a href="https://news.google.com/?hl=tr&amp;gl=TR&amp;ceid=TR:tr" target="_blank" rel="noopener noreferrer">Google Haberler · Türkiye</a>
     <button id="news-ticker-toggle" type="button" aria-label="Haber panelini küçült" title="Küçült">−</button>
   </div>
   <div id="news-ticker-body"><div class="news-ticker-item"><span class="news-ticker-title">Haberler yükleniyor…</span></div></div>
-</aside>
+</div>
 
 <script>
 (() => {
