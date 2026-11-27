@@ -72,6 +72,30 @@ iframe#pv{width:100%;height:340px;border:1px solid var(--line);border-radius:12p
 #toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:var(--gold);color:#111;font-weight:700;padding:10px 18px;border-radius:12px;opacity:0;transition:.25s;z-index:99;pointer-events:none}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 ul.tips{padding-left:20px;line-height:1.8;color:#d0d3d6}
+#market-ticker{position:fixed;right:18px;bottom:18px;z-index:60;width:330px;border:1px solid #34434e;border-radius:12px;background:rgba(17,24,32,.97);box-shadow:0 16px 42px rgba(0,0,0,.45);overflow:hidden}
+#market-ticker.market-minimized{width:142px}
+#market-ticker-head{display:flex;align-items:center;justify-content:space-between;gap:8px;height:38px;padding:0 10px;border-bottom:1px solid #263440}
+#market-ticker-head a{color:#dce6ed;text-decoration:none;font-size:12px;font-weight:700}
+#market-ticker-head a:hover{text-decoration:underline}
+#market-ticker-status{display:flex;align-items:center;gap:6px;color:#91a0ad;font-size:10px}
+#market-live-dot{width:7px;height:7px;border-radius:50%;background:#55b8d5;box-shadow:0 0 8px rgba(85,184,213,.7)}
+#market-ticker-toggle{width:24px;height:24px;padding:0;border:1px solid #34434e;border-radius:6px;background:#111820;color:#dce6ed;cursor:pointer}
+#market-ticker-toggle:hover{border-color:#55b8d5}
+#market-ticker-body{padding:6px 8px 8px}
+#market-ticker-list{display:grid;gap:3px}
+.market-row{display:grid;grid-template-columns:82px 1fr 1fr 48px;align-items:center;gap:6px;min-height:30px;padding:5px 6px;border-radius:7px;background:#141d26}
+.market-name{color:#dce6ed;font-size:11px;font-weight:650}
+.market-buy,.market-sell{font-size:11px;color:#a6d9e8;text-align:right;white-space:nowrap}
+.market-change{font-size:10px;text-align:right;white-space:nowrap;color:#86d3e8}
+.market-change.negative{color:#ef8d8d}
+.market-ticker-foot{display:flex;justify-content:space-between;align-items:center;margin-top:5px;color:#72818e;font-size:9px}
+#market-ticker.market-minimized #market-ticker-status,#market-ticker.market-minimized #market-ticker-body{display:none}
+#market-ticker.market-minimized #market-ticker-head{border-bottom:0}
+@media(max-width:520px){
+  #market-ticker{right:8px;bottom:8px;width:290px}
+  #market-ticker.market-minimized{width:142px}
+  .market-row{grid-template-columns:72px 1fr 1fr 44px}
+}
 @media(max-width:860px){
 aside{position:fixed;left:0;top:0;bottom:0;margin-left:0!important}
 body.nav-closed aside{transform:translateX(-100%)}
@@ -514,6 +538,95 @@ body.nav-closed .foot::after{content:"©";font-size:11px}
   <div id="view"></div>
 </main>
 <div id="toast"></div>
+<aside id="market-ticker" aria-label="Kapalı Çarşı canlı altın fiyatları">
+  <div id="market-ticker-head">
+    <a href="https://canlidoviz.com/altin-fiyatlari/kapali-carsi" target="_blank" rel="noopener noreferrer">Kapalı Çarşı</a>
+    <div id="market-ticker-status"><span id="market-live-dot"></span><span id="market-ticker-time">Yükleniyor</span></div>
+    <button id="market-ticker-toggle" type="button" aria-label="Piyasa panelini küçült" title="Küçült">−</button>
+  </div>
+  <div id="market-ticker-body">
+    <div id="market-ticker-list"><div class="market-row"><span class="market-name">Piyasa</span><span class="market-buy">Alış</span><span class="market-sell">Satış</span><span class="market-change">Değişim</span></div></div>
+    <div class="market-ticker-foot"><span>Canlı Döviz</span><span id="market-ticker-updated">Son veri bekleniyor</span></div>
+  </div>
+</aside>
+
+<script>
+(() => {
+  const ticker = document.getElementById("market-ticker");
+  if (!ticker) return;
+  const list = document.getElementById("market-ticker-list");
+  const time = document.getElementById("market-ticker-time");
+  const updated = document.getElementById("market-ticker-updated");
+  const toggle = document.getElementById("market-ticker-toggle");
+  const storageKey = "asi_market_minimized";
+  let minimized = false;
+  try { minimized = localStorage.getItem(storageKey) === "true"; } catch {}
+  const applyMinimized = () => {
+    ticker.classList.toggle("market-minimized", minimized);
+    toggle.textContent = minimized ? "+" : "−";
+    toggle.title = minimized ? "Genişlet" : "Küçült";
+    toggle.setAttribute("aria-label", minimized ? "Piyasa panelini genişlet" : "Piyasa panelini küçült");
+  };
+  toggle.addEventListener("click", () => {
+    minimized = !minimized;
+    try { localStorage.setItem(storageKey, String(minimized)); } catch {}
+    applyMinimized();
+  });
+  applyMinimized();
+
+  const wanted = ["Gram Altın", "Çeyrek Altın", "Yarım Altın", "Tam Altın"];
+  async function loadMarket() {
+    time.textContent = "Güncelleniyor";
+    try {
+      const response = await fetch("https://canlidoviz.com/altin-fiyatlari/kapali-carsi", { cache: "no-store" });
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      const html = await response.text();
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      let target = null;
+      for (const table of doc.querySelectorAll("table")) {
+        const headers = Array.from(table.querySelectorAll("th")).map(th => th.textContent.trim());
+        if (headers.some(header => header.includes("ALTIN ADI")) && headers.includes("ALIŞ FİYATI") && headers.includes("SATIŞ FİYATI")) {
+          target = table;
+          break;
+        }
+      }
+      if (!target) throw new Error("Piyasa tablosu bulunamadı");
+
+      const rows = [];
+      for (const tr of target.querySelectorAll("tr")) {
+        const cells = Array.from(tr.querySelectorAll("td")).map(td => td.textContent.trim());
+        if (!cells.length) continue;
+        const name = cells[0];
+        if (!wanted.includes(name)) continue;
+        rows.push({ name, buy: cells[1], sell: cells[2], change: cells[3] });
+      }
+      if (!rows.length) throw new Error("Altın fiyatları bulunamadı");
+
+      list.innerHTML = [
+        '<div class="market-row"><span class="market-name">Piyasa</span><span class="market-buy">Alış</span><span class="market-sell">Satış</span><span class="market-change">Değişim</span></div>',
+        ...rows.map(row => {
+          const negative = row.change.includes("-");
+          return '<div class="market-row"><span class="market-name">' + row.name.replace(/</g, "&lt;") +
+            '</span><span class="market-buy">' + row.buy.replace(/</g, "&lt;") +
+            '</span><span class="market-sell">' + row.sell.replace(/</g, "&lt;") +
+            '</span><span class="market-change' + (negative ? " negative" : "") + '">' + row.change.replace(/</g, "&lt;") + '</span></div>';
+        })
+      ].join("");
+
+      const marketStatus = doc.body.textContent.match(/PİYASA:\s*(AÇIK|KAPALI)/i);
+      time.textContent = marketStatus ? marketStatus[1].toUpperCase() : "CANLI";
+      const now = new Date();
+      updated.textContent = now.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+    } catch (error) {
+      time.textContent = "Bağlantı yok";
+      updated.textContent = "Veri alınamadı";
+      console.error("Kapalı Çarşı verisi alınamadı:", error);
+    }
+  }
+  loadMarket();
+  setInterval(loadMarket, 60000);
+})();
+</script>
 
 <script>
 const $=(s,r=document)=>r.querySelector(s);
