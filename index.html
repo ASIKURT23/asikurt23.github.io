@@ -427,10 +427,10 @@ body.nav-closed .foot::after{content:"©";font-size:11px}
 .google-apps::-webkit-details-marker{display:none!important}
 .google-links .google-apps:hover{border-color:#34434e!important;background:#17212a!important;text-decoration:none!important}
 .google-apps-panel{
-  position:absolute!important;
-  z-index:20!important;
-  top:calc(100% + 10px)!important;
-  right:0!important;
+  position:fixed!important;
+  z-index:2147483647!important;
+  top:58px!important;
+  right:24px!important;
   width:min(320px,calc(100vw - 32px))!important;
   display:grid!important;
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
@@ -441,6 +441,8 @@ body.nav-closed .foot::after{content:"©";font-size:11px}
   background:#111820!important;
   box-shadow:0 16px 42px rgba(0,0,0,.5)!important;
 }
+.google-apps-menu:not([open]) .google-apps-panel{display:none!important}
+.google-apps-menu[open] .google-apps-panel{display:grid!important}
 .google-links .google-app-item{
   min-width:0!important;
   min-height:78px!important;
@@ -470,7 +472,7 @@ body.nav-closed .foot::after{content:"©";font-size:11px}
   .google-links{gap:11px!important}
   .google-links>a{font-size:12px!important}
   .google-links .google-apps{width:34px!important;height:34px!important}
-  .google-apps-panel{right:-42px!important}
+  .google-apps-panel{top:58px!important;right:12px!important}
   .google-links .google-avatar{width:32px!important;height:32px!important}
   .google-avatar img{width:28px!important;height:28px!important}
 }
