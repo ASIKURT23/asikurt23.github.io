@@ -434,6 +434,7 @@ key:'<circle cx="8" cy="15" r="4"/><path d="m11 12 8-8 2 2-2 2 2 2-3 3-2-2-2 2"/
 apk:'<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>',
 list:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',
 cover:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/><path d="M8 21h8"/>',
+pc:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="m7 12 3-3 2 2 4-4"/>',
 spark:'<path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 14 .9 2.1L22 17l-2.1.9L19 20l-.9-2.1L16 17l2.1-.9L19 14Z"/>',
 image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/>',
 speed:'<path d="M4.5 19a9 9 0 1 1 15 0"/><path d="m12 14 4-5M7 19h10"/>'
@@ -446,6 +447,7 @@ const NAV=[
 {id:'lg',t:'LG',i:'tv',d:'LG TV destek, webOS ve uygulama bağlantıları.'},
 {id:'m3u',t:'M3U LİST',i:'list',d:'M3U listesi aç, filtrele, temizle, indir.'},
 {id:'mp3cover',t:'MP3 KAPAKLARINI SİL',i:'cover',d:'MP3 dosyalarındaki gömülü kapak görsellerini yerel olarak kaldır.'},
+{id:'pcrepair',t:'PC ONARIM',i:'pc',d:'Windows bakım ve onarım işlemlerini seç, onaylı toplu .bat dosyası indir.'},
 {id:'ps4',t:'PS4',i:'console',d:'Bağlantı, DNS, güvenli mod ve Remote Play ipuçları.'},
 {id:'python',t:'PYTHON',i:'terminal',d:'Tarayıcıda Python çalıştır, hazır kod parçaları.'},
 {id:'speed',t:'SPEED HIZ TESTİ',i:'speed',d:'İndirme, yükleme ve ping ölçümü.'},
@@ -1054,6 +1056,131 @@ page(hd('MP3 KAPAKLARINI SİL','MP3 dosyalarındaki gömülü ID3 albüm kapağ�
     processed.forEach((item,index)=>{
       setTimeout(()=>{const link=document.createElement('a');link.href=item.url;link.download=item.name;link.click()},index*150);
     });
+  };
+});};
+
+/* ---------- PC ONARIM ---------- */
+P.pcrepair=()=>{
+page(hd('PC ONARIM','Windows bakım komutlarını seçip yönetici izni isteyen güvenli bir .bat dosyası oluştur. Komutlar tarayıcıdan otomatik çalıştırılmaz.')+`
+<div class="card" style="border-color:#5a3d26">
+<b>Önemli uyarı</b>
+<p class="sub" style="margin:8px 0 0">Bu panel kesinlikle ağır işlemleri otomatik yapmaz. İndirilen dosyayı açmadan önce Windows'un güvenlik uyarısını inceleyin ve sadece anladığınız işlemleri onaylayın. Disk onarımı, Sistem Dosyası Denetimi ve DISM süresi uzun olabilir.</p>
+</div>
+<h2>Bakım Seçenekleri</h2>
+<div class="cols">
+<label style="min-height:86px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel)">
+<span><input id="pc-temp" type="checkbox" checked style="width:auto"> Geçici dosyaları temizle</span>
+<small>%TEMP%, Windows TEMP ve DNS önbelleği</small>
+</label>
+<label style="min-height:86px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel)">
+<span><input id="pc-browser" type="checkbox" style="width:auto"> Chrome/Edge önbelleğini temizle</span>
+<small>Parola, çerez veya oturum bilgileri silinmez</small>
+</label>
+<label style="min-height:86px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel)">
+<span><input id="pc-disk" type="checkbox" checked style="width:auto"> Diskleri optimize et</span>
+<small>Optimize-Volume / retrim komutu</small>
+</label>
+<label style="min-height:86px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel)">
+<span><input id="pc-sfc" type="checkbox" checked style="width:auto"> Sistem dosyalarını tara</span>
+<small>SFC /scannow</small>
+</label>
+<label style="min-height:86px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel)">
+<span><input id="pc-dism" type="checkbox" style="width:auto"> Windows bileşenini onar</span>
+<small>DISM /RestoreHealth, internet gerekli olabilir</small>
+</label>
+<label style="min-height:86px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel)">
+<span><input id="pc-report" type="checkbox" checked style="width:auto"> Sistem raporu oluştur</span>
+<small>Donanım, disk, sürücü ve Windows bilgileri</small>
+</label>
+</div>
+<div class="row" style="margin-top:14px">
+<button class="btn" id="pc-preview" type="button">Komutları önizle</button>
+<button class="btn ghost" id="pc-download" type="button">Güvenli bakım dosyasını indir</button>
+</div>
+<pre id="pc-output" aria-live="polite">Seçenekleri işaretleyip önizleme yapın.</pre>`,()=>{
+  const checked=id=>$('#'+id).checked;
+  const build=()=>{
+    const lines=[
+      '@echo off',
+      'setlocal',
+      'title aSiKuRT PC Onarim',
+      'color 0B',
+      'echo aSiKuRT PC Onarim - Windows Bakim Paketi',
+      'echo.',
+      'net session >nul 2>&1',
+      'if errorlevel 1 (',
+      '  echo Yoneticilik izni gerekiyor.',
+      "  powershell -NoProfile -Command \"Start-Process -FilePath '%~f0' -Verb RunAs\"",
+      '  exit /b',
+      ')',
+      'set "LOG=%ProgramData%\\aSiKuRT-PC"',
+      'if not exist "%LOG%" mkdir "%LOG%"',
+      'set "REPORT=%LOG%\\sistem-bilgisi.txt"',
+      'echo Yuksek onayli islem basladi: %DATE% %TIME% > "%LOG%\\bakim-log.txt"',
+      ''
+    ];
+    if(checked('pc-temp')){
+      lines.push(
+        'echo [1] Gecici dosyalar temizleniyor...',
+        'del /s /q /f "%TEMP%\\*" >nul 2>&1',
+        'for /d %%D in ("%TEMP%\\*") do rd /s /q "%%D" >nul 2>&1',
+        'del /s /q /f "%SystemRoot%\\Temp\\*" >nul 2>&1',
+        'for /d %%D in ("%SystemRoot%\\Temp\\*") do rd /s /q "%%D" >nul 2>&1',
+        'ipconfig /flushdns',
+        ''
+      );
+    }
+    if(checked('pc-browser')){
+      lines.push(
+        'echo [2] Chrome ve Edge onbellekleri temizleniyor...',
+        'taskkill /F /IM chrome.exe >nul 2>&1',
+        'taskkill /F /IM msedge.exe >nul 2>&1',
+        'if exist "%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\Cache" rd /s /q "%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\Cache"',
+        'if exist "%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\Code Cache" rd /s /q "%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\Code Cache"',
+        'if exist "%LOCALAPPDATA%\\Microsoft\\Edge\\User Data\\Default\\Cache" rd /s /q "%LOCALAPPDATA%\\Microsoft\\Edge\\User Data\\Default\\Cache"',
+        'if exist "%LOCALAPPDATA%\\Microsoft\\Edge\\User Data\\Default\\Code Cache" rd /s /q "%LOCALAPPDATA%\\Microsoft\\Edge\\User Data\\Default\\Code Cache"',
+        'echo Tarayici onbellekleri temizlendi.',
+        ''
+      );
+    }
+    if(checked('pc-disk')){
+      lines.push(
+        'echo [3] Diskler optimize ediliyor...',
+        "powershell -NoProfile -Command \"Get-Volume | Where-Object {$_.DriveLetter -and $_.DriveType -eq 'Fixed'} | ForEach-Object {Optimize-Volume -DriveLetter $_.DriveLetter -Verbose}\"",
+        ''
+      );
+    }
+    if(checked('pc-sfc')){
+      lines.push('echo [4] SFC taramasi basliyor...','sfc /scannow','');
+    }
+    if(checked('pc-dism')){
+      lines.push('echo [5] DISM bileşen onarimi basliyor...','DISM /Online /Cleanup-Image /RestoreHealth','');
+    }
+    if(checked('pc-report')){
+      lines.push(
+        'echo [6] Sistem bilgileri kaydediliyor...',
+        'systeminfo > "%REPORT%"',
+        'wmic diskdrive get Model,Size,Status >> "%REPORT%" 2>&1',
+        'echo Rapor: %REPORT%',
+        ''
+      );
+    }
+    lines.push(
+      'echo.',
+      'echo Bakim dosyasi tamamlandi.',
+      'echo Log: %LOG%\\bakim-log.txt',
+      'pause',
+      'endlocal'
+    );
+    return lines.join('\r\n');
+  };
+  $('#pc-preview').onclick=()=>{
+    const preview=build();
+    $('#pc-output').textContent=preview.length>7000?preview.slice(0,7000)+'\n...':preview;
+  };
+  $('#pc-download').onclick=()=>{
+    dl('aSiKuRT-PC-Onarim.bat',build(),'application/octet-stream');
+    toast('Bakım dosyası indirildi');
   };
 });};
 
