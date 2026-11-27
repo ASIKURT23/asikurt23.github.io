@@ -1,4 +1,4 @@
-const C='asikurt-v33',F=['./','index.html','manifest.json','icon-192.png','icon-512.png'];
+const C='asikurt-v34',F=['./','index.html','manifest.json','icon-192.png','icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil((async()=>{
   const c=await caches.open(C);
   await Promise.all(F.map(async path=>{
