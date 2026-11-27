@@ -463,11 +463,29 @@ page(`<section class="hero"><div class="logo">${LOGO}</div><h1 class="big">aSiKu
 /* ---------- API ANAHTAR ---------- */
 const SETS={a:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',h:'0123456789abcdef',u:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'};
 const rnd=(n,ch)=>{const out=[],max=Math.floor(256/ch.length)*ch.length;while(out.length<n){for(const x of crypto.getRandomValues(new Uint8Array(n*2))){if(x<max&&out.length<n)out.push(ch[x%ch.length])}}return out.join('')};
+let googleIdentityServicePromise;
+const loadGoogleIdentityService=()=>{
+  if(window.google?.accounts?.oauth2)return Promise.resolve();
+  if(!googleIdentityServicePromise){
+    googleIdentityServicePromise=new Promise((resolve,reject)=>{
+      const script=document.createElement('script');
+      script.src='https://accounts.google.com/gsi/client';
+      script.async=true;
+      script.onload=resolve;
+      script.onerror=()=>reject(new Error('Google kimlik doğrulama servisi yüklenemedi.'));
+      document.head.appendChild(script);
+    });
+  }
+  return googleIdentityServicePromise;
+};
 P.api=()=>{
-page(hd('API ANAHTAR','Tarayıcının güvenli rastgele sayı üreticisiyle anahtar, token ve UUID üret.')+`
+page(hd('API ANAHTAR','Rastgele test tokenı ve UUID üret. Bunlar Google veya başka bir sağlayıcının gerçek API anahtarları değildir.')+`
 <div class="card"><div class="row"><label>Ön ek<input id="ap" value="ask_"></label><label>Uzunluk<input id="al" type="number" min="8" max="128" value="40"></label><label>Karakter seti<select id="ac"><option value="a">Harf + Rakam</option><option value="h">Hex</option><option value="u">URL-güvenli</option></select></label><label>Adet<input id="an" type="number" min="1" max="20" value="3"></label></div>
 <div class="row"><button class="btn" id="ag">Anahtar üret</button><button class="btn ghost" id="au">UUID üret</button></div><div class="list" id="ao"></div></div>
-<h2>Kayıtlı Anahtarlarım</h2><div class="card"><small style="color:var(--mut)">Sadece bu tarayıcıda saklanır. Gerçek/gizli anahtarlarını burada tutma.</small>
+<h2>Kayıtlı Anahtarlarım</h2><div class="card"><small style="color:var(--mut)">Anahtarlar varsayılan olarak bu tarayıcıda kalır. İstersen Google hesabınla izin verip Drive'daki özel bir JSON dosyasına eşitleyebilirsin. OAuth erişim tokenı saklanmaz.</small>
+<div class="row" style="margin-top:12px"><label>Google OAuth Client ID<input id="drive-client-id" placeholder="...apps.googleusercontent.com" autocomplete="off"></label><button class="btn" id="drive-sync" type="button" disabled>Drive ile eşitle</button></div>
+<details style="margin:8px 0 12px;color:var(--mut);font-size:12px"><summary>İlk bağlantı kurulumu</summary><ol class="tips"><li><a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer">Google Cloud Console</a>'da Google Drive API'yi etkinleştir.</li><li>OAuth istemci kimliği oluştur: türü Web uygulaması, yetkili JavaScript kaynağı <code>https://asikurt23.github.io</code>.</li><li>İstemci kimliğini yukarıya yapıştırıp Drive ile eşitle'ye bas ve Google izin penceresini onayla.</li></ol><small>Uygulama yalnızca kendisinin oluşturduğu dosyaya erişim ister (drive.file). Test modundaki OAuth uygulamasında hesabını test kullanıcısı olarak eklemen gerekebilir.</small></details>
+<p id="drive-status" class="widget-note" role="status" aria-live="polite">Google Drive bağlantısı hazırlanıyor...</p>
 <div class="row" style="margin-top:12px"><label>Ad<input id="kn" placeholder="Örn: Test API"></label><label>Anahtar<input id="kv"></label><button class="btn" id="ks">Kaydet</button></div><div class="list" id="kl"></div></div>`,()=>{
   const out=a=>$('#ao').innerHTML=a.map(k=>`<div class="item"><code>${esc(k)}</code><span><button class="btn sm" data-copy="${esc(k)}">Kopyala</button> <button class="btn ghost sm" data-use="${esc(k)}">Kullan</button></span></div>`).join('');
   $('#ag').onclick=()=>{const n=Math.min(20,Math.max(1,+$('#an').value||1)),l=Math.min(128,Math.max(8,+$('#al').value||32));out(Array.from({length:n},()=>$('#ap').value+rnd(l,SETS[$('#ac').value])))};
@@ -475,6 +493,158 @@ page(hd('API ANAHTAR','Tarayıcının güvenli rastgele sayı üreticisiyle anah
   $('#ao').onclick=e=>{const b=e.target.closest('[data-use]');if(b){$('#kv').value=b.dataset.use;$('#kn').focus()}};
   const draw=()=>{const k=load('asi_keys',[]);$('#kl').innerHTML=k.map((x,i)=>`<div class="item"><span><b>${esc(x.n)}</b><br><code>${esc(x.v)}</code></span><span><button class="btn sm" data-copy="${esc(x.v)}">Kopyala</button> <button class="btn ghost sm" data-d="${i}">Sil</button></span></div>`).join('');
     $('#kl').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const k=load('asi_keys',[]);k.splice(+b.dataset.d,1);save('asi_keys',k);draw()})};
+  const driveStatus=$('#drive-status');
+  const driveButton=$('#drive-sync');
+  const driveClientId=$('#drive-client-id');
+  const driveFileName='aSiKuRT API Keys.json';
+  driveClientId.value=load('asi_drive_client_id','');
+  driveClientId.addEventListener('change',()=>{
+    try{
+      const clientId=driveClientId.value.trim();
+      if(clientId)localStorage.setItem('asi_drive_client_id',JSON.stringify(clientId));
+      else localStorage.removeItem('asi_drive_client_id');
+    }catch(error){
+      driveStatus.textContent='OAuth istemci kimliği tarayıcıya kaydedilemedi: '+error.message;
+    }
+  });
+  const checkResponse=async(response,label)=>{
+    if(response.ok)return;
+    const detail=(await response.text()).slice(0,300);
+    throw new Error(`${label}: HTTP ${response.status}${detail?` — ${detail}`:''}`);
+  };
+  const parseKeyList=(value,label)=>{
+    if(!Array.isArray(value))throw new Error(`${label} anahtar listesi geçersiz.`);
+    return value.map((item,index)=>{
+      if(!item||typeof item.n!=='string'||typeof item.v!=='string'||!item.v.trim()){
+        throw new Error(`${label} anahtar listesinde ${index+1}. kayıt geçersiz.`);
+      }
+      return {n:item.n,v:item.v};
+    });
+  };
+  const getLocalKeys=()=>{
+    let raw;
+    try{raw=localStorage.getItem('asi_keys')}catch(error){throw new Error('Tarayıcıdaki anahtarlar okunamadı: '+error.message)}
+    if(!raw)return [];
+    try{return parseKeyList(JSON.parse(raw),'Tarayıcıdaki')}catch(error){
+      if(error instanceof SyntaxError)throw new Error('Tarayıcıdaki anahtar listesi JSON biçiminde geçersiz.');
+      throw error;
+    }
+  };
+  const findDriveFile=async(token)=>{
+    const params=new URLSearchParams({
+      q:`name = '${driveFileName}' and mimeType = 'application/json' and trashed = false`,
+      spaces:'drive',
+      fields:'files(id,name)',
+      pageSize:'10'
+    });
+    const response=await fetch(`https://www.googleapis.com/drive/v3/files?${params}`,{
+      headers:{Authorization:'Bearer '+token}
+    });
+    await checkResponse(response,'Drive dosyası aranamadı');
+    const data=await response.json();
+    return data.files?.[0]||null;
+  };
+  const readDriveKeys=async(token,file)=>{
+    const response=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(file.id)}?alt=media`,{
+      headers:{Authorization:'Bearer '+token}
+    });
+    await checkResponse(response,'Drive anahtarları okunamadı');
+    let data;
+    try{data=await response.json()}catch{throw new Error('Drive dosyasındaki JSON okunamadı.')}
+    return parseKeyList(data,'Drive dosyasındaki');
+  };
+  const writeDriveKeys=async(token,file,keys)=>{
+    const content=JSON.stringify(keys,null,2);
+    let response;
+    if(file){
+      response=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(file.id)}?uploadType=media`,{
+        method:'PATCH',
+        headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+        body:content
+      });
+    }else{
+      const boundary='asikurt_'+crypto.randomUUID().replaceAll('-','');
+      const body=[
+        `--${boundary}`,
+        'Content-Type: application/json; charset=UTF-8',
+        '',
+        JSON.stringify({name:driveFileName,mimeType:'application/json'}),
+        `--${boundary}`,
+        'Content-Type: application/json; charset=UTF-8',
+        '',
+        content,
+        `--${boundary}--`,
+        ''
+      ].join('\r\n');
+      response=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name',{
+        method:'POST',
+        headers:{Authorization:'Bearer '+token,'Content-Type':`multipart/related; boundary="${boundary}"`},
+        body
+      });
+    }
+    await checkResponse(response,'Drive dosyası kaydedilemedi');
+  };
+  const syncToDrive=async(token)=>{
+    const localKeys=getLocalKeys();
+    const file=await findDriveFile(token);
+    const driveKeys=file?await readDriveKeys(token,file):[];
+    const merged=new Map();
+    [...driveKeys,...localKeys].forEach(item=>merged.set(item.v,item));
+    const keys=[...merged.values()];
+    await writeDriveKeys(token,file,keys);
+    try{localStorage.setItem('asi_keys',JSON.stringify(keys))}catch(error){
+      draw();
+      driveStatus.textContent=`${keys.length} anahtar Drive'a kaydedildi; tarayıcı listesi güncellenemedi: ${error.message}`;
+      return;
+    }
+    draw();
+    driveStatus.textContent=`${keys.length} anahtar Drive'daki "${driveFileName}" dosyasıyla eşitlendi.`;
+  };
+  driveButton.addEventListener('click',()=>{
+    const clientId=driveClientId.value.trim();
+    if(!clientId){
+      driveStatus.textContent='Önce Google OAuth Client ID girin.';
+      driveClientId.focus();
+      return;
+    }
+    if(!window.google?.accounts?.oauth2){
+      driveStatus.textContent='Google bağlantısı henüz hazır değil; biraz bekleyip tekrar deneyin.';
+      return;
+    }
+    driveButton.disabled=true;
+    driveStatus.textContent='Google izin penceresi açılıyor...';
+    try{
+      const tokenClient=window.google.accounts.oauth2.initTokenClient({
+        client_id:clientId,
+        scope:'https://www.googleapis.com/auth/drive.file',
+        callback:async response=>{
+          try{
+            if(response.error)throw new Error(response.error_description||response.error);
+            if(!response.access_token)throw new Error('Google erişim tokenı alınamadı.');
+            await syncToDrive(response.access_token);
+          }catch(error){
+            driveStatus.textContent='Drive eşitleme hatası: '+error.message;
+          }finally{
+            driveButton.disabled=false;
+          }
+        },
+        error_callback:error=>{
+          driveStatus.textContent='Google izin penceresi açılamadı: '+(error.message||error.type||'Bilinmeyen hata');
+          driveButton.disabled=false;
+        }
+      });
+      tokenClient.requestAccessToken({prompt:'consent'});
+    }catch(error){
+      driveStatus.textContent='Google bağlantısı başlatılamadı: '+error.message;
+      driveButton.disabled=false;
+    }
+  });
+  loadGoogleIdentityService().then(()=>{
+    driveButton.disabled=false;
+    driveStatus.textContent='Drive eşitlemesi hazır. OAuth Client ID girip bağlanın.';
+  }).catch(error=>{
+    driveStatus.textContent=error.message;
+  });
   $('#ks').onclick=()=>{if(!$('#kv').value.trim())return toast('Anahtar boş');const k=load('asi_keys',[]);k.push({n:$('#kn').value.trim()||'Adsız',v:$('#kv').value.trim()});save('asi_keys',k);$('#kn').value=$('#kv').value='';draw()};
   $('#ag').click();draw();
 });};
