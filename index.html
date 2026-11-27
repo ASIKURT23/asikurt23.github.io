@@ -748,10 +748,29 @@ page(hd('LG','LG TV için resmi destek ve geliştirici bağlantıları.')+links(
 ])+`<h2>Pratik İpuçları</h2><div class="card"><ul class="tips"><li>Yazılım güncelleme: Ayarlar → Tüm Ayarlar → Genel → Bu TV Hakkında → Güncellemeleri Kontrol Et.</li><li>Yavaş internet: Wi-Fi yerine kablo dene veya DNS'i 1.1.1.1 / 8.8.8.8 yap (Ağ → Gelişmiş Wi-Fi Ayarları).</li><li>Uygulama donuyorsa: TV'yi kapat, fişten çek, 30 sn bekle, tekrar aç.</li></ul><small style="color:var(--mut)">Menü adları model ve webOS sürümüne göre değişebilir.</small></div>`);};
 
 /* ---------- M3U LİST ---------- */
-const nameOf=l=>{let q=false;for(let i=0;i<l.length;i++){const c=l[i];if(c=='"')q=!q;else if(c==','&&!q)return l.slice(i+1).trim()}return''};
-const parseM3U=t=>{const out=[];let cur=null;for(let l of t.split(/\r?\n/)){l=l.trim();if(!l)continue;
-  if(l.startsWith('#EXTINF')){const a=k=>{const r=l.match(new RegExp(k+'="([^"]*)"','i'));return r?r[1]:''};cur={name:nameOf(l),group:a('group-title'),logo:a('tvg-logo'),raw:l}}
-  else if(!l.startsWith('#')){out.push(Object.assign({name:l,group:'',logo:'',raw:'#EXTINF:-1,'+l},cur||{},{url:l}));cur=null}}return out};
+const nameOf=l=>{
+  const comma=l.indexOf(',');
+  return comma>=0?l.slice(comma+1).trim():'İsimsiz';
+};
+const parseM3U=t=>{
+  const out=[];let info=null;
+  for(let l of t.replace(/\r\n?/g,'\n').split('\n')){
+    l=l.trim();if(!l)continue;
+    if(l.startsWith('#EXTINF')){info=l;continue}
+    if(/^#/.test(l))continue;
+    if(!/^(https?|rtmp|rtsp):\/\//i.test(l)||!info)continue;
+    let name=nameOf(info);
+    const tvgName=info.match(/tvg-name="([^"]*)"/i)?.[1]?.trim();
+    if(tvgName)name=tvgName;
+    const attr=k=>info.match(new RegExp(k+'="([^"]*)"','i'))?.[1]||'';
+    let raw=info;
+    if(!/tvg-name\s*=/.test(raw))raw=raw.replace(/^(#EXTINF:[^ ]*)/,`$1 tvg-name="${name.replace(/"/g,'')}"`);
+    if(!/group-title\s*=/.test(raw))raw=raw.replace(/^(#EXTINF:[^ ]*)/,`$1 group-title="${attr('group-title')||'Genel'}"`);
+    out.push({name:name||'İsimsiz',group:attr('group-title')||'Genel',logo:attr('tvg-logo'),raw,url:l});
+    info=null;
+  }
+  return out;
+};
 const GITHUB_M3U=[
   {name:'Türkiye',path:'countries/tr.m3u',file:'turkiye.m3u'},
   {name:'Haber',path:'categories/news.m3u',file:'haber.m3u'},
@@ -760,20 +779,38 @@ const GITHUB_M3U=[
   {name:'Müzik',path:'categories/music.m3u',file:'muzik.m3u'}
 ].map(list=>({...list,url:'https://iptv-org.github.io/iptv/'+list.path}));
 P.m3u=()=>{
-let items=[];
-page(hd('M3U LİST','GitHub’dan hazır M3U listelerini aç veya indir; kendi listeni de yükle, filtrele ve yeniden indir.')+`
+let items=[],selected=[],backup=[];
+page(hd('M3U LİST','Liste yükle, birleştir, filtrele, seç ve LG TV / SS IPTV uyumlu M3U olarak indir.')+`
 <h2>GitHub’dan Hazır Listeler</h2><div class="grid">${GITHUB_M3U.map((list,index)=>`<article class="card"><b>${esc(list.name)}</b><small style="margin:6px 0 10px">Liste adresi · GitHub’da aç veya kopyala</small><a class="item" href="${esc(list.url)}" target="_blank" rel="noopener noreferrer"><code>${esc(list.url)}</code></a><div class="row" style="margin:10px 0 0"><button class="btn sm" data-github-load="${index}">Listeyi aç</button><button class="btn ghost sm" data-github-download="${index}">M3U indir</button><button class="btn ghost sm" data-copy="${esc(list.url)}">Adresi kopyala</button></div></article>`).join('')}</div>
 <p class="sub" style="margin-top:10px">Listeler iptv-org GitHub projesinden gelir. Kanal adreslerinin çalışması yayın kaynağına göre değişebilir. <a href="https://github.com/iptv-org/iptv" target="_blank" rel="noopener noreferrer">Kaynak proje ↗</a></p>
 <div class="card"><div class="row"><label>Dosya yükle<input type="file" id="mf" accept=".m3u,.m3u8,.txt"></label><label>veya adresten al<input id="mu" placeholder="https://.../liste.m3u"></label><button class="btn ghost" id="mg">Adresten al</button></div>
-<label>veya buraya yapıştır<textarea id="mt" placeholder="#EXTM3U ..."></textarea></label><div class="row" style="margin-top:12px"><button class="btn" id="mp">Listeyi oku</button></div>
+<label>veya buraya yapıştır<textarea id="mt" placeholder="#EXTM3U ..."></textarea></label><div class="row" style="margin-top:12px"><button class="btn" id="mp">Listeyi oku</button><button class="btn ghost" id="ma">+ Liste ekle</button></div>
 <small style="color:var(--mut)">Adresten alma, sitenin CORS iznine bağlıdır; olmazsa dosya yükle veya yapıştır.</small></div>
-<div id="mw" style="display:none"><h2>Kanallar <span class="tag" id="mc"></span></h2>
-<div class="row"><label>Ara<input id="mq" placeholder="Kanal adı"></label><label>Grup<select id="mgr"></select></label><button class="btn ghost" id="md">Yinelenenleri sil</button><button class="btn" id="mx">Filtreliyi indir (.m3u)</button></div><div class="list" id="ml"></div></div>`,()=>{
-  const cur=()=>{const q=$('#mq').value.toLowerCase(),g=$('#mgr').value;return items.filter(i=>(!g||i.group===g)&&(!q||i.name.toLowerCase().includes(q)))};
-  const draw=()=>{const f=cur();$('#mc').textContent=f.length+' / '+items.length;
-    $('#ml').innerHTML=f.slice(0,300).map(i=>`<div class="item"><span><b>${esc(i.name||'(adsız)')}</b> ${i.group?`<span class="tag">${esc(i.group)}</span>`:''}<br><code>${esc(i.url)}</code></span><button class="btn sm" data-copy="${esc(i.url)}">Kopyala</button></div>`).join('')+(f.length>300?`<small style="color:var(--mut)">İlk 300 gösteriliyor; indirme tüm filtreli listeyi içerir.</small>`:'')};
+<div id="mw" style="display:none">
+<h2>Ana Liste <span class="tag" id="mc"></span></h2>
+<div class="row"><label>Ara<input id="mq" placeholder="Kanal adı"></label><label>Grup<select id="mgr"></select></label><select id="ms" aria-label="Sıralama"><option value="original">Orijinal sıra</option><option value="az">A-Z</option></select><button class="btn ghost" id="mb">Filtreyi ekle</button><button class="btn ghost" id="md">Yinelenenleri sil</button></div>
+<div class="cols" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)"><div><h2>Sonuçlar</h2><div class="list" id="ml"></div></div><div><h2>Yeni Liste <span class="tag" id="msc">${0}</span></h2><div class="row"><button class="btn ghost sm" id="muo">Geri al</button><button class="btn ghost sm" id="mclear">Tümünü temizle</button><button class="btn sm" id="mx">LG / SS IPTV olarak indir</button></div><div class="list" id="msl"></div></div></div></div>`,()=>{
+  const saveBackup=()=>{backup=selected.map(i=>({...i}))};
+  const cur=()=>{
+    const q=$('#mq').value.toLowerCase(),g=$('#mgr').value;
+    let f=items.filter(i=>(!g||i.group===g)&&(!q||i.name.toLowerCase().includes(q)));
+    if($('#ms').value==='az')f=[...f].sort((a,b)=>a.name.localeCompare(b.name,'tr'));
+    return f;
+  };
+  const draw=()=>{
+    const f=cur();
+    $('#mc').textContent=f.length+' / '+items.length;
+    $('#ml').innerHTML=f.slice(0,300).map(i=>'<div class="item"><span><b>'+esc(i.name||'(adsız)')+'</b> '+(i.group?'<span class="tag">'+esc(i.group)+'</span>':'')+'<br><code>'+esc(i.url)+'</code></span><button class="btn sm" data-source-index="'+items.indexOf(i)+'">Listeye ekle</button></div>').join('')+(f.length>300?'<small style="color:var(--mut)">İlk 300 gösteriliyor.</small>':'');
+    $('#msc').textContent=selected.length+' kanal';
+    $('#msl').innerHTML=selected.map((i,index)=>`<div class="item"><span><b>${index+1}. ${esc(i.name||'(adsız)')}</b><br><code>${esc(i.url)}</code></span><span><button class="btn ghost sm" data-move="-1" data-selected="${index}" aria-label="Yukarı taşı">↑</button><button class="btn ghost sm" data-move="1" data-selected="${index}" aria-label="Aşağı taşı">↓</button><button class="btn ghost sm" data-remove="${index}" aria-label="Sil">✕</button></span></div>`).join('');
+  };
   const fill=()=>{const gs=[...new Set(items.map(i=>i.group).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr'));$('#mgr').innerHTML='<option value="">Tüm gruplar</option>'+gs.map(g=>`<option>${esc(g)}</option>`).join('');$('#mw').style.display='block';draw()};
-  const read=t=>{items=parseM3U(t);if(!items.length)return toast('Kanal bulunamadı');fill();toast(items.length+' kanal okundu')};
+  const read=(t,append=false)=>{
+    const parsed=parseM3U(t);
+    if(!parsed.length)return toast('Geçerli kanal bulunamadı');
+    if(append)items=[...items,...parsed];else items=parsed;
+    fill();toast(items.length+' kanal okundu');
+  };
   const fetchPlaylist=async list=>{
     const response=await fetch(list.url,{cache:'no-store'});
     if(!response.ok)throw new Error('GitHub listesi alınamadı (HTTP '+response.status+').');
@@ -791,7 +828,7 @@ page(hd('M3U LİST','GitHub’dan hazır M3U listelerini aç veya indir; kendi l
     const list=GITHUB_M3U[Number(button.dataset.githubLoad)];
     if(!list)return;
     button.disabled=true;$('#mu').value=list.url;
-    try{$('#mt').value=await fetchPlaylist(list);read($('#mt').value)}
+    try{$('#mt').value=await fetchPlaylist(list);read($('#mt').value,true)}
     catch(error){console.error('GitHub M3U listesi açılamadı:',error);toast(error.message||'GitHub listesi açılamadı.')}
     finally{button.disabled=false}
   });
@@ -799,12 +836,59 @@ page(hd('M3U LİST','GitHub’dan hazır M3U listelerini aç veya indir; kendi l
     const list=GITHUB_M3U[Number(button.dataset.githubDownload)];
     if(list)downloadPlaylist(list,button);
   });
-  $('#mp').onclick=()=>read($('#mt').value);
-  $('#mf').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('#mt').value='';read(r.result)};r.readAsText(f)};
-  $('#mg').onclick=async()=>{const u=safeUrl($('#mu').value);if(!u)return toast('Geçerli adres gir');try{const r=await fetch(u);read(await r.text())}catch(e){toast('Alınamadı (CORS). Dosya yükle.')}};
-  $('#mq').oninput=draw;$('#mgr').onchange=draw;
-  $('#md').onclick=()=>{const s=new Set();const n=items.length;items=items.filter(i=>!s.has(i.url)&&s.add(i.url));fill();toast((n-items.length)+' yinelenen silindi')};
-  $('#mx').onclick=()=>{const f=cur();if(!f.length)return toast('Liste boş');dl('liste.m3u','#EXTM3U\n'+f.map(i=>i.raw+'\n'+i.url).join('\n')+'\n','audio/x-mpegurl')};
+  $('#mp').onclick=()=>read($('#mt').value,false);
+  $('#ma').onclick=()=>read($('#mt').value,true);
+  $('#mf').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('#mt').value='';read(r.result,false)};r.readAsText(f)};
+  $('#mg').onclick=async()=>{const u=safeUrl($('#mu').value);if(!u)return toast('Geçerli adres gir');try{const r=await fetch(u);read(await r.text(),true)}catch(e){toast('Alınamadı (CORS). Dosya yükle.')}};
+  $('#mq').oninput=draw;$('#mgr').onchange=draw;$('#ms').onchange=draw;
+  $('#ml').onclick=e=>{
+    const button=e.target.closest('[data-source-index]');
+    if(!button)return;
+    saveBackup();
+    const item=items[Number(button.dataset.sourceIndex)];
+    if(item)selected.push({...item});
+    draw();
+  };
+  $('#mb').onclick=()=>{
+    const f=cur();
+    if(!f.length)return toast('Filtreli kanal bulunamadı');
+    saveBackup();selected=[...selected,...f.map(i=>({...i}))];draw();toast(f.length+' kanal listeye eklendi');
+  };
+  $('#md').onclick=()=>{
+    const s=new Set(),n=items.length;
+    items=items.filter(i=>!s.has(i.url)&&s.add(i.url));
+    fill();toast((n-items.length)+' yinelenen kaynak kanal silindi');
+  };
+  $('#muo').onclick=()=>{
+    if(!backup.length)return toast('Geri alınacak işlem yok');
+    selected=backup.map(i=>({...i}));backup=[];draw();toast('Son işlem geri alındı');
+  };
+  $('#mclear').onclick=()=>{
+    if(!selected.length)return toast('Yeni liste zaten boş');
+    saveBackup();selected=[];draw();toast('Yeni liste temizlendi');
+  };
+  $('#msl').onclick=e=>{
+    const remove=e.target.closest('[data-remove]');
+    if(remove){
+      saveBackup();selected.splice(Number(remove.dataset.remove),1);draw();return;
+    }
+    const move=e.target.closest('[data-move]');
+    if(move){
+      const index=Number(move.dataset.selected),direction=Number(move.dataset.move),next=index+direction;
+      if(next<0||next>=selected.length)return;
+      saveBackup();[selected[index],selected[next]]=[selected[next],selected[index]];draw();
+    }
+  };
+  $('#mx').onclick=()=>{
+    if(!selected.length)return toast('Liste boş');
+    const text='#EXTM3U\n'+selected.map(i=>{
+      let raw=i.raw||`#EXTINF:-1 tvg-name="${i.name.replace(/"/g,'')}" group-title="${i.group||'Genel'}",${i.name}`;
+      if(!/tvg-name\s*=/.test(raw))raw=raw.replace(/^(#EXTINF:[^ ]*)/,`$1 tvg-name="${i.name.replace(/"/g,'')}"`);
+      if(!/group-title\s*=/.test(raw))raw=raw.replace(/^(#EXTINF:[^ ]*)/,`$1 group-title="${(i.group||'Genel').replace(/"/g,'')}"`);
+      return raw+'\n'+i.url;
+    }).join('\n')+'\n';
+    dl('liste.m3u',text,'audio/x-mpegurl');
+  };
 });};
 
 /* ---------- PS4 ---------- */
