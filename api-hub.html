@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drive API Ana Sayfam</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0b1120;
+      color: #e2e8f0;
+    }
+    .wrap { max-width: 820px; margin: 0 auto; display: grid; gap: 14px; }
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 14px;
+    }
+    h1 { margin: 0 0 6px; font-size: 20px; }
+    p.sub { margin: 0; color: #94a3b8; font-size: 13px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    input, select, textarea, button {
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 9px 11px;
+      font-size: 14px;
+    }
+    input, select { flex: 1; min-width: 180px; }
+    button {
+      background: #2563eb;
+      border-color: #2563eb;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.secondary { background: #1e293b; border-color: #475569; }
+    button.run { background: #16a34a; border-color: #16a34a; padding: 6px 10px; font-size: 13px; }
+    .api-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      background: #0b1222;
+      margin-top: 8px;
+    }
+    .api-meta small { color: #94a3b8; display: block; word-break: break-all; }
+    pre {
+      margin: 10px 0 0;
+      padding: 12px;
+      border-radius: 8px;
+      background: #020617;
+      color: #86efac;
+      overflow: auto;
+      max-height: 280px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Kayıtlı API'lerim (Drive Bağlantılı)</h1>
+      <p class="sub">Drive'daki kayıtlarınızdan beslenen sade kontrol ve test arayüzü. API anahtarları saklanmaz; isteklerde yalnızca güvendiğiniz HTTPS adreslerini kullanın.</p>
+      <div class="row">
+        <input id="bridgeUrl" type="url" placeholder="Google Apps Script Web App URL (opsiyonel)" aria-label="Google Apps Script Web App URL" />
+        <button id="loadDriveBtn" type="button">Drive'dan Yükle</button>
+        <button id="addLocalBtn" class="secondary" type="button">+ Hızlı API Ekle</button>
+      </div>
+    </div>
+
+    <div class="card" id="quickAddBox" style="display:none;">
+      <div class="row">
+        <input id="apiName" type="text" placeholder="API Adı (ör: Hava Durumu)" aria-label="API adı" />
+        <select id="apiMethod" aria-label="HTTP metodu" style="max-width:110px;">
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+        </select>
+      </div>
+      <div class="row">
+        <input id="apiUrl" type="url" placeholder="Gerçek Endpoint URL (https://...)" aria-label="Endpoint URL" />
+        <input id="apiHeader" type="text" placeholder="Header adı (ör: Authorization veya X-API-Key)" aria-label="İsteğe bağlı kimlik doğrulama header adı" />
+      </div>
+      <div class="row">
+        <button id="saveApiBtn" type="button">Listeye Kaydet</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>Kayıtlı Çalışan API'ler</strong>
+      <div id="apiList"></div>
+    </div>
+
+    <div class="card">
+      <strong>Çalıştırma Sonucu</strong>
+      <pre id="outputBox" aria-live="polite">Bir API'de "Çalıştır" butonuna basın veya Drive'dan kayıt yükleyin.</pre>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "asikurt_drive_apis_v1";
+    const BRIDGE_KEY = "asikurt_drive_bridge_url";
+
+    const defaultApis = [
+      {
+        name: "HTTPBin GET Test",
+        method: "GET",
+        url: "https://httpbin.org/get",
+        headerName: ""
+      }
+    ];
+
+    const bridgeInput = document.getElementById("bridgeUrl");
+    const apiListEl = document.getElementById("apiList");
+    const outputBox = document.getElementById("outputBox");
+    const quickAddBox = document.getElementById("quickAddBox");
+
+    function parseHttpsUrl(value, label) {
+      let url;
+      try {
+        url = new URL(value);
+      } catch {
+        throw new Error(`${label}: geçerli bir URL girin.`);
+      }
+      if (url.protocol !== "https:" || url.username || url.password) {
+        throw new Error(`${label}: kimlik bilgisi içermeyen bir HTTPS URL'si kullanın.`);
+      }
+      return url;
+    }
+
+    function getApis() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return defaultApis;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) throw new Error("Kayıtlı API listesi geçersiz biçimde.");
+      return parsed;
+    }
+
+    function saveApis(list) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      } catch (err) {
+        outputBox.textContent = "API listesi tarayıcıya kaydedilemedi: " + err.message;
+        return false;
+      }
+      renderApis();
+      return true;
+    }
+
+    async function runApi(item) {
+      try {
+        const url = parseHttpsUrl(item.url, "Endpoint");
+        const method = item.method || "GET";
+        if (method !== "GET" && method !== "POST") {
+          throw new Error("Yalnızca GET ve POST metotları desteklenir.");
+        }
+        const headers = { "Accept": "application/json" };
+        if (item.headerName) {
+          const token = prompt(`${item.name} için ${url.host} adresine gönderilecek ${item.headerName} değeri (saklanmaz):`);
+          if (token === null) {
+            outputBox.textContent = "İstek iptal edildi.";
+            return;
+          }
+          if (token.trim()) {
+            headers[item.headerName.trim()] =
+              item.headerName.trim().toLowerCase() === "authorization" && !token.trim().startsWith("Bearer ")
+                ? "Bearer " + token.trim()
+                : token.trim();
+          }
+        }
+        outputBox.textContent = `${item.name} (${method}) çalıştırılıyor...`;
+        const res = await fetch(url.href, { method, headers });
+        const text = await res.text();
+        outputBox.textContent = `HTTP ${res.status} ${res.statusText}\n\n` + text.slice(0, 4000);
+      } catch (err) {
+        outputBox.textContent = "Çalıştırma hatası (CORS, ağ veya URL): " + err.message;
+      }
+    }
+
+    function renderApis() {
+      let apis;
+      try {
+        apis = getApis();
+      } catch (err) {
+        outputBox.textContent = "Kayıtlı API'ler okunamadı: " + err.message;
+        apis = defaultApis;
+      }
+      apiListEl.replaceChildren();
+      apis.forEach((item, idx) => {
+        const div = document.createElement("div");
+        div.className = "api-item";
+
+        const meta = document.createElement("div");
+        meta.className = "api-meta";
+        const title = document.createElement("strong");
+        title.textContent = `${item.name || "Adsız API"} (${item.method || "GET"})`;
+        const urlSmall = document.createElement("small");
+        urlSmall.textContent = item.url || "URL belirtilmemiş";
+        meta.append(title, urlSmall);
+
+        const actions = document.createElement("div");
+        actions.style.display = "flex";
+        actions.style.gap = "6px";
+
+        const runBtn = document.createElement("button");
+        runBtn.className = "run";
+        runBtn.type = "button";
+        runBtn.textContent = "Çalıştır";
+        runBtn.addEventListener("click", () => runApi(item));
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "secondary";
+        delBtn.type = "button";
+        delBtn.textContent = "Sil";
+        delBtn.addEventListener("click", () => {
+          try {
+            const next = getApis().filter((_, i) => i !== idx);
+            saveApis(next);
+          } catch (err) {
+            outputBox.textContent = "API kaydı silinemedi: " + err.message;
+          }
+        });
+
+        actions.append(runBtn, delBtn);
+        div.append(meta, actions);
+        apiListEl.appendChild(div);
+      });
+    }
+
+    try {
+      bridgeInput.value = localStorage.getItem(BRIDGE_KEY) || "";
+    } catch (err) {
+      outputBox.textContent = "Kaydedilmiş Apps Script adresi okunamadı: " + err.message;
+    }
+    bridgeInput.addEventListener("change", () => {
+      const value = bridgeInput.value.trim();
+      try {
+        if (value) parseHttpsUrl(value, "Apps Script adresi");
+        if (value) localStorage.setItem(BRIDGE_KEY, value);
+        else localStorage.removeItem(BRIDGE_KEY);
+      } catch (err) {
+        outputBox.textContent = "Apps Script adresi kaydedilemedi: " + err.message;
+      }
+    });
+
+    document.getElementById("addLocalBtn").addEventListener("click", () => {
+      quickAddBox.style.display = quickAddBox.style.display === "none" ? "block" : "none";
+    });
+
+    document.getElementById("saveApiBtn").addEventListener("click", () => {
+      const name = document.getElementById("apiName").value.trim();
+      const method = document.getElementById("apiMethod").value;
+      const rawUrl = document.getElementById("apiUrl").value.trim();
+      const headerName = document.getElementById("apiHeader").value.trim();
+      if (!name || !rawUrl) {
+        outputBox.textContent = "Hata: API adı ve geçerli URL zorunludur.";
+        return;
+      }
+      try {
+        const url = parseHttpsUrl(rawUrl, "Endpoint");
+        const next = [...getApis(), { name, method, url: url.href, headerName }];
+        if (!saveApis(next)) return;
+        document.getElementById("apiName").value = "";
+        document.getElementById("apiUrl").value = "";
+        document.getElementById("apiHeader").value = "";
+        quickAddBox.style.display = "none";
+      } catch (err) {
+        outputBox.textContent = "API kaydedilemedi: " + err.message;
+      }
+    });
+
+    document.getElementById("loadDriveBtn").addEventListener("click", async () => {
+      const bridgeUrl = bridgeInput.value.trim();
+      if (!bridgeUrl) {
+        outputBox.textContent =
+          "Drive'dan yüklemek için Google Apps Script Web App HTTPS URL'si girin veya '+ Hızlı API Ekle' ile bir kayıt ekleyin.";
+        return;
+      }
+      let url;
+      try {
+        url = parseHttpsUrl(bridgeUrl, "Apps Script adresi");
+      } catch (err) {
+        outputBox.textContent = err.message;
+        return;
+      }
+      outputBox.textContent = "Google Drive kayıtları çekiliyor...";
+      try {
+        const res = await fetch(url.href);
+        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+        const data = await res.json();
+        if (Array.isArray(data.apis) && data.apis.length) {
+          if (saveApis(data.apis)) {
+            outputBox.textContent = `${data.apis.length} adet API kaydı Drive'dan yüklendi.`;
+          }
+        } else {
+          outputBox.textContent = "Drive yanıtı:\n" + JSON.stringify(data, null, 2).slice(0, 4000);
+        }
+      } catch (err) {
+        outputBox.textContent = "Drive bağlantısı okunamadı: " + err.message;
+      }
+    });
+
+    renderApis();
+  </script>
+</body>
+</html>
