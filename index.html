@@ -464,7 +464,7 @@ const page=(h,fn)=>{view.innerHTML='<div class="pg">'+h+'</div>';fn&&fn()};
 const ENG={Google:'https://www.google.com/search?q='};
 P.ana=()=>{
 page(`<section class="hero"><div class="logo">${LOGO}</div><h1 class="big">aSiKuRT</h1><p class="sub">Araçlar, kaynaklar ve hızlı erişim — hepsi tek sayfada.</p>
-<form id="sf" class="search" action="https://www.google.com/search" method="get" target="_self"><input id="q" name="q" placeholder="Google'da ara..." autocomplete="on" aria-label="Google'da ara"><button type="submit" class="btn">ARA</button></form></section>
+<form id="sf" class="search" action="https://www.google.com/search" method="get" target="_self" autocomplete="off"><input id="q" name="q" placeholder="Google'da ara..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Google'da ara"><button type="submit" class="btn">ARA</button></form></section>
 <section class="home-widgets cols" aria-label="Google trend aramaları ve en çok okunan haberler">
 <article class="card widget-card" aria-labelledby="trends-title">
 <div class="widget-heading"><h2 id="trends-title">Google'da öne çıkan aramalar</h2></div>
