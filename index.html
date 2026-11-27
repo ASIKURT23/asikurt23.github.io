@@ -345,7 +345,8 @@ body.nav-closed .foot::after{content:"©";font-size:11px}
 @media(min-width:861px){
   aside{position:fixed!important;left:10px!important;top:10px!important;bottom:10px!important;width:max-content!important;min-width:172px!important;max-width:220px!important;padding:8px 8px 6px!important;margin:0!important;border-radius:12px!important;transform-origin:left center!important;box-shadow:0 18px 50px rgba(0,0,0,.38)!important;transition:left .22s ease,top .22s ease,width .22s ease,transform .22s ease,opacity .18s ease!important}
   body.nav-closed aside{transform:translateX(calc(-100% - 18px)) scale(.98)!important;opacity:0!important;pointer-events:none!important}
-  main{margin-left:0!important}
+  main{width:calc(100vw - var(--sidebar-open-width,172px) - 10px)!important;margin-left:calc(var(--sidebar-open-width,172px) + 10px)!important;transition:width .22s ease,margin-left .22s ease!important}
+  body.nav-closed main{width:100vw!important;margin-left:0!important}
   .brand{min-height:48px!important;margin:0 0 4px!important;padding:4px 8px!important}
   .brand{cursor:grab!important;user-select:none!important}
   .brand.dragging{cursor:grabbing!important}
@@ -1449,6 +1450,10 @@ $('#tog').onclick=()=>{
   document.body.classList.toggle('nav-closed');
   save('asi_nav_open',!document.body.classList.contains('nav-closed'));
   $('#tog').setAttribute('aria-expanded',String(!document.body.classList.contains('nav-closed')));
+  if(!document.body.classList.contains('nav-closed')){
+    const side=$('aside');
+    document.documentElement.style.setProperty('--sidebar-open-width',(side.offsetWidth||172)+'px');
+  }
 };
 const closeSide=()=>{
   document.body.classList.add('nav-closed');
@@ -1465,6 +1470,7 @@ $('#scrim').onclick=()=>{
 if(innerWidth>860){
   const side=$('aside');
   const brand=$('.brand');
+  document.documentElement.style.setProperty('--sidebar-open-width',side.offsetWidth+'px');
   let drag=null;
   brand.onpointerdown=e=>{
     if(e.pointerType==='touch'&&e.target.closest('svg'))return;
@@ -1490,6 +1496,7 @@ if(innerWidth>860){
     if(!drag||drag.mode!=='resize')return;
     const width=Math.min(220,Math.max(172,drag.width+(e.clientX-drag.x)));
     side.style.width=width+'px';
+    document.documentElement.style.setProperty('--sidebar-open-width',width+'px');
   };
   resizer.onpointerup=()=>{drag=null};
 }
